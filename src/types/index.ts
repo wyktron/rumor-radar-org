@@ -29,9 +29,12 @@ export interface Rumor {
   id: string;
   title: string;
   description: string;
-  country: string;
+  /** Country where the rumor was first heard / source is registered. Drives the map marker. */
+  originCountry: string;
+  /** Country/region the rumor is about (may equal origin, or be "Multiple" / "Global"). */
+  subjectCountry?: string;
   topic: Topic;
-  coordinates: [number, number]; // [lat, lng]
+  coordinates: [number, number]; // [lat, lng] — origin coordinates
   intensity: number; // 0-1
   status: RumorStatus;
   submittedAt: string;
@@ -52,8 +55,11 @@ export interface RumorSubmission {
   id: string;
   claim: string;
   description?: string;
-  location: string;
-  coordinates: [number, number];
+  /** Where the submitter first heard the rumor. */
+  originCountry: string;
+  originCoordinates: [number, number];
+  /** What the rumor is about. */
+  subjectCountry?: string;
   topic: Topic;
   source?: string;
   submittedAt: string;
