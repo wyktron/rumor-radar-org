@@ -40,7 +40,7 @@ export function HeatmapMap({ rumors, draggable = false, onSelect }: Props) {
       minZoom: 2,
     });
     L.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
+      'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
       {
         attribution:
           '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> &copy; <a href="https://carto.com">CARTO</a>',
@@ -49,8 +49,8 @@ export function HeatmapMap({ rumors, draggable = false, onSelect }: Props) {
       },
     ).addTo(map);
     L.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png',
-      { subdomains: 'abcd', maxZoom: 19, opacity: 0.6 },
+      'https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',
+      { subdomains: 'abcd', maxZoom: 19, opacity: 0.7 },
     ).addTo(map);
     mapRef.current = map;
     layerRef.current = L.layerGroup().addTo(map);
