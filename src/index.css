@@ -169,10 +169,10 @@
   }
 }
 
-/* Push the top-right zoom buttons below the floating "Submit a Rumor" CTA */
-.leaflet-top.leaflet-right {
-  top: 4rem;
-}
+/* Move Leaflet zoom controls to top-left, below the LIVE stats panel,
+   so they don't collide with the floating overlay panels on either side */
+.leaflet-top.leaflet-right { display: none; }
+.leaflet-top.leaflet-left { top: 17rem; }
 
 /* Leaflet overrides — light theme */
 .leaflet-container {
