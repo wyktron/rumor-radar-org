@@ -25,10 +25,11 @@ function buildIcon(color: string, viral: boolean) {
   });
 }
 
-export function HeatmapMap({ rumors, draggable = false, onSelect }: Props) {
+export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = false, onPick }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
+  const pickHandlerRef = useRef<((e: L.LeafletMouseEvent) => void) | null>(null);
   const { updateRumorCoordinates } = useApp();
 
   // init map once
