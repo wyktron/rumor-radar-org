@@ -6,6 +6,7 @@ import type {
   CSORegistration,
   CSO,
   User,
+  LovedOneSubmission,
 } from '@/types';
 import {
   dummyRumors,
@@ -22,6 +23,7 @@ interface AppState {
   submissions: RumorSubmission[];
   debunkSubmissions: DebunkSubmission[];
   csoRegistrations: CSORegistration[];
+  lovedOneSubmissions: LovedOneSubmission[];
   user: User | null;
   // auth
   login: (email: string, password: string) => { ok: boolean; error?: string };
@@ -41,11 +43,13 @@ interface AppState {
   registerCSO: (r: Omit<CSORegistration, 'id' | 'submittedAt' | 'status'>) => void;
   approveCSORegistration: (id: string) => void;
   rejectCSORegistration: (id: string) => void;
+  // loved one outreach
+  addLovedOneSubmission: (s: Omit<LovedOneSubmission, 'id' | 'submittedAt' | 'status'>) => void;
 }
 
 const AppContext = createContext<AppState | null>(null);
 
-const STORAGE_KEY = 'rumor-radar-state-v2';
+const STORAGE_KEY = 'rumor-radar-state-v3';
 const USER_KEY = 'rumor-radar-user-v1';
 
 interface PersistShape {
@@ -54,31 +58,29 @@ interface PersistShape {
   submissions: RumorSubmission[];
   debunkSubmissions: DebunkSubmission[];
   csoRegistrations: CSORegistration[];
+  lovedOneSubmissions: LovedOneSubmission[];
 }
 
 function loadState(): PersistShape {
-  if (typeof window === 'undefined') {
-    return {
-      rumors: dummyRumors,
-      csos: dummyCSOs,
-      submissions: dummyRumorSubmissions,
-      debunkSubmissions: dummyDebunkSubmissions,
-      csoRegistrations: dummyCSORegistrations,
-    };
-  }
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {
-    /* ignore */
-  }
-  return {
+  const fallback: PersistShape = {
     rumors: dummyRumors,
     csos: dummyCSOs,
     submissions: dummyRumorSubmissions,
     debunkSubmissions: dummyDebunkSubmissions,
     csoRegistrations: dummyCSORegistrations,
+    lovedOneSubmissions: [],
   };
+  if (typeof window === 'undefined') return fallback;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<PersistShape>;
+      return { ...fallback, ...parsed, lovedOneSubmissions: parsed.lovedOneSubmissions ?? [] };
+    }
+  } catch {
+    /* ignore */
+  }
+  return fallback;
 }
 
 function loadUser(): User | null {
@@ -100,14 +102,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [submissions, setSubmissions] = useState<RumorSubmission[]>(initial.submissions);
   const [debunkSubmissions, setDebunkSubmissions] = useState<DebunkSubmission[]>(initial.debunkSubmissions);
   const [csoRegistrations, setCsoRegistrations] = useState<CSORegistration[]>(initial.csoRegistrations);
+  const [lovedOneSubmissions, setLovedOneSubmissions] = useState<LovedOneSubmission[]>(initial.lovedOneSubmissions);
   const [user, setUser] = useState<User | null>(loadUser());
 
   useEffect(() => {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ rumors, csos, submissions, debunkSubmissions, csoRegistrations }),
+      JSON.stringify({ rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions }),
     );
-  }, [rumors, csos, submissions, debunkSubmissions, csoRegistrations]);
+  }, [rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions]);
 
   useEffect(() => {
     if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
