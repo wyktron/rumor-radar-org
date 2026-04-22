@@ -76,11 +76,15 @@ export function HeatmapMap({ rumors, draggable = false, onSelect }: Props) {
         icon: buildIcon(color, viral),
         draggable,
       });
+      const aboutBadge = r.subjectCountry && r.subjectCountry !== r.originCountry
+        ? `<span style="background:hsl(var(--secondary));padding:2px 6px;border-radius:4px;font-size:10px">about: ${escapeHtml(r.subjectCountry)}</span>`
+        : '';
       marker.bindPopup(
-        `<div style="min-width:200px">
+        `<div style="min-width:220px">
           <div style="font-weight:600;margin-bottom:4px;color:hsl(var(--foreground))">${escapeHtml(r.title)}</div>
+          <div style="font-size:10px;color:hsl(var(--muted-foreground));margin-bottom:6px">Origin · ${escapeHtml(r.originCountry)}</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
-            <span style="background:hsl(var(--secondary));padding:2px 6px;border-radius:4px;font-size:10px">${escapeHtml(r.country)}</span>
+            ${aboutBadge}
             <span style="background:hsl(var(--secondary));padding:2px 6px;border-radius:4px;font-size:10px">${escapeHtml(r.topic)}</span>
             <span style="background:${color};color:#000;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600">${statusLabel(r.status)}</span>
           </div>

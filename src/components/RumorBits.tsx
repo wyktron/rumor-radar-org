@@ -43,7 +43,14 @@ export function IntensityBar({ rumor }: { rumor: Rumor }) {
 export function RumorMeta({ rumor }: { rumor: Rumor }) {
   return (
     <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
-      <Badge variant="outline" className="font-normal">{rumor.country}</Badge>
+      <Badge variant="outline" className="font-normal" title="Origin — where it was first heard">
+        ◉ {rumor.originCountry}
+      </Badge>
+      {rumor.subjectCountry && rumor.subjectCountry !== rumor.originCountry && (
+        <Badge variant="outline" className="font-normal" title="What the rumor is about">
+          → {rumor.subjectCountry}
+        </Badge>
+      )}
       <Badge variant="outline" className="font-normal">{rumor.topic}</Badge>
       <span className="text-muted-foreground font-mono">· {relativeTime(rumor.submittedAt)}</span>
     </div>
