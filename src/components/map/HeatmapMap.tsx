@@ -35,10 +35,11 @@ export function HeatmapMap({ rumors, draggable = false, onSelect }: Props) {
       center: [20, 10],
       zoom: 2,
       worldCopyJump: true,
-      zoomControl: true,
+      zoomControl: false,
       attributionControl: true,
       minZoom: 2,
     });
+    L.control.zoom({ position: 'topright' }).addTo(map);
     L.tileLayer(
       'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
       {
