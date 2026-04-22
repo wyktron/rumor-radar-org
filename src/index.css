@@ -131,11 +131,6 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
-    background-image:
-      var(--gradient-radar),
-      radial-gradient(circle at 20% 80%, hsl(190 95% 55% / 0.04), transparent 50%),
-      radial-gradient(circle at 80% 20%, hsl(0 90% 62% / 0.04), transparent 50%);
-    background-attachment: fixed;
   }
   .font-mono {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
