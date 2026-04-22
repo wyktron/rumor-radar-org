@@ -108,6 +108,37 @@ export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = fal
     });
   }, [rumors, draggable, onSelect, updateRumorCoordinates]);
 
+  // pick mode — click anywhere on the map to capture coordinates
+  useEffect(() => {
+    const map = mapRef.current;
+    const container = containerRef.current;
+    if (!map || !container) return;
+
+    if (pickHandlerRef.current) {
+      map.off('click', pickHandlerRef.current);
+      pickHandlerRef.current = null;
+    }
+
+    if (pickMode) {
+      container.style.cursor = 'crosshair';
+      const handler = (e: L.LeafletMouseEvent) => {
+        onPick?.([e.latlng.lat, e.latlng.lng]);
+      };
+      map.on('click', handler);
+      pickHandlerRef.current = handler;
+    } else {
+      container.style.cursor = '';
+    }
+
+    return () => {
+      if (pickHandlerRef.current) {
+        map.off('click', pickHandlerRef.current);
+        pickHandlerRef.current = null;
+      }
+      if (container) container.style.cursor = '';
+    };
+  }, [pickMode, onPick]);
+
   // legend
   const legend = useMemo(
     () => [
