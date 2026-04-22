@@ -79,8 +79,30 @@ export default function HeatmapPage() {
         />
       </div>
 
+      {/* TOP-CENTER: Toggle floating panels */}
+      {!pickMode && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[550]">
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 shadow-lg bg-background/85 backdrop-blur-xl text-xs"
+            onClick={() => setPanelsHidden((v) => !v)}
+          >
+            {panelsHidden ? (
+              <>
+                <Eye className="h-3.5 w-3.5" /> Show panels
+              </>
+            ) : (
+              <>
+                <EyeOff className="h-3.5 w-3.5" /> Hide panels
+              </>
+            )}
+          </Button>
+        </div>
+      )}
+
       {/* TOP-LEFT: LIVE stats panel */}
-      <div className="absolute top-4 left-4 z-[500] glass-panel rounded-lg p-3 w-52 shadow-lg">
+      <div className={cn('absolute top-4 left-4 z-[500] glass-panel rounded-lg p-3 w-52 shadow-lg', panelsHidden && 'hidden')}>
         <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-success">
           <span className="signal-dot h-1.5 w-1.5 ticker-blink" style={{ color: 'hsl(var(--success))' }} />
           Live
@@ -96,7 +118,7 @@ export default function HeatmapPage() {
       </div>
 
       {/* TOP-RIGHT: Submit a Rumor */}
-      <div className="absolute top-4 right-4 z-[500]">
+      <div className={cn('absolute top-4 right-4 z-[500]', panelsHidden && 'hidden')}>
         <Button className="gap-1.5 shadow-lg" onClick={startSubmitFlow}>
           <Send className="h-3.5 w-3.5" /> Submit a Rumor
         </Button>
