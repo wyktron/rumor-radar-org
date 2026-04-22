@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useApp } from '@/context/AppContext';
 import { Card } from '@/components/ui/card';
-import { ShieldCheck, TrendingUp, Globe, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ShieldCheck, TrendingUp, Globe, Users, Download, FileJson, FileSpreadsheet } from 'lucide-react';
 
 export default function ImpactPage() {
   const { rumors, csos } = useApp();
