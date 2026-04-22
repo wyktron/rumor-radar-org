@@ -32,8 +32,8 @@ export function HeatmapMap({ rumors, draggable = false, onSelect }: Props) {
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
     const map = L.map(containerRef.current, {
-      center: [20, 10],
-      zoom: 2,
+      center: [50, 15],
+      zoom: 4,
       worldCopyJump: true,
       zoomControl: false,
       attributionControl: true,
