@@ -45,7 +45,7 @@ interface AppState {
 
 const AppContext = createContext<AppState | null>(null);
 
-const STORAGE_KEY = 'rumor-radar-state-v1';
+const STORAGE_KEY = 'rumor-radar-state-v2';
 const USER_KEY = 'rumor-radar-user-v1';
 
 interface PersistShape {
