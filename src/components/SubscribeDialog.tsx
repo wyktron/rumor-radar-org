@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Bell, Info, Mail, Search } from 'lucide-react';
-import { COUNTRIES } from '@/constants/countries';
+import { ALL_COUNTRIES } from '@/constants/all-countries';
 import { toast } from '@/hooks/use-toast';
 
 interface Props {
@@ -23,8 +23,8 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
 
   const filteredCountries = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return COUNTRIES;
-    return COUNTRIES.filter((c) => c.name.toLowerCase().includes(q));
+    if (!q) return ALL_COUNTRIES;
+    return ALL_COUNTRIES.filter((c) => c.name.toLowerCase().includes(q));
   }, [query]);
 
   const toggleCountry = (name: string) => {

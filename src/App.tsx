@@ -8,6 +8,7 @@ import { AppProvider } from "@/context/AppContext";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { SubscribeDialog } from "@/components/SubscribeDialog";
+import { WelcomeDialogs } from "@/components/WelcomeDialogs";
 import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Index from "./pages/Index.tsx";
@@ -111,6 +112,7 @@ const App = () => (
       <Sonner />
       <AppProvider>
         <BrowserRouter>
+          <WelcomeDialogs />
           <Routes>
             <Route element={<Layout />}>
               <Route path="/" element={<Index />} />
