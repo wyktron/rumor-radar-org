@@ -19,15 +19,15 @@ export const dummyUsers: (User & { password: string })[] = [
 ];
 
 export const dummyCSOs: CSO[] = [
-  { id: 'cso-1', name: 'FactCheck Alliance', originCountry: 'United States', coordinates: [38.9, -77.0], verified: true, description: 'Independent verification network covering North American media ecosystems.', website: 'https://factcheck.example.org', contactEmail: 'contact@factcheck.example.org', dateJoined: '2023-01-12' },
-  { id: 'cso-2', name: 'AFP Factuel', originCountry: 'France', coordinates: [48.85, 2.35], verified: true, description: 'AFP fact-checking unit covering francophone information disorders.', website: 'https://factuel.example.org', contactEmail: 'team@factuel.example.org', dateJoined: '2022-09-04' },
-  { id: 'cso-3', name: 'Maldita.es', originCountry: 'Spain', coordinates: [40.4, -3.7], verified: true, description: 'Spanish-language verification platform tracking viral hoaxes.', website: 'https://maldita.example.org', contactEmail: 'hola@maldita.example.org', dateJoined: '2022-11-20' },
-  { id: 'cso-4', name: 'Full Fact', originCountry: 'United Kingdom', coordinates: [51.5, -0.12], verified: true, description: 'UK independent fact-checking charity.', website: 'https://fullfact.example.org', contactEmail: 'team@fullfact.example.org', dateJoined: '2022-06-08' },
-  { id: 'cso-5', name: 'Correctiv', originCountry: 'Germany', coordinates: [52.52, 13.4], verified: true, description: 'Investigative journalism network across DACH region.', website: 'https://correctiv.example.org', contactEmail: 'info@correctiv.example.org', dateJoined: '2022-08-15' },
-  { id: 'cso-6', name: 'DataVerify Kenya', originCountry: 'Kenya', coordinates: [-1.29, 36.82], verified: true, description: 'East-African verification lab focused on election integrity.', website: 'https://dataverify.example.org', contactEmail: 'hello@dataverify.example.org', dateJoined: '2023-03-22' },
-  { id: 'cso-7', name: 'Brazilian Fact Lab', originCountry: 'Brazil', coordinates: [-15.78, -47.92], verified: true, description: 'Cross-platform monitoring of Lusophone misinformation.', website: 'https://factlab.example.org', contactEmail: 'oi@factlab.example.org', dateJoined: '2023-02-10' },
-  { id: 'cso-8', name: 'Tokyo Info Integrity', originCountry: 'Japan', coordinates: [35.68, 139.69], verified: true, description: 'Verification cooperative for the Asia-Pacific.', website: 'https://infointegrity.example.org', contactEmail: 'team@infointegrity.example.org', dateJoined: '2023-05-01' },
-  { id: 'cso-9', name: 'Cairo Media Watch', originCountry: 'Egypt', coordinates: [30.04, 31.24], verified: true, description: 'MENA-region monitoring of viral political claims.', website: 'https://mediawatch.example.org', contactEmail: 'contact@mediawatch.example.org', dateJoined: '2023-04-18' },
+  { id: 'cso-1', name: 'FactCheck Alliance', country: 'United States', coordinates: [38.9, -77.0], verified: true, description: 'Independent verification network covering North American media ecosystems.', website: 'https://factcheck.example.org', contactEmail: 'contact@factcheck.example.org', dateJoined: '2023-01-12' },
+  { id: 'cso-2', name: 'AFP Factuel', country: 'France', coordinates: [48.85, 2.35], verified: true, description: 'AFP fact-checking unit covering francophone information disorders.', website: 'https://factuel.example.org', contactEmail: 'team@factuel.example.org', dateJoined: '2022-09-04' },
+  { id: 'cso-3', name: 'Maldita.es', country: 'Spain', coordinates: [40.4, -3.7], verified: true, description: 'Spanish-language verification platform tracking viral hoaxes.', website: 'https://maldita.example.org', contactEmail: 'hola@maldita.example.org', dateJoined: '2022-11-20' },
+  { id: 'cso-4', name: 'Full Fact', country: 'United Kingdom', coordinates: [51.5, -0.12], verified: true, description: 'UK independent fact-checking charity.', website: 'https://fullfact.example.org', contactEmail: 'team@fullfact.example.org', dateJoined: '2022-06-08' },
+  { id: 'cso-5', name: 'Correctiv', country: 'Germany', coordinates: [52.52, 13.4], verified: true, description: 'Investigative journalism network across DACH region.', website: 'https://correctiv.example.org', contactEmail: 'info@correctiv.example.org', dateJoined: '2022-08-15' },
+  { id: 'cso-6', name: 'DataVerify Kenya', country: 'Kenya', coordinates: [-1.29, 36.82], verified: true, description: 'East-African verification lab focused on election integrity.', website: 'https://dataverify.example.org', contactEmail: 'hello@dataverify.example.org', dateJoined: '2023-03-22' },
+  { id: 'cso-7', name: 'Brazilian Fact Lab', country: 'Brazil', coordinates: [-15.78, -47.92], verified: true, description: 'Cross-platform monitoring of Lusophone misinformation.', website: 'https://factlab.example.org', contactEmail: 'oi@factlab.example.org', dateJoined: '2023-02-10' },
+  { id: 'cso-8', name: 'Tokyo Info Integrity', country: 'Japan', coordinates: [35.68, 139.69], verified: true, description: 'Verification cooperative for the Asia-Pacific.', website: 'https://infointegrity.example.org', contactEmail: 'team@infointegrity.example.org', dateJoined: '2023-05-01' },
+  { id: 'cso-9', name: 'Cairo Media Watch', country: 'Egypt', coordinates: [30.04, 31.24], verified: true, description: 'MENA-region monitoring of viral political claims.', website: 'https://mediawatch.example.org', contactEmail: 'contact@mediawatch.example.org', dateJoined: '2023-04-18' },
 ];
 
 const now = Date.now();
@@ -76,5 +76,5 @@ export const dummyDebunkSubmissions: DebunkSubmission[] = [
 ];
 
 export const dummyCSORegistrations: CSORegistration[] = [
-  { id: 'reg-1', organizationName: 'Verify Vietnam', originCountry: 'Indonesia', contactName: 'Nguyen Linh', contactEmail: 'contact@verifyvn.example.org', website: 'https://verifyvn.example.org', description: 'Southeast Asian fact-checking collective focused on health misinformation.', submittedAt: iso(2), status: 'pending' },
+  { id: 'reg-1', organizationName: 'Verify Vietnam', country: 'Indonesia', contactName: 'Nguyen Linh', contactEmail: 'contact@verifyvn.example.org', website: 'https://verifyvn.example.org', description: 'Southeast Asian fact-checking collective focused on health misinformation.', submittedAt: iso(2), status: 'pending' },
 ];
