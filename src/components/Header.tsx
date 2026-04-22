@@ -6,6 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useApp } from '@/context/AppContext';
 import { HOTLINE } from '@/constants/countries';
 import { HelpLovedOneDialog } from '@/components/HelpLovedOneDialog';
+import { CallExplainerDialog } from '@/components/CallExplainerDialog';
 
 const LANGUAGES = [
   { code: 'EN', label: 'English' },
@@ -18,6 +19,7 @@ const LANGUAGES = [
 export function Header() {
   const { user, logout } = useApp();
   const [lang, setLang] = useState<typeof LANGUAGES[number]['code']>('EN');
+  const [callOpen, setCallOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-[1000] border-b border-border/60 bg-background/85 backdrop-blur-xl">
@@ -45,11 +47,14 @@ export function Header() {
               </span>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-sm tracking-tight">{HOTLINE.display}</span>
-                <a href={`tel:${HOTLINE.tel}`}>
-                  <Button size="sm" variant="default" className="h-6 px-2 text-[10px] font-mono uppercase tracking-wider">
-                    Call
-                  </Button>
-                </a>
+                <Button
+                  size="sm"
+                  variant="default"
+                  className="h-6 px-2 text-[10px] font-mono uppercase tracking-wider"
+                  onClick={() => setCallOpen(true)}
+                >
+                  Call
+                </Button>
               </div>
               <span className="text-[10px] text-muted-foreground mt-0.5">
                 Call to verify if a rumor is true or false
@@ -110,12 +115,17 @@ export function Header() {
         <div className="flex items-center gap-2 min-w-0">
           <Phone className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
           <span className="font-bold truncate">{HOTLINE.display}</span>
-          <a href={`tel:${HOTLINE.tel}`}>
-            <Button size="sm" className="h-6 px-2 text-[10px] font-mono uppercase">Call</Button>
-          </a>
+          <Button
+            size="sm"
+            className="h-6 px-2 text-[10px] font-mono uppercase"
+            onClick={() => setCallOpen(true)}
+          >
+            Call
+          </Button>
         </div>
         <HelpLovedOneDialog />
       </div>
+      <CallExplainerDialog open={callOpen} onOpenChange={setCallOpen} />
     </header>
   );
 }
