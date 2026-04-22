@@ -1,15 +1,15 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { HeatmapMap } from '@/components/map/HeatmapMap';
 import { useApp } from '@/context/AppContext';
 import type { Rumor } from '@/types';
 import { COUNTRIES, TOPICS } from '@/constants/countries';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { StatusBadge, IntensityBar } from '@/components/RumorBits';
-import { Filter, ShieldCheck, Send, Info, X } from 'lucide-react';
+import { Filter, ShieldCheck, Send, Info, X, MapPin, HelpCircle, Crosshair } from 'lucide-react';
 import { relativeTime } from '@/lib/rumor-utils';
 import { cn } from '@/lib/utils';
 
