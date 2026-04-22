@@ -39,7 +39,7 @@ export function HeatmapMap({ rumors, draggable = false, onSelect }: Props) {
       attributionControl: true,
       minZoom: 2,
     });
-    L.control.zoom({ position: 'bottomright' }).addTo(map);
+    L.control.zoom({ position: 'topright' }).addTo(map);
     L.tileLayer(
       'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
       {

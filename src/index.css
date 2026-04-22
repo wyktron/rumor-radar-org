@@ -169,6 +169,11 @@
   }
 }
 
+/* Push the top-right zoom buttons below the floating "Submit a Rumor" CTA */
+.leaflet-top.leaflet-right {
+  top: 4rem;
+}
+
 /* Leaflet overrides — light theme */
 .leaflet-container {
   background: hsl(210 40% 96%) !important;
