@@ -2,11 +2,13 @@ import { useMemo, useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, Search } from 'lucide-react';
+import { ChevronDown, Search, Rss, Copy, Check } from 'lucide-react';
 import { COUNTRIES, TOPICS } from '@/constants/countries';
 import { StatusBadge, IntensityBar, RumorMeta } from '@/components/RumorBits';
+import { toast } from '@/hooks/use-toast';
 
 export default function TimelinePage() {
   const { rumors } = useApp();
@@ -28,12 +30,47 @@ export default function TimelinePage() {
       .sort((a, b) => +new Date(b.submittedAt) - +new Date(a.submittedAt));
   }, [rumors, q, country, topic, status]);
 
+  const [copied, setCopied] = useState(false);
+  const feedUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/feed/timeline.rss`;
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(feedUrl);
+      setCopied(true);
+      toast({ title: 'RSS link copied', description: feedUrl });
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      toast({ title: 'Could not copy link', variant: 'destructive' });
+    }
+  };
+
   return (
     <div className="container py-6 space-y-4 max-w-5xl">
       <div>
         <h1 className="text-2xl font-bold">Timeline</h1>
         <p className="text-sm text-muted-foreground">Chronological feed of rumors flagged by the network.</p>
       </div>
+
+      <Card className="glass-panel p-3 flex flex-wrap items-center gap-3">
+        <div className="flex h-9 w-9 items-center justify-center rounded-md bg-warning/15 text-warning shrink-0">
+          <Rss className="h-4 w-4" />
+        </div>
+        <div className="flex-1 min-w-[200px]">
+          <div className="text-sm font-semibold leading-tight">Subscribe to the RSS feed</div>
+          <div className="text-xs text-muted-foreground">Get new rumors delivered to your reader as soon as they're flagged.</div>
+        </div>
+        <code className="hidden md:inline-block text-[11px] font-mono text-muted-foreground bg-secondary/60 border border-border/60 rounded px-2 py-1 truncate max-w-[260px]">
+          {feedUrl}
+        </code>
+        <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={handleCopy}>
+          {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
+          {copied ? 'Copied' : 'Copy link'}
+        </Button>
+        <a href={feedUrl} target="_blank" rel="noreferrer">
+          <Button size="sm" className="gap-1.5 text-xs bg-warning text-warning-foreground hover:bg-warning/90">
+            <Rss className="h-3.5 w-3.5" /> Subscribe
+          </Button>
+        </a>
+      </Card>
 
       <Card className="glass-panel p-3 flex flex-wrap gap-2">
         <div className="relative flex-1 min-w-[220px]">
