@@ -91,22 +91,30 @@ export default function SubmitRumorPage() {
 
   return (
     <div className="container py-8 max-w-xl space-y-4">
-      <Card className="glass-panel p-5 border-primary/30">
+      <Card className="glass-panel p-4 border-success/40 bg-success/5">
+        <div className="flex items-start gap-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-success/15 text-success shrink-0">
+            <Crosshair className="h-4 w-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-success">Location captured</div>
+            <div className="text-sm font-semibold mt-0.5">
+              You heard this rumor near <span className="text-foreground">{form.originCountry || '—'}</span>
+            </div>
+            <div className="text-xs text-muted-foreground font-mono mt-0.5">{coordLabel}</div>
+          </div>
+          <Button variant="outline" size="sm" className="text-xs gap-1.5" onClick={() => nav('/')}>
+            <MapPin className="h-3.5 w-3.5" /> Change spot
+          </Button>
+        </div>
+      </Card>
+
+      <Card className="glass-panel p-4 border-primary/30">
         <div className="flex gap-3">
           <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-          <div className="space-y-2 text-sm">
-            <h3 className="font-semibold text-foreground">How to submit a rumor</h3>
-            <p className="text-muted-foreground">
-              <strong className="text-foreground">Mark where you heard the rumor</strong> — not where the events
-              are taking place. This helps us track how misinformation spreads geographically.
-            </p>
-            <p className="text-muted-foreground">
-              <strong className="text-foreground">Heard it online?</strong> Pick the capital of the country where
-              the platform / news agency is registered. You can mention what country the rumor is <em>about</em> in
-              the next field.
-            </p>
-            <p className="text-muted-foreground text-xs">Your submission will be reviewed by our team before appearing on the map.</p>
-          </div>
+          <p className="text-xs text-muted-foreground">
+            Now tell us what the rumor is. Your submission stays anonymous and is reviewed before appearing on the map.
+          </p>
         </div>
       </Card>
 
