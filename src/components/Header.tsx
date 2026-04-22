@@ -1,12 +1,23 @@
+import { useState } from 'react';
 import { NavLink as RouterNavLink } from 'react-router-dom';
 import { Radar, Phone, Globe, User as UserIcon, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useApp } from '@/context/AppContext';
 import { HOTLINE } from '@/constants/countries';
 import { HelpLovedOneDialog } from '@/components/HelpLovedOneDialog';
 
+const LANGUAGES = [
+  { code: 'EN', label: 'English' },
+  { code: 'FR', label: 'Français' },
+  { code: 'ES', label: 'Español' },
+  { code: 'RU', label: 'Русский' },
+  { code: 'AR', label: 'العربية' },
+] as const;
+
 export function Header() {
   const { user, logout } = useApp();
+  const [lang, setLang] = useState<typeof LANGUAGES[number]['code']>('EN');
 
   return (
     <header className="sticky top-0 z-[1000] border-b border-border/60 bg-background/85 backdrop-blur-xl">
