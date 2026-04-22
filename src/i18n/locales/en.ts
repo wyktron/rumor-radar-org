@@ -310,5 +310,8 @@ const en = {
     sentForReview: 'Submission sent for moderator review',
     noDebunks: 'You have not submitted any debunks yet.',
   },
+  intensity: {"low":"Low","moderate":"Moderate","high":"High","viral":"Viral"},
+  statusLabel: {"pending":"Pending","approved":"Approved","debunked":"Debunked","verifiedTrue":"Verified True","rejected":"Rejected"},
+  time: {"justNow":"just now","minutes":"{{m}}m ago","hours":"{{h}}h ago","days":"{{d}}d ago"},
 };
 export default en;

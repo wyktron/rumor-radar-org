@@ -212,5 +212,8 @@ const es = {
     sentForReview: 'Envío enviado a moderación',
     noDebunks: 'Aún no has enviado ningún desmentido.',
   },
+  intensity: {"low":"Bajo","moderate":"Moderado","high":"Alto","viral":"Viral"},
+  statusLabel: {"pending":"Pendiente","approved":"Aprobado","debunked":"Desmentido","verifiedTrue":"Verificado","rejected":"Rechazado"},
+  time: {"justNow":"ahora mismo","minutes":"hace {{m}} min","hours":"hace {{h}} h","days":"hace {{d}} d"},
 };
 export default es;

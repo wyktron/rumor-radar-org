@@ -214,5 +214,8 @@ const ar = {
     sentForReview: 'تم إرسال الطلب للمراجعة',
     noDebunks: 'لم ترسل أي دحوض بعد.',
   },
+  intensity: {"low":"منخفض","moderate":"متوسط","high":"مرتفع","viral":"منتشر"},
+  statusLabel: {"pending":"قيد المراجعة","approved":"معتمد","debunked":"مدحوضة","verifiedTrue":"مؤكدة","rejected":"مرفوضة"},
+  time: {"justNow":"الآن","minutes":"منذ {{m}} د","hours":"منذ {{h}} س","days":"منذ {{d}} يوم"},
 };
 export default ar;

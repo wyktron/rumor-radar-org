@@ -214,5 +214,8 @@ const ru = {
     sentForReview: 'Заявка отправлена на модерацию',
     noDebunks: 'Вы ещё не отправляли опровержений.',
   },
+  intensity: {"low":"Низкий","moderate":"Умеренный","high":"Высокий","viral":"Вирусный"},
+  statusLabel: {"pending":"В ожидании","approved":"Одобрено","debunked":"Опровергнуто","verifiedTrue":"Подтверждено","rejected":"Отклонено"},
+  time: {"justNow":"только что","minutes":"{{m}} мин назад","hours":"{{h}} ч назад","days":"{{d}} дн назад"},
 };
 export default ru;

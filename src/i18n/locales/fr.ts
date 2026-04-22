@@ -222,5 +222,8 @@ const fr = {
     sentForReview: 'Soumission envoyée à la modération',
     noDebunks: 'Vous n’avez encore soumis aucun démenti.',
   },
+  intensity: {"low":"Faible","moderate":"Modéré","high":"Élevé","viral":"Viral"},
+  statusLabel: {"pending":"En attente","approved":"Approuvé","debunked":"Démentie","verifiedTrue":"Vérifiée vraie","rejected":"Rejetée"},
+  time: {"justNow":"à l’instant","minutes":"il y a {{m}} min","hours":"il y a {{h}} h","days":"il y a {{d}} j"},
 };
 export default fr;
