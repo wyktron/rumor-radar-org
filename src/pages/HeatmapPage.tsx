@@ -178,7 +178,7 @@ export default function HeatmapPage() {
       </Dialog>
 
       {/* BOTTOM-LEFT: Trending scale legend */}
-      <div className="absolute bottom-16 left-4 z-[500] glass-panel rounded-lg p-3 w-56 shadow-lg">
+      <div className={cn('absolute bottom-16 left-4 z-[500] glass-panel rounded-lg p-3 w-56 shadow-lg', panelsHidden && 'hidden')}>
         <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">
           Trending scale
         </div>
