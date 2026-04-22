@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { StatusBadge, IntensityBar } from '@/components/RumorBits';
-import { Filter, ShieldCheck, Send, Info, X, MapPin, HelpCircle, Crosshair } from 'lucide-react';
+import { Filter, ShieldCheck, Send, Info, X, MapPin, HelpCircle, Crosshair, Eye, EyeOff } from 'lucide-react';
 import { relativeTime } from '@/lib/rumor-utils';
 import { cn } from '@/lib/utils';
 
@@ -23,6 +23,7 @@ export default function HeatmapPage() {
   const [showInfo, setShowInfo] = useState(true);
   const [submitInfoOpen, setSubmitInfoOpen] = useState(false);
   const [pickMode, setPickMode] = useState(false);
+  const [panelsHidden, setPanelsHidden] = useState(false);
 
   const startSubmitFlow = () => setSubmitInfoOpen(true);
   const enterPickMode = () => {
@@ -78,8 +79,30 @@ export default function HeatmapPage() {
         />
       </div>
 
+      {/* TOP-CENTER: Toggle floating panels */}
+      {!pickMode && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[550]">
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 shadow-lg bg-background/85 backdrop-blur-xl text-xs"
+            onClick={() => setPanelsHidden((v) => !v)}
+          >
+            {panelsHidden ? (
+              <>
+                <Eye className="h-3.5 w-3.5" /> Show panels
+              </>
+            ) : (
+              <>
+                <EyeOff className="h-3.5 w-3.5" /> Hide panels
+              </>
+            )}
+          </Button>
+        </div>
+      )}
+
       {/* TOP-LEFT: LIVE stats panel */}
-      <div className="absolute top-4 left-4 z-[500] glass-panel rounded-lg p-3 w-52 shadow-lg">
+      <div className={cn('absolute top-4 left-4 z-[500] glass-panel rounded-lg p-3 w-52 shadow-lg', panelsHidden && 'hidden')}>
         <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-success">
           <span className="signal-dot h-1.5 w-1.5 ticker-blink" style={{ color: 'hsl(var(--success))' }} />
           Live
@@ -95,7 +118,7 @@ export default function HeatmapPage() {
       </div>
 
       {/* TOP-RIGHT: Submit a Rumor */}
-      <div className="absolute top-4 right-4 z-[500]">
+      <div className={cn('absolute top-4 right-4 z-[500]', panelsHidden && 'hidden')}>
         <Button className="gap-1.5 shadow-lg" onClick={startSubmitFlow}>
           <Send className="h-3.5 w-3.5" /> Submit a Rumor
         </Button>
@@ -155,7 +178,7 @@ export default function HeatmapPage() {
       </Dialog>
 
       {/* BOTTOM-LEFT: Trending scale legend */}
-      <div className="absolute bottom-16 left-4 z-[500] glass-panel rounded-lg p-3 w-56 shadow-lg">
+      <div className={cn('absolute bottom-16 left-4 z-[500] glass-panel rounded-lg p-3 w-56 shadow-lg', panelsHidden && 'hidden')}>
         <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">
           Trending scale
         </div>
@@ -174,7 +197,7 @@ export default function HeatmapPage() {
       </div>
 
       {/* BOTTOM-RIGHT: Filter panel */}
-      <div className="absolute bottom-16 right-4 z-[500] glass-panel rounded-lg p-3 w-72 shadow-lg max-h-[calc(100vh-12rem)] overflow-y-auto">
+      <div className={cn('absolute bottom-16 right-4 z-[500] glass-panel rounded-lg p-3 w-72 shadow-lg max-h-[calc(100vh-12rem)] overflow-y-auto', panelsHidden && 'hidden')}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
             <Filter className="h-3 w-3" /> Filter rumors
