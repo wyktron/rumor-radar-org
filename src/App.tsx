@@ -24,14 +24,14 @@ import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
 
-const secondaryLinks = [
+const secondaryLinks: { to: string; key: string; icon: typeof Map; end?: boolean }[] = [
   { to: '/', key: 'heatmap', icon: Map, end: true },
   { to: '/timeline', key: 'timeline', icon: Clock },
   { to: '/csos', key: 'csos', icon: Users },
   { to: '/impact', key: 'impact', icon: BarChart3 },
   { to: '/dashboard', key: 'dashboard', icon: LayoutDashboard },
   { to: '/about', key: 'about', icon: Info },
-] as const;
+];
 
 function SecondaryNav() {
   const [subscribeOpen, setSubscribeOpen] = useState(false);
