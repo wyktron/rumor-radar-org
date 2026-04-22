@@ -23,6 +23,7 @@ export default function HeatmapPage() {
   const [showInfo, setShowInfo] = useState(true);
   const [submitInfoOpen, setSubmitInfoOpen] = useState(false);
   const [pickMode, setPickMode] = useState(false);
+  const [panelsHidden, setPanelsHidden] = useState(false);
 
   const startSubmitFlow = () => setSubmitInfoOpen(true);
   const enterPickMode = () => {
