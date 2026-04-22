@@ -73,7 +73,7 @@ function ModeratorDashboard() {
             <Card key={s.id} className="glass-panel p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-1.5 flex-1 min-w-0">
-                  <div className="text-xs font-mono text-muted-foreground">{s.location} · {s.topic} · {relativeTime(s.submittedAt)}{s.source && ` · via ${s.source}`}</div>
+                  <div className="text-xs font-mono text-muted-foreground">Origin: {s.originCountry}{s.subjectCountry && s.subjectCountry !== s.originCountry && ` → about ${s.subjectCountry}`} · {s.topic} · {relativeTime(s.submittedAt)}{s.source && ` · via ${s.source}`}</div>
                   <h4 className="font-semibold">{s.claim}</h4>
                   {s.description && <p className="text-sm text-muted-foreground">{s.description}</p>}
                 </div>
@@ -158,7 +158,7 @@ function ModeratorDashboard() {
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <StatusBadge status={r.status} />
-                      <span className="text-xs text-muted-foreground font-mono">{r.country}</span>
+                      <span className="text-xs text-muted-foreground font-mono">{r.originCountry}</span>
                     </div>
                     <div className="text-sm font-medium line-clamp-1">{r.title}</div>
                   </div>

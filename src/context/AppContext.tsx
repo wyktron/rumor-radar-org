@@ -45,7 +45,7 @@ interface AppState {
 
 const AppContext = createContext<AppState | null>(null);
 
-const STORAGE_KEY = 'rumor-radar-state-v1';
+const STORAGE_KEY = 'rumor-radar-state-v2';
 const USER_KEY = 'rumor-radar-user-v1';
 
 interface PersistShape {
@@ -155,9 +155,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
           id: 'r-' + uid(),
           title: sub.claim,
           description: sub.description ?? sub.claim,
-          country: sub.location,
+          originCountry: sub.originCountry,
+          subjectCountry: sub.subjectCountry,
           topic: sub.topic,
-          coordinates: sub.coordinates,
+          coordinates: sub.originCoordinates,
           intensity: 0.5,
           status: 'pending',
           submittedAt: sub.submittedAt,

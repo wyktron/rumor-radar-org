@@ -18,7 +18,7 @@ export default function ImpactPage() {
 
   const byCountry = useMemo(() => {
     const m: Record<string, number> = {};
-    rumors.forEach((r) => { m[r.country] = (m[r.country] ?? 0) + 1; });
+    rumors.forEach((r) => { m[r.originCountry] = (m[r.originCountry] ?? 0) + 1; });
     return Object.entries(m).sort((a, b) => b[1] - a[1]).slice(0, 8);
   }, [rumors]);
 

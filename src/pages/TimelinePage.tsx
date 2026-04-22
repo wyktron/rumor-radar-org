@@ -20,7 +20,7 @@ export default function TimelinePage() {
     return [...rumors]
       .filter(
         (r) =>
-          (country === 'all' || r.country === country) &&
+          (country === 'all' || r.originCountry === country) &&
           (topic === 'all' || r.topic === topic) &&
           (status === 'all' || r.status === status) &&
           (!ql || r.title.toLowerCase().includes(ql) || r.description.toLowerCase().includes(ql)),
