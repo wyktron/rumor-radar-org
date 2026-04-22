@@ -124,6 +124,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       submissions,
       debunkSubmissions,
       csoRegistrations,
+      lovedOneSubmissions,
       user,
       login(email, password) {
         const found = dummyUsers.find((u) => u.email === email && u.password === password);
@@ -251,8 +252,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
           arr.map((r) => (r.id === id ? { ...r, status: 'rejected' } : r)),
         );
       },
+      addLovedOneSubmission(s) {
+        const sub: LovedOneSubmission = {
+          ...s,
+          id: 'loved-' + uid(),
+          submittedAt: new Date().toISOString(),
+          status: 'pending',
+        };
+        setLovedOneSubmissions((arr) => [sub, ...arr]);
+      },
     }),
-    [rumors, csos, submissions, debunkSubmissions, csoRegistrations, user],
+    [rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions, user],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
