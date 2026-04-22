@@ -97,3 +97,19 @@ export interface User {
   role: UserRole;
   csoId?: string;
 }
+
+export type LovedOneContactMethod = 'phone' | 'sms' | 'email';
+export type LovedOneCallTime = 'morning' | 'afternoon' | 'evening' | 'anytime';
+export type LovedOneStatus = 'pending' | 'contacted' | 'completed';
+
+export interface LovedOneSubmission {
+  id: string;
+  contactMethod: LovedOneContactMethod;
+  contactValue: string;
+  bestTimeToCall?: LovedOneCallTime;
+  country: string;
+  relationship: string;
+  notes: string;
+  submittedAt: string;
+  status: LovedOneStatus;
+}
