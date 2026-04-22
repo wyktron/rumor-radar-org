@@ -39,15 +39,32 @@ const NONE = '__none__';
 export default function SubmitRumorPage() {
   const { submitRumor } = useApp();
   const nav = useNavigate();
+  const location = useLocation();
+  const pickedCoords = (location.state as { originCoordinates?: [number, number] } | null)?.originCoordinates;
+
   const [form, setForm] = useState({
     claim: '',
     description: '',
-    originCountry: '',
+    originCountry: pickedCoords ? nearestCountry(pickedCoords[0], pickedCoords[1]) : '',
     subjectCountry: '',
     topic: '',
     source: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // If user navigates here directly without picking, send them back to the map to pick a spot
+  useEffect(() => {
+    if (!pickedCoords) {
+      toast.info('Pick the spot on the map where you heard the rumor first.');
+      nav('/', { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const coordLabel = useMemo(
+    () => pickedCoords ? `${pickedCoords[0].toFixed(2)}°, ${pickedCoords[1].toFixed(2)}°` : '',
+    [pickedCoords],
+  );
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -63,7 +80,7 @@ export default function SubmitRumorPage() {
       claim: form.claim,
       description: form.description || undefined,
       originCountry: form.originCountry,
-      originCoordinates: origin?.coordinates ?? [0, 0],
+      originCoordinates: pickedCoords ?? origin?.coordinates ?? [0, 0],
       subjectCountry: form.subjectCountry || undefined,
       topic: form.topic as Topic,
       source: form.source || undefined,
