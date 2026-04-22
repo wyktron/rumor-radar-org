@@ -118,7 +118,7 @@ export function HeatmapMap({ rumors, draggable = false, onSelect }: Props) {
 
   return (
     <div className="relative h-full w-full">
-      <div ref={containerRef} className="h-full w-full rounded-lg overflow-hidden" />
+      <div ref={containerRef} className="h-full w-full overflow-hidden" />
       <div className="pointer-events-none absolute bottom-4 left-4 z-[400] glass-panel rounded-md px-3 py-2 text-xs">
         <div className="font-mono uppercase tracking-wider text-[10px] text-muted-foreground mb-1.5">Signal intensity</div>
         <div className="flex flex-wrap gap-x-3 gap-y-1">
