@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { useApp } from '@/context/AppContext';
 import { Card } from '@/components/ui/card';
@@ -10,8 +10,20 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { COUNTRIES, TOPICS } from '@/constants/countries';
 import { toast } from 'sonner';
-import { Send, MapPin, Info } from 'lucide-react';
+import { Send, MapPin, Info, Crosshair } from 'lucide-react';
 import type { Topic } from '@/types';
+
+function nearestCountry(lat: number, lng: number): string {
+  let best = COUNTRIES[0];
+  let bestDist = Infinity;
+  for (const c of COUNTRIES) {
+    const dLat = c.coordinates[0] - lat;
+    const dLng = c.coordinates[1] - lng;
+    const d = dLat * dLat + dLng * dLng;
+    if (d < bestDist) { bestDist = d; best = c; }
+  }
+  return best.name;
+}
 
 const schema = z.object({
   claim: z.string().trim().min(8, 'Claim must be at least 8 characters').max(280),
