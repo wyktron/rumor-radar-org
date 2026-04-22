@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { HeatmapMap } from '@/components/map/HeatmapMap';
 import { useApp } from '@/context/AppContext';
 import type { Rumor } from '@/types';
