@@ -5,107 +5,122 @@
 @tailwind utilities;
 
 /* Rumor Radar — Intelligence Ops Design System
-   Dark navy console with signal-grade glow accents.
+   Light, civic-tech aesthetic by default. Dark "ops console" available via .dark class.
    All colors are HSL.
 */
 
 @layer base {
   :root {
-    /* Core dark ops palette */
-    --background: 222 47% 6%;
-    --foreground: 210 40% 96%;
+    /* Light civic palette */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
 
-    --card: 222 47% 9%;
-    --card-foreground: 210 40% 96%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
-    --popover: 222 47% 8%;
-    --popover-foreground: 210 40% 96%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    /* Signal cyan = primary */
-    --primary: 190 95% 55%;
-    --primary-foreground: 222 47% 6%;
-    --primary-glow: 190 100% 70%;
+    /* Signal blue = primary */
+    --primary: 217 91% 55%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 217 95% 70%;
 
-    --secondary: 222 30% 14%;
-    --secondary-foreground: 210 40% 96%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 222 30% 12%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 222 30% 14%;
-    --accent-foreground: 190 95% 55%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 217 91% 55%;
 
-    --destructive: 0 85% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --success: 152 76% 50%;
-    --success-foreground: 222 47% 6%;
+    --success: 152 76% 40%;
+    --success-foreground: 0 0% 100%;
 
-    --warning: 38 95% 58%;
-    --warning-foreground: 222 47% 6%;
+    --warning: 38 95% 50%;
+    --warning-foreground: 222 47% 11%;
 
-    --viral: 0 90% 62%;
-    --viral-foreground: 210 40% 98%;
+    --viral: 0 84% 55%;
+    --viral-foreground: 0 0% 100%;
 
-    --border: 222 30% 16%;
-    --input: 222 30% 14%;
-    --ring: 190 95% 55%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 55%;
 
     --radius: 0.625rem;
 
     /* Signal intensity scale */
-    --signal-low: 210 100% 60%;       /* blue */
-    --signal-moderate: 185 95% 55%;   /* cyan */
-    --signal-high: 38 95% 58%;        /* amber */
-    --signal-viral: 0 90% 62%;        /* red */
-    --signal-debunked: 152 76% 50%;   /* emerald */
-    --signal-verified: 220 95% 65%;   /* royal blue */
+    --signal-low: 217 91% 55%;        /* blue */
+    --signal-moderate: 187 85% 45%;   /* cyan/teal */
+    --signal-high: 38 92% 50%;        /* amber */
+    --signal-viral: 0 84% 55%;        /* red */
+    --signal-debunked: 152 76% 40%;   /* emerald */
+    --signal-verified: 217 91% 55%;   /* blue */
 
     /* Gradients */
-    --gradient-radar: radial-gradient(ellipse at 50% 0%, hsl(190 95% 55% / 0.15), transparent 60%);
-    --gradient-panel: linear-gradient(180deg, hsl(222 47% 10%), hsl(222 47% 7%));
+    --gradient-radar: radial-gradient(ellipse at 50% 0%, hsl(217 91% 55% / 0.05), transparent 60%);
+    --gradient-panel: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 40% 98%));
     --gradient-signal: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-danger: linear-gradient(135deg, hsl(0 90% 55%), hsl(38 95% 58%));
+    --gradient-danger: linear-gradient(135deg, hsl(0 84% 55%), hsl(38 92% 50%));
 
-    /* Shadows / glows */
-    --shadow-glow: 0 0 32px hsl(var(--primary) / 0.35);
-    --shadow-panel: 0 8px 32px -12px hsl(222 80% 2% / 0.8);
-    --shadow-elev: 0 12px 48px -16px hsl(222 80% 2% / 0.9);
+    /* Shadows */
+    --shadow-glow: 0 0 24px hsl(var(--primary) / 0.25);
+    --shadow-panel: 0 4px 16px -4px hsl(222 47% 11% / 0.1), 0 2px 4px -2px hsl(222 47% 11% / 0.06);
+    --shadow-elev: 0 12px 32px -12px hsl(222 47% 11% / 0.18);
 
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* Sidebar (unused but kept for shadcn) */
-    --sidebar-background: 222 47% 8%;
-    --sidebar-foreground: 210 40% 96%;
-    --sidebar-primary: 190 95% 55%;
-    --sidebar-primary-foreground: 222 47% 6%;
-    --sidebar-accent: 222 30% 14%;
-    --sidebar-accent-foreground: 210 40% 96%;
-    --sidebar-border: 222 30% 16%;
-    --sidebar-ring: 190 95% 55%;
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 217 91% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 217 91% 55%;
   }
 
-  /* Light theme — kept available but dark is default */
-  .light {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 190 90% 40%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 190 90% 40%;
+  /* Dark "ops console" — kept available via .dark class */
+  .dark {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 96%;
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 96%;
+    --popover: 222 47% 8%;
+    --popover-foreground: 210 40% 96%;
+    --primary: 190 95% 55%;
+    --primary-foreground: 222 47% 6%;
+    --primary-glow: 190 100% 70%;
+    --secondary: 222 30% 14%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 222 30% 12%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 222 30% 14%;
+    --accent-foreground: 190 95% 55%;
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --success: 152 76% 50%;
+    --success-foreground: 222 47% 6%;
+    --warning: 38 95% 58%;
+    --warning-foreground: 222 47% 6%;
+    --viral: 0 90% 62%;
+    --viral-foreground: 210 40% 98%;
+    --border: 222 30% 16%;
+    --input: 222 30% 14%;
+    --ring: 190 95% 55%;
+    --signal-low: 210 100% 60%;
+    --signal-moderate: 185 95% 55%;
+    --signal-high: 38 95% 58%;
+    --signal-viral: 0 90% 62%;
+    --signal-debunked: 152 76% 50%;
+    --signal-verified: 220 95% 65%;
+    --shadow-panel: 0 8px 32px -12px hsl(222 80% 2% / 0.8);
+    --shadow-elev: 0 12px 48px -16px hsl(222 80% 2% / 0.9);
   }
 }
 
@@ -116,11 +131,6 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
-    background-image:
-      var(--gradient-radar),
-      radial-gradient(circle at 20% 80%, hsl(190 95% 55% / 0.04), transparent 50%),
-      radial-gradient(circle at 80% 20%, hsl(0 90% 62% / 0.04), transparent 50%);
-    background-attachment: fixed;
   }
   .font-mono {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
@@ -159,14 +169,19 @@
   }
 }
 
-/* Leaflet overrides for dark ops look */
+/* Move Leaflet zoom controls to top-left, below the LIVE stats panel,
+   so they don't collide with the floating overlay panels on either side */
+.leaflet-top.leaflet-right { display: none; }
+.leaflet-top.leaflet-left { top: 17rem; }
+
+/* Leaflet overrides — light theme */
 .leaflet-container {
-  background: hsl(222 47% 6%) !important;
+  background: hsl(210 40% 96%) !important;
   font-family: 'Inter', sans-serif;
 }
 .leaflet-control-attribution {
-  background: hsl(222 47% 9% / 0.85) !important;
-  color: hsl(215 20% 65%) !important;
+  background: hsl(0 0% 100% / 0.9) !important;
+  color: hsl(var(--muted-foreground)) !important;
   font-size: 10px !important;
   border: 1px solid hsl(var(--border)) !important;
 }
@@ -174,17 +189,17 @@
   color: hsl(var(--primary)) !important;
 }
 .leaflet-control-zoom a {
-  background: hsl(222 47% 9%) !important;
+  background: hsl(0 0% 100%) !important;
   color: hsl(var(--foreground)) !important;
   border-color: hsl(var(--border)) !important;
 }
 .leaflet-control-zoom a:hover {
-  background: hsl(var(--primary) / 0.2) !important;
+  background: hsl(var(--primary) / 0.1) !important;
   color: hsl(var(--primary)) !important;
 }
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
-  background: hsl(222 47% 9%) !important;
+  background: hsl(var(--card)) !important;
   color: hsl(var(--foreground)) !important;
   border: 1px solid hsl(var(--border)) !important;
   box-shadow: var(--shadow-elev) !important;
