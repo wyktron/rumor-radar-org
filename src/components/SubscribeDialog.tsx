@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export function SubscribeDialog({ open, onOpenChange }: Props) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [debunks, setDebunks] = useState(true);
   const [confirmations, setConfirmations] = useState(true);
@@ -35,17 +37,18 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
     e.preventDefault();
     if (!email || (!debunks && !confirmations)) {
       toast({
-        title: 'Almost there',
-        description: 'Add your email and pick at least one notification type.',
+        title: t('subscribe.almostThere'),
+        description: t('subscribe.almostThereDesc'),
         variant: 'destructive',
       });
       return;
     }
+    const scope = countries.length
+      ? t('subscribe.forCountries', { count: countries.length })
+      : '';
     toast({
-      title: 'Subscribed',
-      description: `We'll email ${email} when verified updates appear${
-        countries.length ? ` for ${countries.length} selected ${countries.length === 1 ? 'country' : 'countries'}` : ''
-      }.`,
+      title: t('subscribe.subscribed'),
+      description: t('subscribe.subscribedDesc', { email, scope }),
     });
     setEmail('');
     setCountries([]);
@@ -59,42 +62,42 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Bell className="h-5 w-5 text-primary" />
-            Subscribe to Updates
+            {t('subscribe.title')}
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 overflow-hidden">
           <div className="flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-sm text-primary">
             <Info className="h-4 w-4 mt-0.5 shrink-0" />
-            <p>Get notified only about verified facts, debunks, and confirmations — not rumors.</p>
+            <p>{t('subscribe.info')}</p>
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="subscribe-email">Email Address</Label>
+            <Label htmlFor="subscribe-email">{t('subscribe.email')}</Label>
             <Input
               id="subscribe-email"
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
+              placeholder={t('subscribe.emailPlaceholder')}
             />
           </div>
 
           <div className="space-y-2">
-            <div className="text-sm font-medium">Notify me about:</div>
+            <div className="text-sm font-medium">{t('subscribe.notifyAbout')}</div>
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <Checkbox checked={debunks} onCheckedChange={(v) => setDebunks(v === true)} />
               <span>
-                <span className="font-medium text-success">Debunks</span>
-                <span className="text-muted-foreground"> - False rumors exposed</span>
+                <span className="font-medium text-success">{t('subscribe.debunks')}</span>
+                <span className="text-muted-foreground"> - {t('subscribe.debunksDesc')}</span>
               </span>
             </label>
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <Checkbox checked={confirmations} onCheckedChange={(v) => setConfirmations(v === true)} />
               <span>
-                <span className="font-medium text-signal-verified">Confirmations</span>
-                <span className="text-muted-foreground"> - Verified facts</span>
+                <span className="font-medium text-signal-verified">{t('subscribe.confirmations')}</span>
+                <span className="text-muted-foreground"> - {t('subscribe.confirmationsDesc')}</span>
               </span>
             </label>
           </div>
@@ -102,7 +105,7 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
           <div className="space-y-2 flex-1 min-h-0 flex flex-col">
             <div className="flex items-center justify-between">
               <div className="text-sm font-medium">
-                Countries of interest <span className="text-muted-foreground font-normal">(optional)</span>
+                {t('subscribe.countries')} <span className="text-muted-foreground font-normal">({t('subscribe.optional')})</span>
               </div>
               {countries.length > 0 && (
                 <button
@@ -110,7 +113,7 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
                   onClick={() => setCountries([])}
                   className="text-xs text-muted-foreground hover:text-foreground"
                 >
-                  Clear ({countries.length})
+                  {t('subscribe.clear')} ({countries.length})
                 </button>
               )}
             </div>
@@ -119,7 +122,7 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
               <Input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search countries…"
+                placeholder={t('subscribe.searchCountries')}
                 className="pl-8 h-9"
               />
             </div>
@@ -139,7 +142,7 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
                 ))}
                 {filteredCountries.length === 0 && (
                   <div className="col-span-2 text-center text-xs text-muted-foreground py-4">
-                    No countries match "{query}"
+                    {t('subscribe.noCountries', { query })}
                   </div>
                 )}
               </div>
@@ -147,10 +150,10 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
           </div>
 
           <Button type="submit" className="w-full gap-2">
-            <Mail className="h-4 w-4" /> Subscribe
+            <Mail className="h-4 w-4" /> {t('subscribe.submit')}
           </Button>
           <p className="text-xs text-center text-muted-foreground -mt-2">
-            We respect your privacy. Unsubscribe anytime.
+            {t('subscribe.privacy')}
           </p>
         </form>
       </DialogContent>
