@@ -64,9 +64,25 @@ export function Header() {
 
         {/* Right: Lang + Auth */}
         <div className="flex items-center gap-2 shrink-0">
-          <Button variant="ghost" size="sm" className="gap-1.5 font-mono uppercase tracking-wider text-xs" disabled title="Multi-language coming soon">
-            <Globe className="h-3.5 w-3.5" /> EN
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="gap-1.5 font-mono uppercase tracking-wider text-xs">
+                <Globe className="h-3.5 w-3.5" /> {lang}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[10rem]">
+              {LANGUAGES.map((l) => (
+                <DropdownMenuItem
+                  key={l.code}
+                  onClick={() => setLang(l.code)}
+                  className="flex items-center justify-between gap-3 text-xs"
+                >
+                  <span>{l.label}</span>
+                  <span className="font-mono text-muted-foreground">{l.code}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           {user ? (
             <>
               <RouterNavLink to="/dashboard">
