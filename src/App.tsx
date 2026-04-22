@@ -16,6 +16,7 @@ import AboutPage from "./pages/AboutPage";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
+// router-context-fix
 
 function Layout() {
   return (
