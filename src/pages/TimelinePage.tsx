@@ -2,11 +2,13 @@ import { useMemo, useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, Search } from 'lucide-react';
+import { ChevronDown, Search, Rss, Copy, Check } from 'lucide-react';
 import { COUNTRIES, TOPICS } from '@/constants/countries';
 import { StatusBadge, IntensityBar, RumorMeta } from '@/components/RumorBits';
+import { toast } from '@/hooks/use-toast';
 
 export default function TimelinePage() {
   const { rumors } = useApp();
