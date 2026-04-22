@@ -15,11 +15,24 @@ import { cn } from '@/lib/utils';
 
 export default function HeatmapPage() {
   const { rumors, user } = useApp();
+  const navigate = useNavigate();
   const [country, setCountry] = useState<string>('all');
   const [topic, setTopic] = useState<string>('all');
   const [status, setStatus] = useState<string>('all');
   const [open, setOpen] = useState<Rumor | null>(null);
   const [showInfo, setShowInfo] = useState(true);
+  const [submitInfoOpen, setSubmitInfoOpen] = useState(false);
+  const [pickMode, setPickMode] = useState(false);
+
+  const startSubmitFlow = () => setSubmitInfoOpen(true);
+  const enterPickMode = () => {
+    setSubmitInfoOpen(false);
+    setPickMode(true);
+  };
+  const handlePick = (coords: [number, number]) => {
+    setPickMode(false);
+    navigate('/submit', { state: { originCoordinates: coords } });
+  };
 
   const filtered = useMemo(
     () =>
