@@ -62,7 +62,7 @@ export default function HeatmapPage() {
       {/* TOP-LEFT: LIVE stats panel */}
       <div className="absolute top-4 left-4 z-[500] glass-panel rounded-lg p-3 w-52 shadow-lg">
         <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-success">
-          <span className="signal-dot h-1.5 w-1.5" style={{ color: 'hsl(var(--success))' }} />
+          <span className="signal-dot h-1.5 w-1.5 ticker-blink" style={{ color: 'hsl(var(--success))' }} />
           Live
         </div>
         <div className="mt-1 text-3xl font-bold font-mono leading-none">{stats.total}</div>
