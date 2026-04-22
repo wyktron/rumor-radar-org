@@ -66,9 +66,9 @@ export const dummyRumors: Rumor[] = [
 ];
 
 export const dummyRumorSubmissions: RumorSubmission[] = [
-  { id: 'sub-1', claim: 'Microchips in vaccine boosters track location', description: 'Long-form post claims new boosters contain tracking devices.', location: 'Canada', coordinates: [45.42, -75.69], topic: 'Health', source: 'Telegram channel', submittedAt: iso(1), status: 'pending' },
-  { id: 'sub-2', claim: 'Stock market crash predicted by leaked memo', description: 'Screenshot allegedly from major bank.', location: 'United Kingdom', coordinates: [51.5, -0.12], topic: 'Economy', source: 'Twitter/X', submittedAt: iso(2), status: 'pending' },
-  { id: 'sub-3', claim: 'Refugee numbers fabricated by NGO', description: 'Anonymous source claims data manipulation.', location: 'Germany', coordinates: [52.52, 13.4], topic: 'Migration', source: 'WhatsApp', submittedAt: iso(3), status: 'pending' },
+  { id: 'sub-1', claim: 'Microchips in vaccine boosters track location', description: 'Long-form post claims new boosters contain tracking devices.', originCountry: 'Canada', originCoordinates: [45.42, -75.69], subjectCountry: 'United States', topic: 'Health', source: 'Telegram channel', submittedAt: iso(1), status: 'pending' },
+  { id: 'sub-2', claim: 'Stock market crash predicted by leaked memo', description: 'Screenshot allegedly from major bank.', originCountry: 'United Kingdom', originCoordinates: [51.5, -0.12], topic: 'Economy', source: 'Twitter/X', submittedAt: iso(2), status: 'pending' },
+  { id: 'sub-3', claim: 'Refugee numbers fabricated by NGO', description: 'Anonymous source claims data manipulation.', originCountry: 'Germany', originCoordinates: [52.52, 13.4], topic: 'Migration', source: 'WhatsApp', submittedAt: iso(3), status: 'pending' },
 ];
 
 export const dummyDebunkSubmissions: DebunkSubmission[] = [
