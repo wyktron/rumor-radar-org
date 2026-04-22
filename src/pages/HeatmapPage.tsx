@@ -22,7 +22,7 @@ export default function HeatmapPage() {
     () =>
       rumors.filter(
         (r) =>
-          (country === 'all' || r.country === country) &&
+          (country === 'all' || r.originCountry === country) &&
           (topic === 'all' || r.topic === topic) &&
           (status === 'all' || r.status === status),
       ),
@@ -126,7 +126,9 @@ function RumorDialog({ rumor, onClose }: { rumor: Rumor | null; onClose: () => v
               <div className="flex items-center gap-2 mb-2"><StatusBadge status={rumor.status} /></div>
               <DialogTitle className="text-xl leading-tight">{rumor.title}</DialogTitle>
               <DialogDescription className="font-mono text-xs">
-                {rumor.country} · {rumor.topic} · {relativeTime(rumor.submittedAt)}
+                Origin · {rumor.originCountry}
+                {rumor.subjectCountry && rumor.subjectCountry !== rumor.originCountry && ` · about ${rumor.subjectCountry}`}
+                {' · '}{rumor.topic} · {relativeTime(rumor.submittedAt)}
               </DialogDescription>
             </DialogHeader>
             <p className="text-sm text-muted-foreground">{rumor.description}</p>
