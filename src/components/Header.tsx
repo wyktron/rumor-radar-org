@@ -1,12 +1,23 @@
+import { useState } from 'react';
 import { NavLink as RouterNavLink } from 'react-router-dom';
 import { Radar, Phone, Globe, User as UserIcon, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useApp } from '@/context/AppContext';
 import { HOTLINE } from '@/constants/countries';
 import { HelpLovedOneDialog } from '@/components/HelpLovedOneDialog';
 
+const LANGUAGES = [
+  { code: 'EN', label: 'English' },
+  { code: 'FR', label: 'Français' },
+  { code: 'ES', label: 'Español' },
+  { code: 'RU', label: 'Русский' },
+  { code: 'AR', label: 'العربية' },
+] as const;
+
 export function Header() {
   const { user, logout } = useApp();
+  const [lang, setLang] = useState<typeof LANGUAGES[number]['code']>('EN');
 
   return (
     <header className="sticky top-0 z-[1000] border-b border-border/60 bg-background/85 backdrop-blur-xl">
@@ -53,9 +64,25 @@ export function Header() {
 
         {/* Right: Lang + Auth */}
         <div className="flex items-center gap-2 shrink-0">
-          <Button variant="ghost" size="sm" className="gap-1.5 font-mono uppercase tracking-wider text-xs" disabled title="Multi-language coming soon">
-            <Globe className="h-3.5 w-3.5" /> EN
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="gap-1.5 font-mono uppercase tracking-wider text-xs">
+                <Globe className="h-3.5 w-3.5" /> {lang}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[10rem]">
+              {LANGUAGES.map((l) => (
+                <DropdownMenuItem
+                  key={l.code}
+                  onClick={() => setLang(l.code)}
+                  className="flex items-center justify-between gap-3 text-xs"
+                >
+                  <span>{l.label}</span>
+                  <span className="font-mono text-muted-foreground">{l.code}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           {user ? (
             <>
               <RouterNavLink to="/dashboard">
