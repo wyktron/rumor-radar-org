@@ -73,7 +73,7 @@ export function HelpLovedOneDialog({ trigger }: Props) {
       <DialogTrigger asChild>
         {trigger ?? (
           <Button variant="ghost" size="sm" className="gap-1.5 text-sm">
-            <Heart className="h-4 w-4" /> Help a loved one
+            <Heart className="h-4 w-4 fill-destructive text-destructive" /> Help a loved one
           </Button>
         )}
       </DialogTrigger>
