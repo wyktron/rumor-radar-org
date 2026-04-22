@@ -1,11 +1,13 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Outlet, NavLink as RouterNavLink, useLocation } from "react-router-dom";
+import { useState } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
+import { SubscribeDialog } from "@/components/SubscribeDialog";
 import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Index from "./pages/Index.tsx";
@@ -30,39 +32,48 @@ const secondaryLinks = [
 ];
 
 function SecondaryNav() {
+  const [subscribeOpen, setSubscribeOpen] = useState(false);
   return (
-    <nav className="fixed bottom-0 left-0 right-0 border-t border-border/60 bg-background/85 backdrop-blur-xl z-[1000]">
-      <div className="flex items-center justify-between gap-3 px-4 py-2">
-        <div className="flex items-center gap-1 overflow-x-auto">
-          {secondaryLinks.map((l) => (
-            <RouterNavLink
-              key={l.to}
-              to={l.to}
-              end={l.end}
-              className={({ isActive }) =>
-                cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-colors',
-                  isActive
-                    ? 'text-primary bg-primary/10'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50',
-                )
-              }
+    <>
+      <nav className="fixed bottom-0 left-0 right-0 border-t border-border/60 bg-background/85 backdrop-blur-xl z-[1000]">
+        <div className="flex items-center justify-between gap-3 px-4 py-2">
+          <div className="flex items-center gap-1 overflow-x-auto">
+            {secondaryLinks.map((l) => (
+              <RouterNavLink
+                key={l.to}
+                to={l.to}
+                end={l.end}
+                className={({ isActive }) =>
+                  cn(
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-colors',
+                    isActive
+                      ? 'text-primary bg-primary/10'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50',
+                  )
+                }
+              >
+                <l.icon className="h-3.5 w-3.5" />
+                {l.label}
+              </RouterNavLink>
+            ))}
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5 text-xs h-8"
+              onClick={() => setSubscribeOpen(true)}
             >
-              <l.icon className="h-3.5 w-3.5" />
-              {l.label}
-            </RouterNavLink>
-          ))}
+              <Mail className="h-3.5 w-3.5" /> Subscribe
+            </Button>
+            <Button size="sm" className="gap-1.5 text-xs h-8 bg-destructive text-destructive-foreground hover:bg-destructive/90" disabled title="Coming soon">
+              <Heart className="h-3.5 w-3.5" /> Donate
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8" disabled title="Coming soon">
-            <Mail className="h-3.5 w-3.5" /> Subscribe
-          </Button>
-          <Button size="sm" className="gap-1.5 text-xs h-8 bg-destructive text-destructive-foreground hover:bg-destructive/90" disabled title="Coming soon">
-            <Heart className="h-3.5 w-3.5" /> Donate
-          </Button>
-        </div>
-      </div>
-    </nav>
+      </nav>
+      <SubscribeDialog open={subscribeOpen} onOpenChange={setSubscribeOpen} />
+    </>
   );
 }
 
