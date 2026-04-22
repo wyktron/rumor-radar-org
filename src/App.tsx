@@ -1,10 +1,13 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, Outlet } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Outlet, NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
 import { Header } from "@/components/Header";
+import { Button } from "@/components/ui/button";
+import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail, Heart } from "lucide-react";
+import { cn } from "@/lib/utils";
 import Index from "./pages/Index.tsx";
 import TimelinePage from "./pages/TimelinePage";
 import CSONetworkPage from "./pages/CSONetworkPage";
@@ -16,21 +19,85 @@ import AboutPage from "./pages/AboutPage";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
-// router-context-fix
+
+const secondaryLinks = [
+  { to: '/', label: 'Heatmap', icon: Map, end: true },
+  { to: '/timeline', label: 'Timeline', icon: Clock },
+  { to: '/csos', label: 'CSO Network', icon: Users },
+  { to: '/impact', label: 'Impact', icon: BarChart3 },
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/about', label: 'About', icon: Info },
+];
+
+function SecondaryNav() {
+  const location = useLocation();
+  // On the heatmap (full-bleed map), the nav is overlaid; on other pages, it's a normal footer
+  const isHeatmap = location.pathname === '/';
+  return (
+    <nav
+      className={cn(
+        'border-t border-border/60 bg-background/85 backdrop-blur-xl z-[1000]',
+        isHeatmap && 'absolute bottom-0 left-0 right-0',
+      )}
+    >
+      <div className="flex items-center justify-between gap-3 px-4 py-2">
+        <div className="flex items-center gap-1 overflow-x-auto">
+          {secondaryLinks.map((l) => (
+            <RouterNavLink
+              key={l.to}
+              to={l.to}
+              end={l.end}
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-colors',
+                  isActive
+                    ? 'text-primary bg-primary/10'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50',
+                )
+              }
+            >
+              <l.icon className="h-3.5 w-3.5" />
+              {l.label}
+            </RouterNavLink>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8" disabled title="Coming soon">
+            <Mail className="h-3.5 w-3.5" /> Subscribe
+          </Button>
+          <Button size="sm" className="gap-1.5 text-xs h-8 bg-destructive text-destructive-foreground hover:bg-destructive/90" disabled title="Coming soon">
+            <Heart className="h-3.5 w-3.5" /> Donate
+          </Button>
+        </div>
+      </div>
+    </nav>
+  );
+}
 
 function Layout() {
+  const location = useLocation();
+  const isHeatmap = location.pathname === '/';
+
+  if (isHeatmap) {
+    // Full-bleed: header + map (which contains overlays + secondary nav)
+    return (
+      <div className="h-screen flex flex-col overflow-hidden">
+        <Header />
+        <main className="flex-1 relative overflow-hidden">
+          <Outlet />
+          <SecondaryNav />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
         <Outlet />
       </main>
-      <footer className="border-t border-border/40 py-4">
-        <div className="container flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
-          <div>Rumor Radar · Open intelligence platform</div>
-          <div>v1.0 · Demo data — runs locally in your browser</div>
-        </div>
-      </footer>
+      <SecondaryNav />
     </div>
   );
 }
