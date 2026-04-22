@@ -30,16 +30,8 @@ const secondaryLinks = [
 ];
 
 function SecondaryNav() {
-  const location = useLocation();
-  // On the heatmap (full-bleed map), the nav is overlaid; on other pages, it's a normal footer
-  const isHeatmap = location.pathname === '/';
   return (
-    <nav
-      className={cn(
-        'border-t border-border/60 bg-background/85 backdrop-blur-xl z-[1000]',
-        isHeatmap && 'absolute bottom-0 left-0 right-0',
-      )}
-    >
+    <nav className="fixed bottom-0 left-0 right-0 border-t border-border/60 bg-background/85 backdrop-blur-xl z-[1000]">
       <div className="flex items-center justify-between gap-3 px-4 py-2">
         <div className="flex items-center gap-1 overflow-x-auto">
           {secondaryLinks.map((l) => (
@@ -79,14 +71,13 @@ function Layout() {
   const isHeatmap = location.pathname === '/';
 
   if (isHeatmap) {
-    // Full-bleed: header + map (which contains overlays + secondary nav)
     return (
       <div className="h-screen flex flex-col overflow-hidden">
         <Header />
         <main className="flex-1 relative overflow-hidden">
           <Outlet />
-          <SecondaryNav />
         </main>
+        <SecondaryNav />
       </div>
     );
   }
@@ -94,7 +85,7 @@ function Layout() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 pb-14">
         <Outlet />
       </main>
       <SecondaryNav />
