@@ -8,6 +8,9 @@ interface Props {
   rumors: Rumor[];
   draggable?: boolean;
   onSelect?: (rumor: Rumor) => void;
+  /** When true, clicking the map calls `onPick` with [lat, lng] instead of selecting markers. */
+  pickMode?: boolean;
+  onPick?: (coords: [number, number]) => void;
 }
 
 function buildIcon(color: string, viral: boolean) {
