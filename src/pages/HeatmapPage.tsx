@@ -1,25 +1,38 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { HeatmapMap } from '@/components/map/HeatmapMap';
 import { useApp } from '@/context/AppContext';
 import type { Rumor } from '@/types';
 import { COUNTRIES, TOPICS } from '@/constants/countries';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { StatusBadge, IntensityBar } from '@/components/RumorBits';
-import { Filter, ShieldCheck, Send, Info, X } from 'lucide-react';
+import { Filter, ShieldCheck, Send, Info, X, MapPin, HelpCircle, Crosshair } from 'lucide-react';
 import { relativeTime } from '@/lib/rumor-utils';
 import { cn } from '@/lib/utils';
 
 export default function HeatmapPage() {
   const { rumors, user } = useApp();
+  const navigate = useNavigate();
   const [country, setCountry] = useState<string>('all');
   const [topic, setTopic] = useState<string>('all');
   const [status, setStatus] = useState<string>('all');
   const [open, setOpen] = useState<Rumor | null>(null);
   const [showInfo, setShowInfo] = useState(true);
+  const [submitInfoOpen, setSubmitInfoOpen] = useState(false);
+  const [pickMode, setPickMode] = useState(false);
+
+  const startSubmitFlow = () => setSubmitInfoOpen(true);
+  const enterPickMode = () => {
+    setSubmitInfoOpen(false);
+    setPickMode(true);
+  };
+  const handlePick = (coords: [number, number]) => {
+    setPickMode(false);
+    navigate('/submit', { state: { originCoordinates: coords } });
+  };
 
   const filtered = useMemo(
     () =>
@@ -56,7 +69,13 @@ export default function HeatmapPage() {
     <div className="absolute inset-0">
       {/* Map fills the whole area */}
       <div className="absolute inset-0">
-        <HeatmapMap rumors={filtered} draggable={isModerator} onSelect={setOpen} />
+        <HeatmapMap
+          rumors={filtered}
+          draggable={isModerator && !pickMode}
+          onSelect={pickMode ? undefined : setOpen}
+          pickMode={pickMode}
+          onPick={handlePick}
+        />
       </div>
 
       {/* TOP-LEFT: LIVE stats panel */}
@@ -77,12 +96,63 @@ export default function HeatmapPage() {
 
       {/* TOP-RIGHT: Submit a Rumor */}
       <div className="absolute top-4 right-4 z-[500]">
-        <Link to="/submit">
-          <Button className="gap-1.5 shadow-lg">
-            <Send className="h-3.5 w-3.5" /> Submit a Rumor
-          </Button>
-        </Link>
+        <Button className="gap-1.5 shadow-lg" onClick={startSubmitFlow}>
+          <Send className="h-3.5 w-3.5" /> Submit a Rumor
+        </Button>
       </div>
+
+      {/* PICK MODE banner — appears across the top once the user accepts the explainer */}
+      {pickMode && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[600] glass-panel rounded-full px-4 py-2 shadow-lg flex items-center gap-3 animate-fade-in">
+          <Crosshair className="h-4 w-4 text-primary" />
+          <span className="text-sm font-medium">
+            Click anywhere on the map to mark <strong>where you heard the rumor</strong>
+          </span>
+          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => setPickMode(false)}>
+            Cancel
+          </Button>
+        </div>
+      )}
+
+      {/* Submit-flow explainer dialog */}
+      <Dialog open={submitInfoOpen} onOpenChange={setSubmitInfoOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <HelpCircle className="h-5 w-5 text-primary" /> How to Submit a Rumor
+            </DialogTitle>
+            <DialogDescription>
+              Help us track how misinformation spreads — not where the events take place.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 text-sm">
+            <div className="rounded-md border border-primary/30 bg-primary/5 p-3 space-y-1.5">
+              <div className="flex items-center gap-2 font-semibold">
+                <MapPin className="h-4 w-4 text-primary" /> Mark where you heard the rumor
+              </div>
+              <ul className="list-disc pl-5 text-muted-foreground space-y-1 text-[13px]">
+                <li>Click on the map to mark where you first heard this rumor.</li>
+                <li>This helps us track how misinformation spreads geographically.</li>
+              </ul>
+            </div>
+            <div className="rounded-md border border-warning/40 bg-warning/5 p-3 space-y-1">
+              <div className="font-semibold">Heard it online?</div>
+              <p className="text-muted-foreground text-[13px]">
+                Select the capital city of the country where the service is registered, or the exact location of
+                the news agency's headquarters.
+              </p>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Your submission will be reviewed by our team before appearing on the map.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button onClick={enterPickMode} className="w-full gap-2">
+              <Crosshair className="h-4 w-4" /> I understand, take me to the map
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* BOTTOM-LEFT: Trending scale legend */}
       <div className="absolute bottom-16 left-4 z-[500] glass-panel rounded-lg p-3 w-56 shadow-lg">

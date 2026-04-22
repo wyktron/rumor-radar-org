@@ -8,6 +8,9 @@ interface Props {
   rumors: Rumor[];
   draggable?: boolean;
   onSelect?: (rumor: Rumor) => void;
+  /** When true, clicking the map calls `onPick` with [lat, lng] instead of selecting markers. */
+  pickMode?: boolean;
+  onPick?: (coords: [number, number]) => void;
 }
 
 function buildIcon(color: string, viral: boolean) {
@@ -22,10 +25,11 @@ function buildIcon(color: string, viral: boolean) {
   });
 }
 
-export function HeatmapMap({ rumors, draggable = false, onSelect }: Props) {
+export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = false, onPick }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
+  const pickHandlerRef = useRef<((e: L.LeafletMouseEvent) => void) | null>(null);
   const { updateRumorCoordinates } = useApp();
 
   // init map once
@@ -103,6 +107,37 @@ export function HeatmapMap({ rumors, draggable = false, onSelect }: Props) {
       marker.addTo(layer);
     });
   }, [rumors, draggable, onSelect, updateRumorCoordinates]);
+
+  // pick mode — click anywhere on the map to capture coordinates
+  useEffect(() => {
+    const map = mapRef.current;
+    const container = containerRef.current;
+    if (!map || !container) return;
+
+    if (pickHandlerRef.current) {
+      map.off('click', pickHandlerRef.current);
+      pickHandlerRef.current = null;
+    }
+
+    if (pickMode) {
+      container.style.cursor = 'crosshair';
+      const handler = (e: L.LeafletMouseEvent) => {
+        onPick?.([e.latlng.lat, e.latlng.lng]);
+      };
+      map.on('click', handler);
+      pickHandlerRef.current = handler;
+    } else {
+      container.style.cursor = '';
+    }
+
+    return () => {
+      if (pickHandlerRef.current) {
+        map.off('click', pickHandlerRef.current);
+        pickHandlerRef.current = null;
+      }
+      if (container) container.style.cursor = '';
+    };
+  }, [pickMode, onPick]);
 
   // legend
   const legend = useMemo(
