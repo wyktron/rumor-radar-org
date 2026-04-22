@@ -178,7 +178,14 @@
 .leaflet-container {
   background: hsl(210 40% 96%) !important;
   font-family: 'Inter', sans-serif;
+  z-index: 0;
 }
+/* Keep all internal Leaflet panes/controls below the app's overlays and dialogs.
+   Radix Dialog overlay is z-50 (~z-index:50), so we cap leaflet at 10. */
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom,
+.leaflet-control { z-index: 10 !important; }
 .leaflet-control-attribution {
   background: hsl(0 0% 100% / 0.9) !important;
   color: hsl(var(--muted-foreground)) !important;
