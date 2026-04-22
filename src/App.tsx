@@ -112,6 +112,7 @@ const App = () => (
       <Sonner />
       <AppProvider>
         <BrowserRouter>
+          <WelcomeDialogs />
           <Routes>
             <Route element={<Layout />}>
               <Route path="/" element={<Index />} />
