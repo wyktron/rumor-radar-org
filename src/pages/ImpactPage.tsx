@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useApp } from '@/context/AppContext';
 import { Card } from '@/components/ui/card';
-import { ShieldCheck, TrendingUp, Globe, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ShieldCheck, TrendingUp, Globe, Users, Download, FileJson, FileSpreadsheet } from 'lucide-react';
 
 export default function ImpactPage() {
   const { rumors, csos } = useApp();
@@ -27,11 +28,76 @@ export default function ImpactPage() {
   const maxTopic = Math.max(1, ...byTopic.map((t) => t.total));
   const maxCountry = byCountry[0]?.[1] ?? 1;
 
+  const downloadFile = (filename: string, content: string, mime: string) => {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const buildExport = () => ({
+    generatedAt: new Date().toISOString(),
+    summary: {
+      signalsTracked: rumors.length,
+      debunked: debunkedTotal,
+      debunkRate,
+      csoPartners: csos.length,
+    },
+    byTopic,
+    byCountry: byCountry.map(([country, count]) => ({ country, count })),
+    rumors,
+  });
+
+  const handleDownloadJson = () => {
+    downloadFile('rumor-radar-impact.json', JSON.stringify(buildExport(), null, 2), 'application/json');
+  };
+
+  const handleDownloadCsv = () => {
+    const esc = (v: unknown) => {
+      const s = v == null ? '' : String(v);
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const lines: string[] = [];
+    lines.push('# Summary');
+    lines.push('metric,value');
+    lines.push(`signals_tracked,${rumors.length}`);
+    lines.push(`debunked,${debunkedTotal}`);
+    lines.push(`debunk_rate_percent,${debunkRate}`);
+    lines.push(`cso_partners,${csos.length}`);
+    lines.push('');
+    lines.push('# By topic');
+    lines.push('topic,total,debunked');
+    byTopic.forEach((t) => lines.push([t.topic, t.total, t.debunked].map(esc).join(',')));
+    lines.push('');
+    lines.push('# By country');
+    lines.push('country,count');
+    byCountry.forEach(([c, n]) => lines.push([c, n].map(esc).join(',')));
+    downloadFile('rumor-radar-impact.csv', lines.join('\n'), 'text/csv');
+  };
+
   return (
     <div className="container py-6 space-y-6 max-w-5xl">
-      <div>
-        <h1 className="text-2xl font-bold">Impact</h1>
-        <p className="text-sm text-muted-foreground">How the network is performing across geographies and topics.</p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold">Impact</h1>
+          <p className="text-sm text-muted-foreground">How the network is performing across geographies and topics.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="hidden sm:flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+            <Download className="h-3 w-3" /> Export
+          </span>
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={handleDownloadCsv}>
+            <FileSpreadsheet className="h-3.5 w-3.5" /> CSV
+          </Button>
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={handleDownloadJson}>
+            <FileJson className="h-3.5 w-3.5" /> JSON
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
