@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useApp } from '@/context/AppContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { StatusBadge, IntensityBar } from '@/components/RumorBits';
-import { Check, X, ShieldCheck, ShieldAlert, Activity, Users, Sliders } from 'lucide-react';
+import { Check, X, ShieldCheck, ShieldAlert, Activity, Users, Sliders, Languages, Loader2 } from 'lucide-react';
 import { relativeTime } from '@/lib/rumor-utils';
 import { toast } from 'sonner';
 
