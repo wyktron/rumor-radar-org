@@ -487,6 +487,32 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const approveRumor = useCallback(async (id: string) => {
+    setRumors((rs) => rs.map((r) => (r.id === id ? { ...r, status: 'approved' as RumorStatus } : r)));
+    const { error } = await supabase.from('rumors').update({ status: 'approved' }).eq('id', id);
+    if (error) toast.error('Could not approve rumor', { description: error.message });
+  }, []);
+
+  const rejectRumor = useCallback(async (id: string) => {
+    setRumors((rs) => rs.map((r) => (r.id === id ? { ...r, status: 'rejected' as RumorStatus } : r)));
+    const { error } = await supabase.from('rumors').update({ status: 'rejected' }).eq('id', id);
+    if (error) toast.error('Could not reject rumor', { description: error.message });
+  }, []);
+
+  const bulkApproveRumors = useCallback(async (ids: string[]) => {
+    if (ids.length === 0) return 0;
+    setRumors((rs) => rs.map((r) => (ids.includes(r.id) ? { ...r, status: 'approved' as RumorStatus } : r)));
+    const { error } = await supabase
+      .from('rumors')
+      .update({ status: 'approved' })
+      .in('id', ids);
+    if (error) {
+      toast.error('Bulk approve failed', { description: error.message });
+      return 0;
+    }
+    return ids.length;
+  }, []);
+
   const approveSubmission = useCallback(async (id: string) => {
     const sub = submissions.find((s) => s.id === id);
     if (!sub) return;
