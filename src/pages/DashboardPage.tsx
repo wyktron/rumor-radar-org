@@ -84,6 +84,11 @@ function ModeratorDashboard() {
             CSOs <span className="ml-1.5 text-[10px] text-warning">{csoRegistrations.filter((r) => r.status === 'pending').length}</span>
           </TabsTrigger>
           <TabsTrigger value="trending">Trending</TabsTrigger>
+          {isAdmin && (
+            <TabsTrigger value="roles" className="gap-1.5">
+              <KeyRound className="h-3 w-3" /> Roles
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="overview">
