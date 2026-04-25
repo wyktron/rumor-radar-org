@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useApp } from '@/context/AppContext';
+import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -16,17 +17,26 @@ import { relativeTime } from '@/lib/rumor-utils';
 import { toast } from 'sonner';
 
 export default function DashboardPage() {
-  const { user } = useApp();
+  // Authentication state comes from Supabase, not from client-side localStorage.
+  // Roles are loaded server-side from the user_roles table via AuthContext.
+  const { user, loading, isStaff, roles } = useAuth();
+  if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
-  return user.role === 'moderator' ? <ModeratorDashboard /> : <CSODashboard />;
+  if (isStaff) return <ModeratorDashboard />;
+  if (roles.includes('cso_member')) return <CSODashboard />;
+  return <Navigate to="/" replace />;
 }
 
 function ModeratorDashboard() {
   const {
     rumors, csos, submissions, debunkSubmissions, csoRegistrations,
     approveSubmission, rejectSubmission, approveDebunk, rejectDebunk,
-    approveCSORegistration, rejectCSORegistration, updateRumorIntensity, user,
+    approveCSORegistration, rejectCSORegistration, updateRumorIntensity,
   } = useApp();
+  const { user } = useAuth();
+  const displayName = (user?.user_metadata as { display_name?: string } | undefined)?.display_name
+    ?? user?.email
+    ?? 'operator';
   const [translatingId, setTranslatingId] = useState<string | null>(null);
 
   async function handleTranslate(rumorId: string) {
