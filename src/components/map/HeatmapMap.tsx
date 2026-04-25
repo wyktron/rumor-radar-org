@@ -156,7 +156,7 @@ export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = fal
     <div className="relative h-full w-full">
       <div ref={containerRef} className="h-full w-full overflow-hidden" />
       {/* Signal intensity legend — positioned above the bottom nav (h-14) so it's always visible */}
-      <div className="pointer-events-none absolute bottom-20 left-64 z-[400] glass-panel rounded-md px-3 py-2 text-xs hidden xl:block">
+      <div className="pointer-events-none absolute bottom-20 left-1/2 -translate-x-1/2 z-[400] glass-panel rounded-md px-3 py-2 text-xs hidden xl:block">
         <div className="font-mono uppercase tracking-wider text-[10px] text-muted-foreground mb-1.5">Signal intensity</div>
         <div className="flex flex-wrap gap-x-3 gap-y-1">
           {legend.map((l) => (
