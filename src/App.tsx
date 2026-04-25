@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import Index from "./pages/Index.tsx";
 import TimelinePage from "./pages/TimelinePage";
 import CSONetworkPage from "./pages/CSONetworkPage";
+import CSORegisterPage from "./pages/CSORegisterPage";
 import SubmitRumorPage from "./pages/SubmitRumorPage";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
@@ -130,6 +131,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/timeline" element={<TimelinePage />} />
                 <Route path="/csos" element={<CSONetworkPage />} />
+                <Route path="/csos/register" element={<CSORegisterPage />} />
                 <Route path="/submit" element={<SubmitRumorPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
