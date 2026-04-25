@@ -123,21 +123,21 @@ export default function HeatmapPage() {
       </div>
 
       {/* TOP-RIGHT: Submit a Rumor */}
-      <div className={cn('absolute top-4 right-4 z-[400]', panelsHidden && 'hidden')}>
+      <div className={cn('absolute top-16 right-4 z-[410] sm:top-4', panelsHidden && 'hidden')}>
         <Button className="gap-1.5 shadow-lg" onClick={startSubmitFlow}>
-          <Send className="h-3.5 w-3.5" /> Submit a Rumor
+          <Send className="h-3.5 w-3.5" /> {t('heatmap.submit')}
         </Button>
       </div>
 
       {/* PICK MODE banner — appears across the top once the user accepts the explainer */}
       {pickMode && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[500] glass-panel rounded-full px-4 py-2 shadow-lg flex items-center gap-3 animate-fade-in">
+        <div className="absolute top-4 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-[500] glass-panel rounded-full px-4 py-2 shadow-lg flex items-center gap-3 animate-fade-in">
           <Crosshair className="h-4 w-4 text-primary" />
           <span className="text-sm font-medium">
-            Click anywhere on the map to mark <strong>where you heard the rumor</strong>
+            <Trans i18nKey="heatmap.pickBanner" components={[<strong />]} />
           </span>
           <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => setPickMode(false)}>
-            Cancel
+            {t('heatmap.cancel')}
           </Button>
         </div>
       )}
