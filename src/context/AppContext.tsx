@@ -7,6 +7,9 @@ import type {
   CSO,
   User,
   LovedOneSubmission,
+  Topic,
+  RumorStatus,
+  Language,
 } from '@/types';
 import {
   dummyRumors,
@@ -16,6 +19,54 @@ import {
   dummyCSOs,
   dummyUsers,
 } from '@/data/dummyData';
+import { supabase } from '@/integrations/supabase/client';
+
+type RumorRow = {
+  id: string;
+  title: string;
+  description: string;
+  origin_country: string;
+  subject_country: string | null;
+  topic: string;
+  latitude: number;
+  longitude: number;
+  intensity: number;
+  status: RumorStatus;
+  source_language: string;
+  submitted_at: string;
+  debunked_by: string | null;
+  debunked_at: string | null;
+  debunk_content: string | null;
+  debunk_sources: string[] | null;
+  verified_by: string | null;
+  verified_at: string | null;
+  verification_content: string | null;
+  verification_sources: string[] | null;
+};
+
+function rowToRumor(row: RumorRow): Rumor {
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    originCountry: row.origin_country,
+    subjectCountry: row.subject_country ?? undefined,
+    topic: row.topic as Topic,
+    coordinates: [Number(row.latitude), Number(row.longitude)],
+    intensity: Number(row.intensity),
+    status: row.status,
+    submittedAt: row.submitted_at,
+    sourceLanguage: (row.source_language || 'en') as Language,
+    debunkedBy: row.debunked_by ?? undefined,
+    debunkedAt: row.debunked_at ?? undefined,
+    debunkContent: row.debunk_content ?? undefined,
+    debunkSources: row.debunk_sources ?? undefined,
+    verifiedBy: row.verified_by ?? undefined,
+    verifiedAt: row.verified_at ?? undefined,
+    verificationContent: row.verification_content ?? undefined,
+    verificationSources: row.verification_sources ?? undefined,
+  };
+}
 
 interface AppState {
   rumors: Rumor[];
@@ -116,6 +167,70 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
     else localStorage.removeItem(USER_KEY);
   }, [user]);
+
+  // Merge any live (Supabase) rumors on top of the dummy seed and subscribe
+  // to realtime changes so newly-approved rumors appear instantly on the heatmap.
+  useEffect(() => {
+    let cancelled = false;
+    const PUBLIC_STATUSES: RumorStatus[] = ['approved', 'debunked', 'verified-true'];
+
+    const upsertLive = (incoming: Rumor[]) => {
+      if (cancelled || incoming.length === 0) return;
+      setRumors((prev) => {
+        const byId = new Map(prev.map((r) => [r.id, r]));
+        for (const r of incoming) byId.set(r.id, r);
+        return Array.from(byId.values());
+      });
+    };
+
+    const removeLive = (id: string) => {
+      if (cancelled) return;
+      setRumors((prev) => prev.filter((r) => r.id !== id));
+    };
+
+    (async () => {
+      const { data, error } = await supabase
+        .from('rumors')
+        .select(
+          'id, title, description, origin_country, subject_country, topic, latitude, longitude, intensity, status, source_language, submitted_at, debunked_by, debunked_at, debunk_content, debunk_sources, verified_by, verified_at, verification_content, verification_sources',
+        )
+        .in('status', PUBLIC_STATUSES)
+        .order('submitted_at', { ascending: false })
+        .limit(500);
+      if (error) {
+        console.warn('[rumors] initial load failed', error.message);
+        return;
+      }
+      upsertLive((data ?? []).map((row) => rowToRumor(row as RumorRow)));
+    })();
+
+    const channel = supabase
+      .channel('rumors-public')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'rumors' },
+        (payload) => {
+          if (payload.eventType === 'DELETE') {
+            removeLive((payload.old as { id: string }).id);
+            return;
+          }
+          const row = payload.new as RumorRow;
+          if (!PUBLIC_STATUSES.includes(row.status)) {
+            // status moved out of public-visible range — drop from map
+            removeLive(row.id);
+            return;
+          }
+          upsertLive([rowToRumor(row)]);
+        },
+      )
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
 
   const value = useMemo<AppState>(
     () => ({
