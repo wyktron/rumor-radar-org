@@ -74,10 +74,6 @@ interface AppState {
   debunkSubmissions: DebunkSubmission[];
   csoRegistrations: CSORegistration[];
   lovedOneSubmissions: LovedOneSubmission[];
-  user: User | null;
-  // auth
-  login: (email: string, password: string) => { ok: boolean; error?: string };
-  logout: () => void;
   // rumors
   updateRumorIntensity: (id: string, intensity: number) => void;
   updateRumorCoordinates: (id: string, coords: [number, number]) => void;
