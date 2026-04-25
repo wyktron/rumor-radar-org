@@ -55,11 +55,11 @@
 
     /* Signal intensity scale — each tier uses a distinct hue */
     --signal-low: 217 91% 55%;        /* blue — low chatter */
-    --signal-moderate: 280 70% 55%;   /* violet — moderate chatter */
-    --signal-high: 38 92% 50%;        /* amber — high chatter */
-    --signal-viral: 0 84% 55%;        /* red — viral */
-    --signal-debunked: 0 70% 45%;     /* deep red — debunked false */
-    --signal-verified: 152 76% 35%;   /* deep green — verified true */
+    --signal-moderate: 270 70% 55%;   /* purple — moderate chatter */
+    --signal-high: 28 95% 52%;        /* orange — high chatter */
+    --signal-viral: 322 85% 55%;      /* magenta/pink — viral */
+    --signal-debunked: 0 78% 50%;     /* red — debunked false */
+    --signal-verified: 152 76% 35%;   /* green — verified true */
 
     /* Gradients */
     --gradient-radar: radial-gradient(ellipse at 50% 0%, hsl(217 91% 55% / 0.05), transparent 60%);
@@ -114,10 +114,10 @@
     --input: 222 30% 14%;
     --ring: 190 95% 55%;
     --signal-low: 210 100% 60%;
-    --signal-moderate: 280 80% 65%;
-    --signal-high: 38 95% 58%;
-    --signal-viral: 0 90% 62%;
-    --signal-debunked: 0 75% 55%;
+    --signal-moderate: 270 80% 68%;
+    --signal-high: 28 95% 60%;
+    --signal-viral: 322 90% 65%;
+    --signal-debunked: 0 85% 60%;
     --signal-verified: 152 76% 50%;
     --shadow-panel: 0 8px 32px -12px hsl(222 80% 2% / 0.8);
     --shadow-elev: 0 12px 48px -16px hsl(222 80% 2% / 0.9);
