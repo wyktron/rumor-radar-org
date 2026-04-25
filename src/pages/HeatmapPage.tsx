@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HeatmapMap } from '@/components/map/HeatmapMap';
 import { useApp } from '@/context/AppContext';
+import { useAuth } from '@/context/AuthContext';
 import type { Rumor } from '@/types';
 import { COUNTRIES, TOPICS } from '@/constants/countries';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -15,7 +16,8 @@ import { relativeTime } from '@/lib/rumor-utils';
 import { cn } from '@/lib/utils';
 
 export default function HeatmapPage() {
-  const { rumors, user } = useApp();
+  const { rumors } = useApp();
+  const { isStaff } = useAuth();
   const navigate = useNavigate();
   const [country, setCountry] = useState<string>('all');
   const [topic, setTopic] = useState<string>('all');
@@ -58,7 +60,7 @@ export default function HeatmapPage() {
     };
   }, [rumors]);
 
-  const isModerator = user?.role === 'moderator';
+  const isModerator = isStaff;
 
   const clearAll = () => {
     setCountry('all');

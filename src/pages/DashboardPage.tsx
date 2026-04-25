@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useApp } from '@/context/AppContext';
+import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -16,17 +17,26 @@ import { relativeTime } from '@/lib/rumor-utils';
 import { toast } from 'sonner';
 
 export default function DashboardPage() {
-  const { user } = useApp();
+  // Authentication state comes from Supabase, not from client-side localStorage.
+  // Roles are loaded server-side from the user_roles table via AuthContext.
+  const { user, loading, isStaff, roles } = useAuth();
+  if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
-  return user.role === 'moderator' ? <ModeratorDashboard /> : <CSODashboard />;
+  if (isStaff) return <ModeratorDashboard />;
+  if (roles.includes('cso_member')) return <CSODashboard />;
+  return <Navigate to="/" replace />;
 }
 
 function ModeratorDashboard() {
   const {
     rumors, csos, submissions, debunkSubmissions, csoRegistrations,
     approveSubmission, rejectSubmission, approveDebunk, rejectDebunk,
-    approveCSORegistration, rejectCSORegistration, updateRumorIntensity, user,
+    approveCSORegistration, rejectCSORegistration, updateRumorIntensity,
   } = useApp();
+  const { user } = useAuth();
+  const displayName = (user?.user_metadata as { display_name?: string } | undefined)?.display_name
+    ?? user?.email
+    ?? 'operator';
   const [translatingId, setTranslatingId] = useState<string | null>(null);
 
   async function handleTranslate(rumorId: string) {
@@ -57,7 +67,7 @@ function ModeratorDashboard() {
     <div className="container py-6 space-y-4">
       <div>
         <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary">Moderator console</div>
-        <h1 className="text-2xl font-bold">Welcome back, {user?.name}</h1>
+        <h1 className="text-2xl font-bold">Welcome back, {displayName}</h1>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
@@ -213,8 +223,29 @@ function ModeratorDashboard() {
 }
 
 function CSODashboard() {
-  const { user, rumors, debunkSubmissions, submitDebunk } = useApp();
-  const myDebunks = debunkSubmissions.filter((d) => d.csoId === user?.csoId);
+  const { rumors, debunkSubmissions, submitDebunk } = useApp();
+  const { user } = useAuth();
+  const displayName = (user?.user_metadata as { display_name?: string } | undefined)?.display_name
+    ?? user?.email
+    ?? 'partner';
+  // Resolve the CSO membership for this authenticated user from the database.
+  // Never trust client-stored role/csoId.
+  const [csoId, setCsoId] = useState<string | null>(null);
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from('cso_members')
+        .select('cso_id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (!cancelled) setCsoId(data?.cso_id ?? null);
+    })();
+    return () => { cancelled = true; };
+  }, [user]);
+
+  const myDebunks = debunkSubmissions.filter((d) => d.csoId === csoId);
   const [rumorId, setRumorId] = useState('');
   const [type, setType] = useState<'debunk' | 'verify-true'>('debunk');
   const [content, setContent] = useState('');
@@ -222,6 +253,10 @@ function CSODashboard() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!csoId) {
+      toast.error('No CSO membership found for your account. Contact a moderator.');
+      return;
+    }
     if (!rumorId || content.trim().length < 10) {
       toast.error('Please pick a rumor and write at least 10 characters');
       return;
@@ -233,7 +268,7 @@ function CSODashboard() {
     }
     submitDebunk({
       rumorId,
-      csoId: user!.csoId!,
+      csoId,
       content,
       sources,
       submissionType: type,
@@ -246,7 +281,7 @@ function CSODashboard() {
     <div className="container py-6 space-y-4">
       <div>
         <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary">CSO console</div>
-        <h1 className="text-2xl font-bold">Welcome, {user?.name}</h1>
+        <h1 className="text-2xl font-bold">Welcome, {displayName}</h1>
       </div>
 
       <Tabs defaultValue="submit" className="space-y-4">

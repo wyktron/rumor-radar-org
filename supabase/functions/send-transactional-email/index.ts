@@ -31,8 +31,24 @@ function generateToken(): string {
 }
 
 // Auth note: this function uses verify_jwt = true in config.toml, so Supabase's
-// gateway validates the caller's JWT (anon or service_role) before the request
-// reaches this code. No in-function auth check is needed.
+// gateway validates the caller's JWT signature. However, anon JWTs are public,
+// so we additionally rate-limit by IP and restrict the templates that
+// unauthenticated callers may invoke to prevent email-bombing abuse.
+
+// Templates that are safe for any anon visitor to trigger as part of a
+// public-facing form flow (contact form, subscribe, submission receipts...).
+// Any template not in this list requires an authenticated user.
+const PUBLIC_CALLABLE_TEMPLATES = new Set<string>([
+  'subscribe-confirm',
+  'cso-verification-received',
+  'rumor-submission-received',
+  'invite-to-respond',
+  'loved-one-received',
+])
+
+// Per-IP rate limit: max sends in a rolling window.
+const RATE_LIMIT_MAX = 5
+const RATE_LIMIT_WINDOW_MS = 60_000
 
 Deno.serve(async (req) => {
   // Handle CORS preflight
@@ -52,6 +68,30 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     )
+  }
+
+  // Identify caller's IP for rate limiting
+  const callerIp =
+    req.headers.get('cf-connecting-ip') ||
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    req.headers.get('x-real-ip') ||
+    'unknown'
+
+  // Detect whether the caller is using a real authenticated user JWT (not the
+  // bare anon key). When authenticated, we relax rate limits but still log.
+  const authHeader = req.headers.get('Authorization') || ''
+  let isAuthenticatedUser = false
+  if (authHeader.startsWith('Bearer ')) {
+    try {
+      const token = authHeader.replace('Bearer ', '')
+      const supaAuth = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY') ?? '')
+      const { data } = await supaAuth.auth.getUser(token)
+      if (data?.user?.aud === 'authenticated' && data.user.role === 'authenticated' && data.user.id) {
+        isAuthenticatedUser = true
+      }
+    } catch {
+      // ignore — treated as anon
+    }
   }
 
   // Parse request body
@@ -103,6 +143,42 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     )
+  }
+
+  // Restrict which templates anonymous callers may invoke. Authenticated
+  // users may invoke any registered template (still subject to RLS elsewhere).
+  if (!isAuthenticatedUser && !PUBLIC_CALLABLE_TEMPLATES.has(templateName)) {
+    console.warn('Anon caller attempted non-public template', { templateName, callerIp })
+    return new Response(
+      JSON.stringify({ error: 'This template requires authentication' }),
+      { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+  }
+
+  // Create supabase client up here for rate-limit check
+  const rateLimitClient = createClient(supabaseUrl, supabaseServiceKey)
+
+  if (!isAuthenticatedUser && callerIp !== 'unknown') {
+    const since = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString()
+    const { count } = await rateLimitClient
+      .from('email_send_rate_limits')
+      .select('id', { count: 'exact', head: true })
+      .eq('ip_address', callerIp)
+      .gte('created_at', since)
+
+    if ((count ?? 0) >= RATE_LIMIT_MAX) {
+      console.warn('Rate limit exceeded', { callerIp, templateName })
+      return new Response(
+        JSON.stringify({ error: 'Too many requests. Please try again later.' }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    await rateLimitClient.from('email_send_rate_limits').insert({
+      ip_address: callerIp,
+      recipient_email: recipientEmail ?? null,
+      template_name: templateName,
+    })
   }
 
   // Resolve effective recipient: template-level `to` takes precedence over

@@ -5,7 +5,6 @@ import type {
   DebunkSubmission,
   CSORegistration,
   CSO,
-  User,
   LovedOneSubmission,
   Topic,
   RumorStatus,
@@ -17,7 +16,6 @@ import {
   dummyDebunkSubmissions,
   dummyCSORegistrations,
   dummyCSOs,
-  dummyUsers,
 } from '@/data/dummyData';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -76,10 +74,6 @@ interface AppState {
   debunkSubmissions: DebunkSubmission[];
   csoRegistrations: CSORegistration[];
   lovedOneSubmissions: LovedOneSubmission[];
-  user: User | null;
-  // auth
-  login: (email: string, password: string) => { ok: boolean; error?: string };
-  logout: () => void;
   // rumors
   updateRumorIntensity: (id: string, intensity: number) => void;
   updateRumorCoordinates: (id: string, coords: [number, number]) => void;
@@ -102,7 +96,6 @@ interface AppState {
 const AppContext = createContext<AppState | null>(null);
 
 const STORAGE_KEY = 'rumor-radar-state-v3';
-const USER_KEY = 'rumor-radar-user-v1';
 
 interface PersistShape {
   rumors: Rumor[];
@@ -135,16 +128,6 @@ function loadState(): PersistShape {
   return fallback;
 }
 
-function loadUser(): User | null {
-  if (typeof window === 'undefined') return null;
-  try {
-    const raw = localStorage.getItem(USER_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
-
 const uid = () => Math.random().toString(36).slice(2, 10);
 
 export function AppProvider({ children }: { children: ReactNode }) {
@@ -155,7 +138,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [debunkSubmissions, setDebunkSubmissions] = useState<DebunkSubmission[]>(initial.debunkSubmissions);
   const [csoRegistrations, setCsoRegistrations] = useState<CSORegistration[]>(initial.csoRegistrations);
   const [lovedOneSubmissions, setLovedOneSubmissions] = useState<LovedOneSubmission[]>(initial.lovedOneSubmissions);
-  const [user, setUser] = useState<User | null>(loadUser());
+
+  // One-time cleanup of any legacy auth payload that older builds may have
+  // persisted in localStorage. The legacy login path has been removed in favor
+  // of Supabase-backed authentication (AuthContext).
+  useEffect(() => {
+    try {
+      localStorage.removeItem('rumor-radar-user-v1');
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(
@@ -163,11 +156,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       JSON.stringify({ rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions }),
     );
   }, [rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions]);
-
-  useEffect(() => {
-    if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
-    else localStorage.removeItem(USER_KEY);
-  }, [user]);
 
   // Merge any live (Supabase) rumors on top of the dummy seed and subscribe
   // to realtime changes so newly-approved rumors appear instantly on the heatmap.
@@ -272,17 +260,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       debunkSubmissions,
       csoRegistrations,
       lovedOneSubmissions,
-      user,
-      login(email, password) {
-        const found = dummyUsers.find((u) => u.email === email && u.password === password);
-        if (!found) return { ok: false, error: 'Invalid credentials' };
-        const { password: _pw, ...safe } = found;
-        setUser(safe);
-        return { ok: true };
-      },
-      logout() {
-        setUser(null);
-      },
       updateRumorIntensity(id, intensity) {
         setRumors((rs) => rs.map((r) => (r.id === id ? { ...r, intensity } : r)));
       },
@@ -409,7 +386,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setLovedOneSubmissions((arr) => [sub, ...arr]);
       },
     }),
-    [rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions, user],
+    [rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

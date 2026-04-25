@@ -222,6 +222,13 @@ export type Database = {
             referencedRelation: "csos"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "cso_members_cso_id_fkey"
+            columns: ["cso_id"]
+            isOneToOne: false
+            referencedRelation: "csos_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       cso_verification_requests: {
@@ -316,6 +323,13 @@ export type Database = {
             columns: ["provisioned_cso_id"]
             isOneToOne: false
             referencedRelation: "csos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cso_verification_requests_provisioned_cso_id_fkey"
+            columns: ["provisioned_cso_id"]
+            isOneToOne: false
+            referencedRelation: "csos_public"
             referencedColumns: ["id"]
           },
         ]
@@ -437,6 +451,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "debunk_submissions_cso_id_fkey"
+            columns: ["cso_id"]
+            isOneToOne: false
+            referencedRelation: "csos_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "debunk_submissions_rumor_id_fkey"
             columns: ["rumor_id"]
             isOneToOne: false
@@ -523,6 +544,30 @@ export type Database = {
           recipient_email?: string
           status?: string
           template_name?: string
+        }
+        Relationships: []
+      }
+      email_send_rate_limits: {
+        Row: {
+          created_at: string
+          id: number
+          ip_address: string
+          recipient_email: string | null
+          template_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          ip_address: string
+          recipient_email?: string | null
+          template_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          ip_address?: string
+          recipient_email?: string | null
+          template_name?: string | null
         }
         Relationships: []
       }
@@ -1040,6 +1085,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "rumors_debunked_by_cso_id_fkey"
+            columns: ["debunked_by_cso_id"]
+            isOneToOne: false
+            referencedRelation: "csos_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "rumors_origin_country_code_fkey"
             columns: ["origin_country_code"]
             isOneToOne: false
@@ -1058,6 +1110,13 @@ export type Database = {
             columns: ["verified_by_cso_id"]
             isOneToOne: false
             referencedRelation: "csos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rumors_verified_by_cso_id_fkey"
+            columns: ["verified_by_cso_id"]
+            isOneToOne: false
+            referencedRelation: "csos_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1350,7 +1409,59 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      csos_public: {
+        Row: {
+          country: string | null
+          country_code: string | null
+          created_at: string | null
+          date_joined: string | null
+          description: string | null
+          id: string | null
+          latitude: number | null
+          longitude: number | null
+          name: string | null
+          updated_at: string | null
+          verified: boolean | null
+          website: string | null
+        }
+        Insert: {
+          country?: string | null
+          country_code?: string | null
+          created_at?: string | null
+          date_joined?: string | null
+          description?: string | null
+          id?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string | null
+          updated_at?: string | null
+          verified?: boolean | null
+          website?: string | null
+        }
+        Update: {
+          country?: string | null
+          country_code?: string | null
+          created_at?: string | null
+          date_joined?: string | null
+          description?: string | null
+          id?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string | null
+          updated_at?: string | null
+          verified?: boolean | null
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "csos_country_code_fkey"
+            columns: ["country_code"]
+            isOneToOne: false
+            referencedRelation: "regions"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
     }
     Functions: {
       approve_cso_request: {
