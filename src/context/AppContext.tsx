@@ -20,6 +20,7 @@ import {
   dummyUsers,
 } from '@/data/dummyData';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 type RumorRow = {
   id: string;
@@ -188,6 +189,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setRumors((prev) => prev.filter((r) => r.id !== id));
     };
 
+    // Track previous status per rumor so we only toast on real transitions
+    // (e.g. pending → approved), not on every UPDATE echo or initial load.
+    const lastStatus = new Map<string, RumorStatus>();
+
     (async () => {
       const { data, error } = await supabase
         .from('rumors')
@@ -201,8 +206,30 @@ export function AppProvider({ children }: { children: ReactNode }) {
         console.warn('[rumors] initial load failed', error.message);
         return;
       }
-      upsertLive((data ?? []).map((row) => rowToRumor(row as RumorRow)));
+      const rows = (data ?? []) as RumorRow[];
+      // Seed the status map so we don't toast for rumors already approved
+      // before the user opened the page.
+      for (const row of rows) lastStatus.set(row.id, row.status);
+      upsertLive(rows.map(rowToRumor));
     })();
+
+    const announce = (rumor: Rumor, prevStatus: RumorStatus | undefined) => {
+      if (prevStatus === rumor.status) return;
+      if (!PUBLIC_STATUSES.includes(rumor.status)) return;
+      const titleByStatus: Record<string, string> = {
+        approved: '🚨 New rumor on the radar',
+        debunked: '✅ Rumor debunked',
+        'verified-true': '⚠️ Rumor verified as true',
+      };
+      toast(titleByStatus[rumor.status] ?? 'Rumor updated', {
+        description: `${rumor.title} — ${rumor.originCountry}`,
+        duration: 8000,
+        action: {
+          label: 'View',
+          onClick: () => window.location.assign(`/timeline?rumor=${rumor.id}`),
+        },
+      });
+    };
 
     const channel = supabase
       .channel('rumors-public')
@@ -211,16 +238,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
         { event: '*', schema: 'public', table: 'rumors' },
         (payload) => {
           if (payload.eventType === 'DELETE') {
-            removeLive((payload.old as { id: string }).id);
+            const id = (payload.old as { id: string }).id;
+            lastStatus.delete(id);
+            removeLive(id);
             return;
           }
           const row = payload.new as RumorRow;
+          const prev = lastStatus.get(row.id);
+          lastStatus.set(row.id, row.status);
           if (!PUBLIC_STATUSES.includes(row.status)) {
-            // status moved out of public-visible range — drop from map
             removeLive(row.id);
             return;
           }
-          upsertLive([rowToRumor(row)]);
+          const rumor = rowToRumor(row);
+          upsertLive([rumor]);
+          announce(rumor, prev);
         },
       )
       .subscribe();
