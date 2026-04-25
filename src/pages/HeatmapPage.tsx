@@ -206,13 +206,13 @@ export default function HeatmapPage() {
         </div>
       </div>
 
-      {/* BOTTOM-RIGHT: Filter panel */}
+      {/* BOTTOM: Filters anchor above the nav; on mobile it spans the viewport so nothing can sit underneath it. */}
       {!panelsHidden && (
       <div
-        className="absolute right-4 z-[400] glass-panel rounded-lg p-3 w-[calc(100vw-2rem)] max-w-72 sm:w-72 shadow-lg overflow-y-auto"
+        className="absolute inset-x-3 z-[420] glass-panel rounded-lg p-3 shadow-lg overflow-y-auto sm:inset-x-auto sm:right-4 sm:w-72"
         style={{
           bottom: 'calc(var(--bottom-nav-h, 56px) + 0.75rem)',
-          maxHeight: 'calc(100dvh - var(--bottom-nav-h, 56px) - 5rem)',
+          maxHeight: 'min(44dvh, calc(100dvh - var(--bottom-nav-h, 56px) - 5rem))',
         }}
       >
         <div className="flex items-center justify-between mb-2">
