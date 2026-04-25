@@ -1,10 +1,13 @@
 import { Card } from '@/components/ui/card';
-import { Radar, Globe, ShieldCheck, Users, Activity, Lock } from 'lucide-react';
+import { Radar, Globe, ShieldCheck, Users, Activity, Lock, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ContactForm } from '@/components/ContactForm';
+import { useTranslation } from 'react-i18next';
 
 export default function AboutPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="container py-10 max-w-4xl space-y-10">
       <div className="text-center space-y-4">
@@ -12,25 +15,24 @@ export default function AboutPage() {
           <Radar className="h-7 w-7 text-primary-foreground radar-sweep" />
         </div>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-          Real-time intelligence against <span className="bg-gradient-signal bg-clip-text text-transparent">disinformation</span>
+          {t('about.headline1')} <span className="bg-gradient-signal bg-clip-text text-transparent">{t('about.headline2')}</span>
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Rumor Radar is an open coordination platform that lets civil society organizations, journalists,
-          and citizens monitor, investigate, and debunk misinformation as it spreads across borders.
+          {t('about.intro')}
         </p>
         <div className="flex flex-wrap gap-2 justify-center pt-2">
-          <Link to="/"><Button>Open the heatmap</Button></Link>
-          <Link to="/submit"><Button variant="outline">Submit a rumor</Button></Link>
+          <Link to="/"><Button>{t('about.openHeatmap')}</Button></Link>
+          <Link to="/submit"><Button variant="outline">{t('about.submitRumor')}</Button></Link>
         </div>
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
-        <Feature icon={<Activity />} title="Live signal tracking" desc="Every rumor is geolocated and scored by reach, velocity, and confidence." />
-        <Feature icon={<ShieldCheck />} title="CSO-verified debunks" desc="Vetted fact-checking partners publish source-backed verdicts." />
-        <Feature icon={<Globe />} title="Cross-border view" desc="See how narratives jump between countries, languages, and platforms." />
-        <Feature icon={<Users />} title="CSO Network" desc="A growing coalition of independent verification organizations." />
-        <Feature icon={<Lock />} title="Anonymous submission" desc="Anyone can report a suspicious claim without creating an account." />
-        <Feature icon={<Radar />} title="Moderator console" desc="Approve submissions, validate debunks, calibrate trending intensity." />
+        <Feature icon={<Activity />} title={t('about.f1Title')} desc={t('about.f1Desc')} />
+        <Feature icon={<ShieldCheck />} title={t('about.f2Title')} desc={t('about.f2Desc')} />
+        <Feature icon={<Globe />} title={t('about.f3Title')} desc={t('about.f3Desc')} />
+        <Feature icon={<Users />} title={t('about.f4Title')} desc={t('about.f4Desc')} />
+        <Feature icon={<Lock />} title={t('about.f5Title')} desc={t('about.f5Desc')} />
+        <Feature icon={<Radar />} title={t('about.f6Title')} desc={t('about.f6Desc')} />
       </div>
 
       <Card className="glass-panel p-6 space-y-3">
