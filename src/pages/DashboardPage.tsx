@@ -12,9 +12,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { StatusBadge, IntensityBar } from '@/components/RumorBits';
-import { Check, X, ShieldCheck, ShieldAlert, Activity, Users, Sliders, Languages, Loader2 } from 'lucide-react';
+import { Check, X, ShieldCheck, ShieldAlert, Activity, Users, Sliders, Languages, Loader2, KeyRound } from 'lucide-react';
 import { relativeTime } from '@/lib/rumor-utils';
 import { toast } from 'sonner';
+import { RolesAdmin } from '@/components/admin/RolesAdmin';
 
 export default function DashboardPage() {
   // Authentication state comes from Supabase, not from client-side localStorage.
@@ -33,7 +34,7 @@ function ModeratorDashboard() {
     approveSubmission, rejectSubmission, approveDebunk, rejectDebunk,
     approveCSORegistration, rejectCSORegistration, updateRumorIntensity,
   } = useApp();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const displayName = (user?.user_metadata as { display_name?: string } | undefined)?.display_name
     ?? user?.email
     ?? 'operator';
@@ -83,6 +84,11 @@ function ModeratorDashboard() {
             CSOs <span className="ml-1.5 text-[10px] text-warning">{csoRegistrations.filter((r) => r.status === 'pending').length}</span>
           </TabsTrigger>
           <TabsTrigger value="trending">Trending</TabsTrigger>
+          {isAdmin && (
+            <TabsTrigger value="roles" className="gap-1.5">
+              <KeyRound className="h-3 w-3" /> Roles
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="overview">
@@ -217,6 +223,12 @@ function ModeratorDashboard() {
             </div>
           </Card>
         </TabsContent>
+
+        {isAdmin && (
+          <TabsContent value="roles">
+            <RolesAdmin />
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );

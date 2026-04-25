@@ -1464,6 +1464,30 @@ export type Database = {
       }
     }
     Functions: {
+      admin_find_user_by_email: {
+        Args: { _email: string }
+        Returns: {
+          email: string
+          user_id: string
+        }[]
+      }
+      admin_grant_role: {
+        Args: { _email: string; _role: Database["public"]["Enums"]["app_role"] }
+        Returns: string
+      }
+      admin_list_roles: {
+        Args: never
+        Returns: {
+          email: string
+          granted_at: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }[]
+      }
+      admin_revoke_role: {
+        Args: { _email: string; _role: Database["public"]["Enums"]["app_role"] }
+        Returns: boolean
+      }
       approve_cso_request: {
         Args: { _notes?: string; _request_id: string }
         Returns: string
