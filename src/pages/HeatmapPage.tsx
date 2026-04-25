@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { HeatmapMap } from '@/components/map/HeatmapMap';
 import { useApp } from '@/context/AppContext';
@@ -18,6 +19,7 @@ import { cn } from '@/lib/utils';
 export default function HeatmapPage() {
   const { rumors } = useApp();
   const { isStaff } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [country, setCountry] = useState<string>('all');
   const [topic, setTopic] = useState<string>('all');
@@ -93,11 +95,11 @@ export default function HeatmapPage() {
           >
             {panelsHidden ? (
               <>
-                <Eye className="h-3.5 w-3.5" /> Show panels
+                <Eye className="h-3.5 w-3.5" /> {t('heatmap.showPanels')}
               </>
             ) : (
               <>
-                <EyeOff className="h-3.5 w-3.5" /> Hide panels
+                <EyeOff className="h-3.5 w-3.5" /> {t('heatmap.hidePanels')}
               </>
             )}
           </Button>
@@ -105,16 +107,13 @@ export default function HeatmapPage() {
       )}
 
       {/* TOP-LEFT: LIVE stats panel */}
-      <div className={cn('absolute top-4 left-4 z-[400] glass-panel rounded-lg p-2 sm:p-3 w-36 sm:w-52 shadow-lg', panelsHidden && 'hidden')}>
-        <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em]" style={{ color: 'hsl(140 85% 45%)' }}>
-          <span
-            className="inline-block h-2 w-2 rounded-full ticker-blink"
-            style={{ backgroundColor: 'hsl(140 90% 50%)', boxShadow: '0 0 8px hsl(140 90% 50% / 0.9)' }}
-          />
-          Live
+      <div className={cn('absolute top-4 left-4 z-[410] glass-panel rounded-lg p-2 sm:p-3 w-36 sm:w-52 shadow-lg', panelsHidden && 'hidden')}>
+        <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-success">
+          <span className="inline-block h-2 w-2 rounded-full ticker-blink bg-success shadow-glow" />
+          {t('heatmap.live')}
         </div>
         <div className="mt-1 text-3xl font-bold font-mono leading-none">{stats.total}</div>
-        <div className="text-xs text-muted-foreground mt-0.5">Active rumors</div>
+        <div className="text-xs text-muted-foreground mt-0.5">{t('heatmap.activeRumors')}</div>
         <div className="mt-3 space-y-1 text-xs font-mono">
           <Stat label="debunked" value={stats.debunked} color="text-success" />
           <Stat label="verified true" value={stats.verified} color="text-signal-verified" />
