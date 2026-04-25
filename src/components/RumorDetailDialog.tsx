@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -24,7 +25,6 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
-import { CSORegistrationDialog } from '@/components/CSORegistrationDialog';
 import type { Rumor } from '@/types';
 import { IntensityBar } from '@/components/RumorBits';
 
@@ -230,13 +230,11 @@ export function RumorDetailDialog({ rumor, onClose }: { rumor: Rumor | null; onC
                 <p className="text-sm text-muted-foreground">
                   This rumor has not been debunked by a certified CSO. If you represent a civil society organization, you can register to help verify this claim.
                 </p>
-                <CSORegistrationDialog
-                  trigger={
-                    <Button variant="outline" className="w-full gap-2 bg-foreground text-background hover:bg-foreground/90">
-                      <ShieldCheck className="h-4 w-4" /> Register as Certified CSO
-                    </Button>
-                  }
-                />
+                <Button asChild variant="outline" className="w-full gap-2 bg-foreground text-background hover:bg-foreground/90">
+                  <Link to="/csos/register" onClick={onClose}>
+                    <ShieldCheck className="h-4 w-4" /> Register as Certified CSO
+                  </Link>
+                </Button>
               </div>
             </>
           )}
