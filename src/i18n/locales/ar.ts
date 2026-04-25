@@ -8,7 +8,7 @@ const ar = {
   },
   nav: {
     heatmap: 'الخريطة', timeline: 'التسلسل الزمني', csos: 'شبكة المنظمات', impact: 'الأثر',
-    dashboard: 'لوحة التحكم', about: 'حول', subscribe: 'اشتراك', donate: 'تبرع',
+    dashboard: 'لوحة التحكم', pricing: 'الأسعار', about: 'حول', subscribe: 'اشتراك', donate: 'تبرع',
     comingSoon: 'قريباً',
   },
   welcome: {
