@@ -60,7 +60,7 @@ export default function HeatmapPage() {
     };
   }, [rumors]);
 
-  const isModerator = user?.role === 'moderator';
+  const isModerator = isStaff;
 
   const clearAll = () => {
     setCountry('all');
