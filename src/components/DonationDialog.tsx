@@ -28,6 +28,7 @@ const BTC_PAYJOIN =
 export function DonationDialog({ open, onOpenChange }: DonationDialogProps) {
   const { toast } = useToast();
   const [copied, setCopied] = useState<string | null>(null);
+  const [showTerms, setShowTerms] = useState(false);
 
   async function copy(value: string, label: string) {
     try {
