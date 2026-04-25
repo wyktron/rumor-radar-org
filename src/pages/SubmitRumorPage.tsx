@@ -235,36 +235,36 @@ export default function SubmitRumorPage() {
           </Field>
 
           <Field
-            label="Subject country (optional)"
-            hint="What country is the rumor ABOUT? Leave empty if the same as origin."
+            label={t('submit.subject')}
+            hint={t('submit.subjectHint')}
             error={errors.subjectCountry}
           >
             <Select
               value={form.subjectCountry || NONE}
               onValueChange={(v) => setForm({ ...form, subjectCountry: v === NONE ? '' : v })}
             >
-              <SelectTrigger><SelectValue placeholder="Same as origin" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder={t('submit.sameAsOrigin')} /></SelectTrigger>
               <SelectContent>
-                <SelectItem value={NONE}>Same as origin</SelectItem>
+                <SelectItem value={NONE}>{t('submit.sameAsOrigin')}</SelectItem>
                 {ALL_COUNTRIES.map((c) => <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>)}
               </SelectContent>
             </Select>
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Topic *" error={errors.topic}>
+            <Field label={t('submit.topic')} error={errors.topic}>
               <Select value={form.topic} onValueChange={(v) => setForm({ ...form, topic: v })}>
-                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={t('submit.select')} /></SelectTrigger>
                 <SelectContent>
                   {TOPICS.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                 </SelectContent>
               </Select>
             </Field>
-            <Field label="Source channel (optional)" error={errors.source}>
+            <Field label={t('submit.sourceChannel')} error={errors.source}>
               <Input
                 value={form.source}
                 onChange={(e) => setForm({ ...form, source: e.target.value })}
-                placeholder="WhatsApp, Telegram, X…"
+                placeholder={t('submit.sourcePh')}
                 maxLength={120}
               />
             </Field>
@@ -272,7 +272,7 @@ export default function SubmitRumorPage() {
 
           <Button type="submit" disabled={busy} className="w-full gap-2 font-mono uppercase tracking-wider text-xs">
             {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
-            Transmit submission
+            {t('submit.transmit')}
           </Button>
         </form>
       </Card>
