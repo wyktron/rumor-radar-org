@@ -103,7 +103,7 @@ export default function HeatmapPage() {
       )}
 
       {/* TOP-LEFT: LIVE stats panel */}
-      <div className={cn('absolute top-4 left-4 z-[400] glass-panel rounded-lg p-3 w-52 shadow-lg', panelsHidden && 'hidden')}>
+      <div className={cn('absolute top-4 left-4 z-[400] glass-panel rounded-lg p-2 sm:p-3 w-36 sm:w-52 shadow-lg', panelsHidden && 'hidden')}>
         <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em]" style={{ color: 'hsl(140 85% 45%)' }}>
           <span
             className="inline-block h-2 w-2 rounded-full ticker-blink"
@@ -181,8 +181,14 @@ export default function HeatmapPage() {
         </DialogContent>
       </Dialog>
 
-      {/* BOTTOM-LEFT: Trending scale legend — sits above the bottom nav AND above the map's built-in legend */}
-      <div className={cn('absolute bottom-32 left-4 z-[400] glass-panel rounded-lg p-3 w-56 shadow-lg', panelsHidden && 'hidden')}>
+      {/* BOTTOM-LEFT: Trending scale legend — anchors above the bottom nav (which can change height when wrapping on mobile) */}
+      <div
+        className={cn(
+          'absolute left-4 z-[400] glass-panel rounded-lg p-3 w-44 sm:w-56 shadow-lg hidden sm:block',
+          panelsHidden && 'hidden',
+        )}
+        style={{ bottom: 'calc(var(--bottom-nav-h, 56px) + 0.75rem)' }}
+      >
         <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">
           Trending scale
         </div>
@@ -202,7 +208,13 @@ export default function HeatmapPage() {
 
       {/* BOTTOM-RIGHT: Filter panel */}
       {!panelsHidden && (
-      <div className="absolute bottom-20 right-4 z-[400] glass-panel rounded-lg p-3 w-72 shadow-lg max-h-[calc(100vh-12rem)] overflow-y-auto">
+      <div
+        className="absolute right-4 z-[400] glass-panel rounded-lg p-3 w-[calc(100vw-2rem)] max-w-72 sm:w-72 shadow-lg overflow-y-auto"
+        style={{
+          bottom: 'calc(var(--bottom-nav-h, 56px) + 0.75rem)',
+          maxHeight: 'calc(100dvh - var(--bottom-nav-h, 56px) - 5rem)',
+        }}
+      >
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
             <Filter className="h-3 w-3" /> Filter rumors
