@@ -9,6 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Upload, X, Loader2, FileText } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { COUNTRIES } from '@/constants/countries';
+import { ALL_COUNTRIES } from '@/constants/all-countries';
 import {
   Select,
   SelectContent,
@@ -108,7 +109,7 @@ export function CSORegistrationForm({ onSuccess, onCancel }: Props) {
       }
 
       const data = parsed.data;
-      const country = COUNTRIES.find((c) => c.name === data.country);
+      const country = ALL_COUNTRIES.find((c) => c.name === data.country) ?? COUNTRIES.find((c) => c.name === data.country);
 
       const { data: insertData, error: insertError } = await supabase
         .from('cso_verification_requests')
@@ -234,7 +235,7 @@ export function CSORegistrationForm({ onSuccess, onCancel }: Props) {
               <SelectValue placeholder="Select country" />
             </SelectTrigger>
             <SelectContent>
-              {COUNTRIES.map((c) => (
+              {ALL_COUNTRIES.map((c) => (
                 <SelectItem key={c.code} value={c.name}>
                   {c.name}
                 </SelectItem>
