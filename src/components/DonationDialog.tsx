@@ -241,14 +241,30 @@ export function DonationDialog({ open, onOpenChange }: DonationDialogProps) {
           </TabsContent>
         </Tabs>
 
-        <p className="text-xs text-muted-foreground text-center pt-2">
-          Once your transaction confirms, drop us a note at{" "}
-          <a className="underline" href="mailto:donate@rumorradar.org">
-            donate@rumorradar.org
-          </a>{" "}
-          and we'll send a thank-you receipt.
-        </p>
+        <div className="space-y-2 pt-2">
+          <p className="text-xs text-muted-foreground text-center">
+            Once your transaction confirms, drop us a note at{" "}
+            <a className="underline" href="mailto:donate@rumorradar.org">
+              donate@rumorradar.org
+            </a>{" "}
+            and we'll send a thank-you receipt.
+          </p>
+          <p className="text-xs text-muted-foreground text-center">
+            By donating you agree to our{" "}
+            <button
+              type="button"
+              onClick={() => setShowTerms(true)}
+              className="underline hover:text-foreground transition-colors"
+            >
+              donation terms
+            </button>
+            .
+          </p>
+        </div>
+        </>
+        )}
       </DialogContent>
+
     </Dialog>
   );
 }
