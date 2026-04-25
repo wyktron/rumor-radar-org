@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { COUNTRIES, TOPICS } from '@/constants/countries';
+import { ALL_COUNTRIES } from '@/constants/all-countries';
 import { toast } from 'sonner';
 import { Send, MapPin, Info, Crosshair, Loader2, Sparkles } from 'lucide-react';
 import type { Topic } from '@/types';
@@ -109,7 +110,7 @@ export default function SubmitRumorPage() {
       setErrors(errs);
       return;
     }
-    const origin = COUNTRIES.find((c) => c.name === form.originCountry);
+    const origin = ALL_COUNTRIES.find((c) => c.name === form.originCountry);
     const coords = pickedCoords ?? origin?.coordinates ?? [0, 0];
 
     setBusy(true);
@@ -225,7 +226,7 @@ export default function SubmitRumorPage() {
                 </div>
               </SelectTrigger>
               <SelectContent>
-                {COUNTRIES.map((c) => <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>)}
+                {ALL_COUNTRIES.map((c) => <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>)}
               </SelectContent>
             </Select>
           </Field>
@@ -242,7 +243,7 @@ export default function SubmitRumorPage() {
               <SelectTrigger><SelectValue placeholder="Same as origin" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value={NONE}>Same as origin</SelectItem>
-                {COUNTRIES.map((c) => <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>)}
+                {ALL_COUNTRIES.map((c) => <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>)}
               </SelectContent>
             </Select>
           </Field>
