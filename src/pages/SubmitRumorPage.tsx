@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
-import { useApp } from '@/context/AppContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -14,7 +13,7 @@ import { COUNTRIES, TOPICS } from '@/constants/countries';
 import { ALL_COUNTRIES } from '@/constants/all-countries';
 import { toast } from 'sonner';
 import { Send, MapPin, Info, Crosshair, Loader2, Sparkles } from 'lucide-react';
-import type { Topic } from '@/types';
+
 
 // NOTE: We intentionally do NOT auto-select a country from coordinates.
 // Reverse-geocoding small or disputed regions to a sovereign country is
@@ -33,7 +32,6 @@ const schema = z.object({
 const NONE = '__none__';
 
 export default function SubmitRumorPage() {
-  const { submitRumor } = useApp();
   const { t } = useTranslation();
   const nav = useNavigate();
   const location = useLocation();
@@ -121,16 +119,6 @@ export default function SubmitRumorPage() {
       topic: form.topic,
       source: form.source || null,
       source_language: 'en',
-    });
-    // Mirror locally for the in-app moderator dashboard view
-    submitRumor({
-      claim: form.claim,
-      description: form.description || undefined,
-      originCountry: form.originCountry,
-      originCoordinates: coords,
-      subjectCountry: form.subjectCountry || undefined,
-      topic: form.topic as Topic,
-      source: form.source || undefined,
     });
     setBusy(false);
     if (error) {

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type {
   Rumor,
   RumorSubmission,
@@ -9,16 +9,14 @@ import type {
   Topic,
   RumorStatus,
   Language,
+  LovedOneContactMethod,
+  LovedOneCallTime,
+  LovedOneStatus,
 } from '@/types';
-import {
-  dummyRumors,
-  dummyRumorSubmissions,
-  dummyDebunkSubmissions,
-  dummyCSORegistrations,
-  dummyCSOs,
-} from '@/data/dummyData';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+
+// ---------- Row → domain mappers ----------
 
 type RumorRow = {
   id: string;
@@ -67,6 +65,149 @@ function rowToRumor(row: RumorRow): Rumor {
   };
 }
 
+type CSORow = {
+  id: string;
+  name: string;
+  country: string;
+  latitude: number | null;
+  longitude: number | null;
+  verified: boolean;
+  description: string;
+  website: string | null;
+  contact_email: string | null;
+  date_joined: string;
+};
+
+function rowToCSO(row: CSORow): CSO {
+  return {
+    id: row.id,
+    name: row.name,
+    country: row.country,
+    coordinates: [Number(row.latitude ?? 0), Number(row.longitude ?? 0)],
+    verified: row.verified,
+    description: row.description,
+    website: row.website ?? undefined,
+    contactEmail: row.contact_email ?? '',
+    dateJoined: row.date_joined,
+  };
+}
+
+type SubmissionRow = {
+  id: string;
+  claim: string;
+  description: string | null;
+  origin_country: string;
+  origin_latitude: number | null;
+  origin_longitude: number | null;
+  subject_country: string | null;
+  topic: string;
+  source: string | null;
+  submitted_at: string;
+  status: 'pending' | 'approved' | 'rejected';
+};
+
+function rowToSubmission(row: SubmissionRow): RumorSubmission {
+  return {
+    id: row.id,
+    claim: row.claim,
+    description: row.description ?? undefined,
+    originCountry: row.origin_country,
+    originCoordinates: [Number(row.origin_latitude ?? 0), Number(row.origin_longitude ?? 0)],
+    subjectCountry: row.subject_country ?? undefined,
+    topic: row.topic as Topic,
+    source: row.source ?? undefined,
+    submittedAt: row.submitted_at,
+    status: row.status,
+  };
+}
+
+type DebunkRow = {
+  id: string;
+  rumor_id: string;
+  cso_id: string;
+  cso_name: string;
+  content: string;
+  sources: string[];
+  submission_type: string;
+  submitted_at: string;
+  status: 'pending' | 'approved' | 'rejected';
+};
+
+function rowToDebunk(row: DebunkRow): DebunkSubmission {
+  return {
+    id: row.id,
+    rumorId: row.rumor_id,
+    csoId: row.cso_id,
+    csoName: row.cso_name,
+    content: row.content,
+    sources: row.sources ?? [],
+    submissionType: (row.submission_type === 'verify-true' ? 'verify-true' : 'debunk'),
+    submittedAt: row.submitted_at,
+    status: row.status,
+  };
+}
+
+type CSORegRow = {
+  id: string;
+  organization_name: string;
+  country: string;
+  contact_name: string;
+  contact_email: string;
+  website: string | null;
+  description: string;
+  submitted_at: string;
+  status: 'pending' | 'under_review' | 'approved' | 'rejected' | 'changes_requested';
+};
+
+function rowToCSORegistration(row: CSORegRow): CSORegistration {
+  // Map DB enum to UI enum (UI only knows pending/approved/rejected).
+  const status: 'pending' | 'approved' | 'rejected' =
+    row.status === 'approved' ? 'approved' :
+    row.status === 'rejected' ? 'rejected' : 'pending';
+  return {
+    id: row.id,
+    organizationName: row.organization_name,
+    country: row.country,
+    contactName: row.contact_name,
+    contactEmail: row.contact_email,
+    website: row.website ?? undefined,
+    description: row.description,
+    submittedAt: row.submitted_at,
+    status,
+  };
+}
+
+type LovedOneRow = {
+  id: string;
+  contact_method: LovedOneContactMethod;
+  contact_value: string;
+  best_time_to_call: string | null;
+  country: string;
+  relationship: string;
+  notes: string;
+  submitted_at: string;
+  status: 'pending' | 'contacted' | 'completed' | 'unable_to_reach';
+};
+
+function rowToLovedOne(row: LovedOneRow): LovedOneSubmission {
+  const status: LovedOneStatus =
+    row.status === 'contacted' ? 'contacted' :
+    row.status === 'completed' ? 'completed' : 'pending';
+  return {
+    id: row.id,
+    contactMethod: row.contact_method,
+    contactValue: row.contact_value,
+    bestTimeToCall: (row.best_time_to_call as LovedOneCallTime | null) ?? undefined,
+    country: row.country,
+    relationship: row.relationship,
+    notes: row.notes,
+    submittedAt: row.submitted_at,
+    status,
+  };
+}
+
+// ---------- Context shape ----------
+
 interface AppState {
   rumors: Rumor[];
   csos: CSO[];
@@ -75,93 +216,52 @@ interface AppState {
   csoRegistrations: CSORegistration[];
   lovedOneSubmissions: LovedOneSubmission[];
   // rumors
-  updateRumorIntensity: (id: string, intensity: number) => void;
-  updateRumorCoordinates: (id: string, coords: [number, number]) => void;
+  updateRumorIntensity: (id: string, intensity: number) => Promise<void>;
+  updateRumorCoordinates: (id: string, coords: [number, number]) => Promise<void>;
   // submissions
   submitRumor: (s: Omit<RumorSubmission, 'id' | 'submittedAt' | 'status'>) => void;
-  approveSubmission: (id: string) => void;
-  rejectSubmission: (id: string) => void;
+  approveSubmission: (id: string) => Promise<void>;
+  rejectSubmission: (id: string) => Promise<void>;
   // debunks
-  submitDebunk: (d: Omit<DebunkSubmission, 'id' | 'submittedAt' | 'status' | 'csoName'>) => void;
-  approveDebunk: (id: string) => void;
-  rejectDebunk: (id: string) => void;
+  submitDebunk: (d: Omit<DebunkSubmission, 'id' | 'submittedAt' | 'status' | 'csoName'>) => Promise<void>;
+  approveDebunk: (id: string) => Promise<void>;
+  rejectDebunk: (id: string) => Promise<void>;
   // registrations
   registerCSO: (r: Omit<CSORegistration, 'id' | 'submittedAt' | 'status'>) => void;
-  approveCSORegistration: (id: string) => void;
-  rejectCSORegistration: (id: string) => void;
+  approveCSORegistration: (id: string) => Promise<void>;
+  rejectCSORegistration: (id: string) => Promise<void>;
   // loved one outreach
   addLovedOneSubmission: (s: Omit<LovedOneSubmission, 'id' | 'submittedAt' | 'status'>) => void;
 }
 
 const AppContext = createContext<AppState | null>(null);
 
-const STORAGE_KEY = 'rumor-radar-state-v3';
-
-interface PersistShape {
-  rumors: Rumor[];
-  csos: CSO[];
-  submissions: RumorSubmission[];
-  debunkSubmissions: DebunkSubmission[];
-  csoRegistrations: CSORegistration[];
-  lovedOneSubmissions: LovedOneSubmission[];
-}
-
-function loadState(): PersistShape {
-  const fallback: PersistShape = {
-    rumors: dummyRumors,
-    csos: dummyCSOs,
-    submissions: dummyRumorSubmissions,
-    debunkSubmissions: dummyDebunkSubmissions,
-    csoRegistrations: dummyCSORegistrations,
-    lovedOneSubmissions: [],
-  };
-  if (typeof window === 'undefined') return fallback;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as Partial<PersistShape>;
-      return { ...fallback, ...parsed, lovedOneSubmissions: parsed.lovedOneSubmissions ?? [] };
-    }
-  } catch {
-    /* ignore */
-  }
-  return fallback;
-}
-
-const uid = () => Math.random().toString(36).slice(2, 10);
+// Columns we re-use for selects.
+const RUMOR_COLS =
+  'id, title, description, origin_country, subject_country, topic, latitude, longitude, intensity, status, source_language, submitted_at, debunked_by, debunked_at, debunk_content, debunk_sources, verified_by, verified_at, verification_content, verification_sources';
+const PUBLIC_STATUSES: RumorStatus[] = ['approved', 'debunked', 'verified-true'];
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const initial = loadState();
-  const [rumors, setRumors] = useState<Rumor[]>(initial.rumors);
-  const [csos, setCsos] = useState<CSO[]>(initial.csos);
-  const [submissions, setSubmissions] = useState<RumorSubmission[]>(initial.submissions);
-  const [debunkSubmissions, setDebunkSubmissions] = useState<DebunkSubmission[]>(initial.debunkSubmissions);
-  const [csoRegistrations, setCsoRegistrations] = useState<CSORegistration[]>(initial.csoRegistrations);
-  const [lovedOneSubmissions, setLovedOneSubmissions] = useState<LovedOneSubmission[]>(initial.lovedOneSubmissions);
+  const [rumors, setRumors] = useState<Rumor[]>([]);
+  const [csos, setCsos] = useState<CSO[]>([]);
+  const [submissions, setSubmissions] = useState<RumorSubmission[]>([]);
+  const [debunkSubmissions, setDebunkSubmissions] = useState<DebunkSubmission[]>([]);
+  const [csoRegistrations, setCsoRegistrations] = useState<CSORegistration[]>([]);
+  const [lovedOneSubmissions, setLovedOneSubmissions] = useState<LovedOneSubmission[]>([]);
 
-  // One-time cleanup of any legacy auth payload that older builds may have
-  // persisted in localStorage. The legacy login path has been removed in favor
-  // of Supabase-backed authentication (AuthContext).
+  // One-time cleanup of legacy localStorage payloads from older builds.
   useEffect(() => {
     try {
       localStorage.removeItem('rumor-radar-user-v1');
+      localStorage.removeItem('rumor-radar-state-v3');
     } catch {
       /* ignore */
     }
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions }),
-    );
-  }, [rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions]);
-
-  // Merge any live (Supabase) rumors on top of the dummy seed and subscribe
-  // to realtime changes so newly-approved rumors appear instantly on the heatmap.
+  // --- Public rumors + realtime ---
   useEffect(() => {
     let cancelled = false;
-    const PUBLIC_STATUSES: RumorStatus[] = ['approved', 'debunked', 'verified-true'];
 
     const upsertLive = (incoming: Rumor[]) => {
       if (cancelled || incoming.length === 0) return;
@@ -177,16 +277,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setRumors((prev) => prev.filter((r) => r.id !== id));
     };
 
-    // Track previous status per rumor so we only toast on real transitions
-    // (e.g. pending → approved), not on every UPDATE echo or initial load.
     const lastStatus = new Map<string, RumorStatus>();
 
     (async () => {
       const { data, error } = await supabase
         .from('rumors')
-        .select(
-          'id, title, description, origin_country, subject_country, topic, latitude, longitude, intensity, status, source_language, submitted_at, debunked_by, debunked_at, debunk_content, debunk_sources, verified_by, verified_at, verification_content, verification_sources',
-        )
+        .select(RUMOR_COLS)
         .in('status', PUBLIC_STATUSES)
         .order('submitted_at', { ascending: false })
         .limit(500);
@@ -195,8 +291,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         return;
       }
       const rows = (data ?? []) as RumorRow[];
-      // Seed the status map so we don't toast for rumors already approved
-      // before the user opened the page.
       for (const row of rows) lastStatus.set(row.id, row.status);
       upsertLive(rows.map(rowToRumor));
     })();
@@ -251,6 +345,271 @@ export function AppProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // --- Public CSO directory + realtime ---
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      const { data, error } = await supabase
+        .from('csos_public')
+        .select('id, name, country, latitude, longitude, verified, description, website, date_joined')
+        .order('date_joined', { ascending: false });
+      if (error) {
+        console.warn('[csos] initial load failed', error.message);
+        return;
+      }
+      if (cancelled) return;
+      // contact_email isn't exposed in the public view — pass empty string.
+      setCsos((data ?? []).map((r) => rowToCSO({ ...(r as CSORow), contact_email: null })));
+    })();
+
+    const channel = supabase
+      .channel('csos-public')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'csos' },
+        (payload) => {
+          if (cancelled) return;
+          if (payload.eventType === 'DELETE') {
+            const id = (payload.old as { id: string }).id;
+            setCsos((prev) => prev.filter((c) => c.id !== id));
+            return;
+          }
+          const row = payload.new as CSORow;
+          if (!row.verified) {
+            setCsos((prev) => prev.filter((c) => c.id !== row.id));
+            return;
+          }
+          const cso = rowToCSO(row);
+          setCsos((prev) => {
+            const i = prev.findIndex((c) => c.id === cso.id);
+            if (i === -1) return [cso, ...prev];
+            const next = prev.slice();
+            next[i] = cso;
+            return next;
+          });
+        },
+      )
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // --- Staff-only feeds: rumor_submissions, debunk_submissions, cso_verification_requests, loved_one_submissions ---
+  // RLS already gates these to staff; non-staff users will simply get empty arrays.
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadAll = async () => {
+      const [subs, debs, regs, loved] = await Promise.all([
+        supabase
+          .from('rumor_submissions')
+          .select('id, claim, description, origin_country, origin_latitude, origin_longitude, subject_country, topic, source, submitted_at, status')
+          .order('submitted_at', { ascending: false })
+          .limit(200),
+        supabase
+          .from('debunk_submissions')
+          .select('id, rumor_id, cso_id, cso_name, content, sources, submission_type, submitted_at, status')
+          .order('submitted_at', { ascending: false })
+          .limit(200),
+        supabase
+          .from('cso_verification_requests')
+          .select('id, organization_name, country, contact_name, contact_email, website, description, submitted_at, status')
+          .order('submitted_at', { ascending: false })
+          .limit(200),
+        supabase
+          .from('loved_one_submissions')
+          .select('id, contact_method, contact_value, best_time_to_call, country, relationship, notes, submitted_at, status')
+          .order('submitted_at', { ascending: false })
+          .limit(200),
+      ]);
+      if (cancelled) return;
+      if (!subs.error) setSubmissions(((subs.data ?? []) as SubmissionRow[]).map(rowToSubmission));
+      if (!debs.error) setDebunkSubmissions(((debs.data ?? []) as DebunkRow[]).map(rowToDebunk));
+      if (!regs.error) setCsoRegistrations(((regs.data ?? []) as CSORegRow[]).map(rowToCSORegistration));
+      if (!loved.error) setLovedOneSubmissions(((loved.data ?? []) as LovedOneRow[]).map(rowToLovedOne));
+    };
+
+    loadAll();
+
+    // Reload on auth state changes so a freshly-signed-in moderator sees the queues.
+    const { data: authSub } = supabase.auth.onAuthStateChange(() => {
+      loadAll();
+    });
+
+    const channel = supabase
+      .channel('staff-queues')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'rumor_submissions' }, () => loadAll())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'debunk_submissions' }, () => loadAll())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'cso_verification_requests' }, () => loadAll())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'loved_one_submissions' }, () => loadAll())
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      authSub.subscription.unsubscribe();
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // ---------- Mutations ----------
+
+  const updateRumorIntensity = useCallback(async (id: string, intensity: number) => {
+    // Optimistic update for the slider UX.
+    setRumors((rs) => rs.map((r) => (r.id === id ? { ...r, intensity } : r)));
+    const { error } = await supabase.from('rumors').update({ intensity }).eq('id', id);
+    if (error) {
+      toast.error('Could not save intensity', { description: error.message });
+    }
+  }, []);
+
+  const updateRumorCoordinates = useCallback(async (id: string, coords: [number, number]) => {
+    setRumors((rs) => rs.map((r) => (r.id === id ? { ...r, coordinates: coords } : r)));
+    const { error } = await supabase
+      .from('rumors')
+      .update({ latitude: coords[0], longitude: coords[1] })
+      .eq('id', id);
+    if (error) {
+      toast.error('Could not save coordinates', { description: error.message });
+    }
+  }, []);
+
+  const approveSubmission = useCallback(async (id: string) => {
+    const sub = submissions.find((s) => s.id === id);
+    if (!sub) return;
+    // 1) mark the submission approved
+    const { error: updateErr } = await supabase
+      .from('rumor_submissions')
+      .update({ status: 'approved', reviewed_at: new Date().toISOString() })
+      .eq('id', id);
+    if (updateErr) {
+      toast.error('Could not approve submission', { description: updateErr.message });
+      return;
+    }
+    // 2) promote into rumors as 'approved' so it appears on the public map
+    const { data: inserted, error: insertErr } = await supabase
+      .from('rumors')
+      .insert({
+        title: sub.claim,
+        description: sub.description ?? sub.claim,
+        origin_country: sub.originCountry,
+        subject_country: sub.subjectCountry ?? null,
+        topic: sub.topic,
+        latitude: sub.originCoordinates[0],
+        longitude: sub.originCoordinates[1],
+        intensity: 0.5,
+        status: 'approved',
+        source_language: 'en',
+      })
+      .select('id')
+      .single();
+    if (insertErr) {
+      toast.error('Could not publish rumor', { description: insertErr.message });
+      return;
+    }
+    if (inserted?.id) {
+      await supabase
+        .from('rumor_submissions')
+        .update({ resulting_rumor_id: inserted.id })
+        .eq('id', id);
+    }
+  }, [submissions]);
+
+  const rejectSubmission = useCallback(async (id: string) => {
+    const { error } = await supabase
+      .from('rumor_submissions')
+      .update({ status: 'rejected', reviewed_at: new Date().toISOString() })
+      .eq('id', id);
+    if (error) toast.error('Could not reject submission', { description: error.message });
+  }, []);
+
+  const submitDebunk = useCallback(async (d: Omit<DebunkSubmission, 'id' | 'submittedAt' | 'status' | 'csoName'>) => {
+    const { data: cso } = await supabase
+      .from('csos')
+      .select('name')
+      .eq('id', d.csoId)
+      .maybeSingle();
+    const { error } = await supabase.from('debunk_submissions').insert({
+      rumor_id: d.rumorId,
+      cso_id: d.csoId,
+      cso_name: cso?.name ?? 'Unknown CSO',
+      content: d.content,
+      sources: d.sources,
+      submission_type: d.submissionType,
+    });
+    if (error) {
+      toast.error('Could not submit debunk', { description: error.message });
+      throw error;
+    }
+  }, []);
+
+  const approveDebunk = useCallback(async (id: string) => {
+    const deb = debunkSubmissions.find((d) => d.id === id);
+    if (!deb) return;
+    const nowIso = new Date().toISOString();
+    const { error: updErr } = await supabase
+      .from('debunk_submissions')
+      .update({ status: 'approved', reviewed_at: nowIso })
+      .eq('id', id);
+    if (updErr) {
+      toast.error('Could not approve debunk', { description: updErr.message });
+      return;
+    }
+    const patch =
+      deb.submissionType === 'debunk'
+        ? {
+            status: 'debunked' as RumorStatus,
+            debunked_by: deb.csoName,
+            debunked_at: nowIso,
+            debunk_content: deb.content,
+            debunk_sources: deb.sources,
+            debunked_by_cso_id: deb.csoId,
+          }
+        : {
+            status: 'verified-true' as RumorStatus,
+            verified_by: deb.csoName,
+            verified_at: nowIso,
+            verification_content: deb.content,
+            verification_sources: deb.sources,
+            verified_by_cso_id: deb.csoId,
+          };
+    const { error: rumErr } = await supabase.from('rumors').update(patch).eq('id', deb.rumorId);
+    if (rumErr) toast.error('Could not update rumor', { description: rumErr.message });
+  }, [debunkSubmissions]);
+
+  const rejectDebunk = useCallback(async (id: string) => {
+    const { error } = await supabase
+      .from('debunk_submissions')
+      .update({ status: 'rejected', reviewed_at: new Date().toISOString() })
+      .eq('id', id);
+    if (error) toast.error('Could not reject debunk', { description: error.message });
+  }, []);
+
+  const approveCSORegistration = useCallback(async (id: string) => {
+    const { error } = await supabase.rpc('approve_cso_request', { _request_id: id });
+    if (error) toast.error('Could not approve CSO', { description: error.message });
+  }, []);
+
+  const rejectCSORegistration = useCallback(async (id: string) => {
+    const { error } = await supabase.rpc('reject_cso_request', { _request_id: id });
+    if (error) toast.error('Could not reject CSO', { description: error.message });
+  }, []);
+
+  // No-op stubs for the legacy local-only mirror APIs. Submissions are written
+  // directly to Supabase from their respective forms; the realtime subscription
+  // above will surface them in the moderator queue.
+  const submitRumor = useCallback((_s: Omit<RumorSubmission, 'id' | 'submittedAt' | 'status'>) => {
+    void _s;
+  }, []);
+  const registerCSO = useCallback((_r: Omit<CSORegistration, 'id' | 'submittedAt' | 'status'>) => {
+    void _r;
+  }, []);
+  const addLovedOneSubmission = useCallback((_s: Omit<LovedOneSubmission, 'id' | 'submittedAt' | 'status'>) => {
+    void _s;
+  }, []);
 
   const value = useMemo<AppState>(
     () => ({
@@ -260,133 +619,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
       debunkSubmissions,
       csoRegistrations,
       lovedOneSubmissions,
-      updateRumorIntensity(id, intensity) {
-        setRumors((rs) => rs.map((r) => (r.id === id ? { ...r, intensity } : r)));
-      },
-      updateRumorCoordinates(id, coords) {
-        setRumors((rs) => rs.map((r) => (r.id === id ? { ...r, coordinates: coords } : r)));
-      },
-      submitRumor(s) {
-        const sub: RumorSubmission = {
-          ...s,
-          id: 'sub-' + uid(),
-          submittedAt: new Date().toISOString(),
-          status: 'pending',
-        };
-        setSubmissions((arr) => [sub, ...arr]);
-      },
-      approveSubmission(id) {
-        const sub = submissions.find((s) => s.id === id);
-        if (!sub) return;
-        setSubmissions((arr) => arr.map((s) => (s.id === id ? { ...s, status: 'approved' } : s)));
-        const newRumor: Rumor = {
-          id: 'r-' + uid(),
-          title: sub.claim,
-          description: sub.description ?? sub.claim,
-          originCountry: sub.originCountry,
-          subjectCountry: sub.subjectCountry,
-          topic: sub.topic,
-          coordinates: sub.originCoordinates,
-          intensity: 0.5,
-          status: 'pending',
-          submittedAt: sub.submittedAt,
-          sourceLanguage: 'en',
-        };
-        setRumors((rs) => [newRumor, ...rs]);
-      },
-      rejectSubmission(id) {
-        setSubmissions((arr) => arr.map((s) => (s.id === id ? { ...s, status: 'rejected' } : s)));
-      },
-      submitDebunk(d) {
-        const cso = csos.find((c) => c.id === d.csoId);
-        const deb: DebunkSubmission = {
-          ...d,
-          csoName: cso?.name ?? 'Unknown CSO',
-          id: 'deb-' + uid(),
-          submittedAt: new Date().toISOString(),
-          status: 'pending',
-        };
-        setDebunkSubmissions((arr) => [deb, ...arr]);
-      },
-      approveDebunk(id) {
-        const deb = debunkSubmissions.find((d) => d.id === id);
-        if (!deb) return;
-        setDebunkSubmissions((arr) =>
-          arr.map((d) => (d.id === id ? { ...d, status: 'approved' } : d)),
-        );
-        setRumors((rs) =>
-          rs.map((r) => {
-            if (r.id !== deb.rumorId) return r;
-            if (deb.submissionType === 'debunk') {
-              return {
-                ...r,
-                status: 'debunked',
-                debunkedBy: deb.csoName,
-                debunkedAt: new Date().toISOString(),
-                debunkContent: deb.content,
-                debunkSources: deb.sources,
-              };
-            }
-            return {
-              ...r,
-              status: 'verified-true',
-              verifiedBy: deb.csoName,
-              verifiedAt: new Date().toISOString(),
-              verificationContent: deb.content,
-              verificationSources: deb.sources,
-            };
-          }),
-        );
-      },
-      rejectDebunk(id) {
-        setDebunkSubmissions((arr) =>
-          arr.map((d) => (d.id === id ? { ...d, status: 'rejected' } : d)),
-        );
-      },
-      registerCSO(r) {
-        const reg: CSORegistration = {
-          ...r,
-          id: 'reg-' + uid(),
-          submittedAt: new Date().toISOString(),
-          status: 'pending',
-        };
-        setCsoRegistrations((arr) => [reg, ...arr]);
-      },
-      approveCSORegistration(id) {
-        const reg = csoRegistrations.find((r) => r.id === id);
-        if (!reg) return;
-        setCsoRegistrations((arr) =>
-          arr.map((r) => (r.id === id ? { ...r, status: 'approved' } : r)),
-        );
-        const cso: CSO = {
-          id: 'cso-' + uid(),
-          name: reg.organizationName,
-          country: reg.country,
-          coordinates: [0, 0],
-          verified: true,
-          description: reg.description,
-          website: reg.website,
-          contactEmail: reg.contactEmail,
-          dateJoined: new Date().toISOString(),
-        };
-        setCsos((cs) => [cso, ...cs]);
-      },
-      rejectCSORegistration(id) {
-        setCsoRegistrations((arr) =>
-          arr.map((r) => (r.id === id ? { ...r, status: 'rejected' } : r)),
-        );
-      },
-      addLovedOneSubmission(s) {
-        const sub: LovedOneSubmission = {
-          ...s,
-          id: 'loved-' + uid(),
-          submittedAt: new Date().toISOString(),
-          status: 'pending',
-        };
-        setLovedOneSubmissions((arr) => [sub, ...arr]);
-      },
+      updateRumorIntensity,
+      updateRumorCoordinates,
+      submitRumor,
+      approveSubmission,
+      rejectSubmission,
+      submitDebunk,
+      approveDebunk,
+      rejectDebunk,
+      registerCSO,
+      approveCSORegistration,
+      rejectCSORegistration,
+      addLovedOneSubmission,
     }),
-    [rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions],
+    [
+      rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions,
+      updateRumorIntensity, updateRumorCoordinates, submitRumor, approveSubmission, rejectSubmission,
+      submitDebunk, approveDebunk, rejectDebunk, registerCSO, approveCSORegistration, rejectCSORegistration,
+      addLovedOneSubmission,
+    ],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
