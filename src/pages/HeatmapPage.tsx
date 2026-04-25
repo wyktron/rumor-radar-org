@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { StatusBadge, IntensityBar } from '@/components/RumorBits';
+import { RumorDetailDialog } from '@/components/RumorDetailDialog';
 import { Filter, ShieldCheck, Send, Info, X, MapPin, HelpCircle, Crosshair, Eye, EyeOff } from 'lucide-react';
 import { relativeTime } from '@/lib/rumor-utils';
 import { cn } from '@/lib/utils';
@@ -274,7 +275,7 @@ export default function HeatmapPage() {
       </div>
       )}
 
-      <RumorDialog rumor={open} onClose={() => setOpen(null)} />
+      <RumorDetailDialog rumor={open} onClose={() => setOpen(null)} />
     </div>
   );
 }
@@ -326,55 +327,3 @@ function ChipBtn({ active, onClick, children }: { active: boolean; onClick: () =
   );
 }
 
-function RumorDialog({ rumor, onClose }: { rumor: Rumor | null; onClose: () => void }) {
-  return (
-    <Dialog open={!!rumor} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-xl">
-        {rumor && (
-          <>
-            <DialogHeader>
-              <div className="flex items-center gap-2 mb-2"><StatusBadge status={rumor.status} /></div>
-              <DialogTitle className="text-xl leading-tight">{rumor.title}</DialogTitle>
-              <DialogDescription className="font-mono text-xs">
-                Origin · {rumor.originCountry}
-                {rumor.subjectCountry && rumor.subjectCountry !== rumor.originCountry && ` · about ${rumor.subjectCountry}`}
-                {' · '}{rumor.topic} · {relativeTime(rumor.submittedAt)}
-              </DialogDescription>
-            </DialogHeader>
-            <p className="text-sm text-muted-foreground">{rumor.description}</p>
-            <IntensityBar rumor={rumor} />
-            {rumor.debunkContent && (
-              <div className="rounded-md border border-success/30 bg-success/5 p-3 space-y-2">
-                <div className="flex items-center gap-2 text-success text-xs font-mono uppercase tracking-wider">
-                  <ShieldCheck className="h-3.5 w-3.5" /> Debunked by {rumor.debunkedBy}
-                </div>
-                <p className="text-sm">{rumor.debunkContent}</p>
-                {rumor.debunkSources && rumor.debunkSources.length > 0 && (
-                  <ul className="text-xs space-y-0.5">
-                    {rumor.debunkSources.map((s) => <li key={s}><a className="text-primary hover:underline" href={s} target="_blank" rel="noreferrer">{s}</a></li>)}
-                  </ul>
-                )}
-              </div>
-            )}
-            {rumor.verificationContent && (
-              <div className="rounded-md border border-signal-verified/30 bg-signal-verified/5 p-3 space-y-2">
-                <div className="flex items-center gap-2 text-signal-verified text-xs font-mono uppercase tracking-wider">
-                  <ShieldCheck className="h-3.5 w-3.5" /> Verified true by {rumor.verifiedBy}
-                </div>
-                <p className="text-sm">{rumor.verificationContent}</p>
-                {rumor.verificationSources && rumor.verificationSources.length > 0 && (
-                  <ul className="text-xs space-y-0.5">
-                    {rumor.verificationSources.map((s) => <li key={s}><a className="text-primary hover:underline" href={s} target="_blank" rel="noreferrer">{s}</a></li>)}
-                  </ul>
-                )}
-              </div>
-            )}
-            <div className="flex justify-end">
-              <Button variant="outline" size="sm" onClick={onClose}>Close</Button>
-            </div>
-          </>
-        )}
-      </DialogContent>
-    </Dialog>
-  );
-}
