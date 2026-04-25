@@ -16,17 +16,10 @@ import { toast } from 'sonner';
 import { Send, MapPin, Info, Crosshair, Loader2, Sparkles } from 'lucide-react';
 import type { Topic } from '@/types';
 
-function nearestCountry(lat: number, lng: number): string {
-  let best = COUNTRIES[0];
-  let bestDist = Infinity;
-  for (const c of COUNTRIES) {
-    const dLat = c.coordinates[0] - lat;
-    const dLng = c.coordinates[1] - lng;
-    const d = dLat * dLat + dLng * dLng;
-    if (d < bestDist) { bestDist = d; best = c; }
-  }
-  return best.name;
-}
+// NOTE: We intentionally do NOT auto-select a country from coordinates.
+// Reverse-geocoding small or disputed regions to a sovereign country is
+// error-prone and politically sensitive — the user must pick the country
+// themselves. We only show the raw coordinates they marked.
 
 const schema = z.object({
   claim: z.string().trim().min(8, 'Claim must be at least 8 characters').max(280),
@@ -49,7 +42,7 @@ export default function SubmitRumorPage() {
   const [form, setForm] = useState({
     claim: '',
     description: '',
-    originCountry: pickedCoords ? nearestCountry(pickedCoords[0], pickedCoords[1]) : '',
+    originCountry: '',
     subjectCountry: '',
     topic: '',
     source: '',
@@ -156,11 +149,9 @@ export default function SubmitRumorPage() {
             <Crosshair className="h-4 w-4" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-success">Location captured</div>
-            <div className="text-sm font-semibold mt-0.5">
-              {t('submit.heardNear')} <span className="text-foreground">{form.originCountry || '—'}</span>
-            </div>
-            <div className="text-xs text-muted-foreground font-mono mt-0.5">{coordLabel}</div>
+            <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-success">{t('submit.locationCaptured', { defaultValue: 'Location captured' })}</div>
+            <div className="text-sm font-semibold mt-0.5 font-mono">{coordLabel || '—'}</div>
+            <div className="text-xs text-muted-foreground mt-0.5">{t('submit.pickedHint', { defaultValue: 'Pick the country below — we don\'t guess it for you.' })}</div>
           </div>
           <Button variant="outline" size="sm" className="text-xs gap-1.5" onClick={() => nav('/')}>
             <MapPin className="h-3.5 w-3.5" /> {t('submit.changeSpot')}
