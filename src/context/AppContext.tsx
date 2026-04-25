@@ -281,13 +281,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const lastStatus = new Map<string, RumorStatus>();
 
+    // Staff users also see 'pending' rumors so the moderation dashboard works.
+    const visibleStatuses: RumorStatus[] = isStaff
+      ? [...PUBLIC_STATUSES, 'pending', 'rejected']
+      : PUBLIC_STATUSES;
+
     (async () => {
       const { data, error } = await supabase
         .from('rumors')
         .select(RUMOR_COLS)
-        .in('status', PUBLIC_STATUSES)
+        .in('status', visibleStatuses)
         .order('submitted_at', { ascending: false })
-        .limit(500);
+        .limit(1000);
       if (error) {
         console.warn('[rumors] initial load failed', error.message);
         return;
