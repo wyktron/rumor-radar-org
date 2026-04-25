@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import { useApp } from '@/context/AppContext';
 import type { Rumor } from '@/types';
@@ -183,37 +183,12 @@ export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = fal
     };
   }, [pickMode, onPick]);
 
-  // legend
-  const legend = useMemo(
-    () => [
-      { label: 'Low', color: 'hsl(var(--signal-low))' },
-      { label: 'Moderate', color: 'hsl(var(--signal-moderate))' },
-      { label: 'High', color: 'hsl(var(--signal-high))' },
-      { label: 'Viral', color: 'hsl(var(--signal-viral))' },
-      { label: 'Debunked', color: 'hsl(var(--signal-debunked))' },
-      { label: 'Verified true', color: 'hsl(var(--signal-verified))' },
-    ],
-    [],
-  );
-
   return (
     <div className="relative h-full w-full">
       <div ref={containerRef} className="h-full w-full overflow-hidden" />
       {/* Radar sweep overlay — purely decorative, non-interactive */}
       <div className="radar-overlay pointer-events-none absolute inset-0 z-[200] overflow-hidden">
         <div className="radar-sweep-cone" />
-      </div>
-      {/* Signal intensity legend — positioned above the bottom nav (h-14) so it's always visible */}
-      <div className="pointer-events-none absolute bottom-20 left-1/2 -translate-x-1/2 z-[400] glass-panel rounded-md px-3 py-2 text-xs hidden xl:block">
-        <div className="font-mono uppercase tracking-wider text-[10px] text-muted-foreground mb-1.5">Signal intensity</div>
-        <div className="flex flex-wrap gap-x-3 gap-y-1">
-          {legend.map((l) => (
-            <div key={l.label} className="flex items-center gap-1.5">
-              <span className="signal-dot h-2 w-2" style={{ color: l.color }} />
-              <span>{l.label}</span>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );
