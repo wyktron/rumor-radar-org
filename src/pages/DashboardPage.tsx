@@ -33,6 +33,7 @@ function ModeratorDashboard() {
     rumors, csos, submissions, debunkSubmissions, csoRegistrations,
     approveSubmission, rejectSubmission, approveDebunk, rejectDebunk,
     approveCSORegistration, rejectCSORegistration, updateRumorIntensity,
+    approveRumor, rejectRumor, bulkApproveRumors,
   } = useApp();
   const { user, isAdmin } = useAuth();
   const displayName = (user?.user_metadata as { display_name?: string } | undefined)?.display_name
