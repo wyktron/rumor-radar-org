@@ -6,9 +6,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Heart, AlertTriangle, ShieldCheck, Phone, MessageSquare, Mail } from 'lucide-react';
+import { Heart, AlertTriangle, ShieldCheck, Phone, MessageSquare, Mail, Loader2 } from 'lucide-react';
 import { COUNTRIES } from '@/constants/countries';
 import { useApp } from '@/context/AppContext';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import type { LovedOneContactMethod, LovedOneCallTime } from '@/types';
 
@@ -19,6 +20,7 @@ interface Props {
 export function HelpLovedOneDialog({ trigger }: Props) {
   const { addLovedOneSubmission } = useApp();
   const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [method, setMethod] = useState<LovedOneContactMethod>('phone');
   const [contactValue, setContactValue] = useState('');
   const [bestTime, setBestTime] = useState<LovedOneCallTime>('anytime');
@@ -47,12 +49,24 @@ export function HelpLovedOneDialog({ trigger }: Props) {
     setNotes('');
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!contactValue.trim() || !country || !relationship.trim() || !notes.trim()) {
       toast.error('Please fill all required fields');
       return;
     }
+    setBusy(true);
+    const countryRow = COUNTRIES.find((c) => c.name === country);
+    const { error } = await supabase.from('loved_one_submissions').insert({
+      contact_method: method,
+      contact_value: contactValue.trim(),
+      best_time_to_call: method === 'phone' ? bestTime : null,
+      country,
+      country_code: countryRow?.code ?? null,
+      relationship: relationship.trim(),
+      notes: notes.trim(),
+    });
+    // Mirror locally so the moderator dashboard (still localStorage-backed in this batch) shows it
     addLovedOneSubmission({
       contactMethod: method,
       contactValue: contactValue.trim(),
@@ -61,6 +75,11 @@ export function HelpLovedOneDialog({ trigger }: Props) {
       relationship: relationship.trim(),
       notes: notes.trim(),
     });
+    setBusy(false);
+    if (error) {
+      toast.error('Submission failed', { description: error.message });
+      return;
+    }
     toast.success('Outreach request received', {
       description: 'Our team will reach out with verified information.',
     });
@@ -217,8 +236,9 @@ export function HelpLovedOneDialog({ trigger }: Props) {
 
           <div className="flex justify-end gap-2 pt-1">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button type="submit" className="gap-1.5">
-              <Heart className="h-3.5 w-3.5" /> Submit outreach
+            <Button type="submit" disabled={busy} className="gap-1.5">
+              {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Heart className="h-3.5 w-3.5" />}
+              Submit outreach
             </Button>
           </div>
         </form>
