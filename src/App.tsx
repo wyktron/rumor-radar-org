@@ -10,8 +10,10 @@ import { AuthProvider } from "@/context/AuthContext";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { SubscribeDialog } from "@/components/SubscribeDialog";
+import { DonationDialog } from "@/components/DonationDialog";
 import { WelcomeDialogs } from "@/components/WelcomeDialogs";
-import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail, Heart } from "lucide-react";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail, Heart, CreditCard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Index from "./pages/Index.tsx";
 import TimelinePage from "./pages/TimelinePage";
@@ -21,6 +23,8 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import ImpactPage from "./pages/ImpactPage";
 import AboutPage from "./pages/AboutPage";
+import PricingPage from "./pages/PricingPage";
+import CheckoutReturnPage from "./pages/CheckoutReturnPage";
 import CSOReviewPage from "./pages/CSOReviewPage";
 import NotFound from "./pages/NotFound.tsx";
 
@@ -32,11 +36,13 @@ const secondaryLinks: { to: string; key: string; icon: typeof Map; end?: boolean
   { to: '/csos', key: 'csos', icon: Users },
   { to: '/impact', key: 'impact', icon: BarChart3 },
   { to: '/dashboard', key: 'dashboard', icon: LayoutDashboard },
+  { to: '/pricing', key: 'pricing', icon: CreditCard },
   { to: '/about', key: 'about', icon: Info },
 ];
 
 function SecondaryNav() {
   const [subscribeOpen, setSubscribeOpen] = useState(false);
+  const [donateOpen, setDonateOpen] = useState(false);
   const { t } = useTranslation();
   return (
     <>
@@ -71,13 +77,18 @@ function SecondaryNav() {
             >
               <Mail className="h-3.5 w-3.5" /> {t('nav.subscribe')}
             </Button>
-            <Button size="sm" className="gap-1.5 text-xs h-8 bg-destructive text-destructive-foreground hover:bg-destructive/90" disabled title={t('nav.comingSoon')}>
+            <Button
+              size="sm"
+              className="gap-1.5 text-xs h-8 bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => setDonateOpen(true)}
+            >
               <Heart className="h-3.5 w-3.5" /> {t('nav.donate')}
             </Button>
           </div>
         </div>
       </nav>
       <SubscribeDialog open={subscribeOpen} onOpenChange={setSubscribeOpen} />
+      <DonationDialog open={donateOpen} onOpenChange={setDonateOpen} />
     </>
   );
 }
@@ -128,6 +139,8 @@ const App = () => (
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/impact" element={<ImpactPage />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="/pricing" element={<PricingPage />} />
+                <Route path="/checkout/return" element={<CheckoutReturnPage />} />
                 <Route path="/staff/cso-review" element={<CSOReviewPage />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
