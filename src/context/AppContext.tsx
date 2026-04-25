@@ -14,6 +14,7 @@ import type {
   LovedOneStatus,
 } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 
 // ---------- Row → domain mappers ----------
@@ -242,6 +243,7 @@ const RUMOR_COLS =
 const PUBLIC_STATUSES: RumorStatus[] = ['approved', 'debunked', 'verified-true'];
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const { isStaff } = useAuth();
   const [rumors, setRumors] = useState<Rumor[]>([]);
   const [csos, setCsos] = useState<CSO[]>([]);
   const [submissions, setSubmissions] = useState<RumorSubmission[]>([]);
@@ -279,13 +281,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const lastStatus = new Map<string, RumorStatus>();
 
+    // Staff users also see 'pending' rumors so the moderation dashboard works.
+    const visibleStatuses: RumorStatus[] = isStaff
+      ? [...PUBLIC_STATUSES, 'pending', 'rejected']
+      : PUBLIC_STATUSES;
+
     (async () => {
       const { data, error } = await supabase
         .from('rumors')
         .select(RUMOR_COLS)
-        .in('status', PUBLIC_STATUSES)
+        .in('status', visibleStatuses)
         .order('submitted_at', { ascending: false })
-        .limit(500);
+        .limit(1000);
       if (error) {
         console.warn('[rumors] initial load failed', error.message);
         return;
@@ -328,7 +335,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           const row = payload.new as RumorRow;
           const prev = lastStatus.get(row.id);
           lastStatus.set(row.id, row.status);
-          if (!PUBLIC_STATUSES.includes(row.status)) {
+          if (!visibleStatuses.includes(row.status)) {
             removeLive(row.id);
             return;
           }
@@ -343,7 +350,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       cancelled = true;
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [isStaff]);
 
   // --- Public CSO directory + realtime ---
   useEffect(() => {
