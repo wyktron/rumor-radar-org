@@ -44,42 +44,51 @@ function SecondaryNav() {
   return (
     <>
       <nav className="fixed bottom-0 left-0 right-0 border-t border-border/60 bg-background/85 backdrop-blur-xl z-[1000]">
-        <div className="flex items-center justify-between gap-3 px-4 py-2">
-          <div className="flex items-center gap-1 overflow-x-auto">
+        <div className="flex flex-col gap-2 px-2 py-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-4">
+          <div className="flex flex-wrap items-center justify-center gap-1 sm:flex-nowrap sm:overflow-x-auto sm:justify-start">
             {secondaryLinks.map((l) => (
               <RouterNavLink
                 key={l.to}
                 to={l.to}
                 end={l.end}
+                aria-label={t(`nav.${l.key}`)}
+                title={t(`nav.${l.key}`)}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-colors',
+                    'flex items-center justify-center gap-1.5 rounded-md whitespace-nowrap transition-colors',
+                    'p-2 sm:px-3 sm:py-1.5 text-xs font-medium',
                     isActive
                       ? 'text-primary bg-primary/10'
                       : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50',
                   )
                 }
               >
-                <l.icon className="h-3.5 w-3.5" />
-                {t(`nav.${l.key}`)}
+                <l.icon className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+                <span className="hidden sm:inline">{t(`nav.${l.key}`)}</span>
               </RouterNavLink>
             ))}
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center justify-center gap-2 shrink-0 sm:justify-end">
             <Button
               variant="outline"
               size="sm"
-              className="gap-1.5 text-xs h-8"
+              aria-label={t('nav.subscribe')}
+              title={t('nav.subscribe')}
+              className="gap-1.5 text-xs h-8 px-2 sm:px-3"
               onClick={() => setSubscribeOpen(true)}
             >
-              <Mail className="h-3.5 w-3.5" /> {t('nav.subscribe')}
+              <Mail className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+              <span className="hidden sm:inline">{t('nav.subscribe')}</span>
             </Button>
             <Button
               size="sm"
-              className="gap-1.5 text-xs h-8 bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              aria-label={t('nav.donate')}
+              title={t('nav.donate')}
+              className="gap-1.5 text-xs h-8 px-2 sm:px-3 bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={() => setDonateOpen(true)}
             >
-              <Heart className="h-3.5 w-3.5" /> {t('nav.donate')}
+              <Heart className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+              <span className="hidden sm:inline">{t('nav.donate')}</span>
             </Button>
           </div>
         </div>
