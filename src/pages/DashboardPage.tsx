@@ -179,6 +179,19 @@ function ModeratorDashboard() {
                       <span className="text-xs text-muted-foreground font-mono">{r.originCountry}</span>
                     </div>
                     <div className="text-sm font-medium line-clamp-1">{r.title}</div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      className="h-6 px-2 text-[10px] gap-1 text-primary"
+                      disabled={translatingId === r.id}
+                      onClick={() => handleTranslate(r.id)}
+                    >
+                      {translatingId === r.id
+                        ? <Loader2 className="h-3 w-3 animate-spin" />
+                        : <Languages className="h-3 w-3" />}
+                      Translate (AI)
+                    </Button>
                   </div>
                   <div className="space-y-1.5">
                     <Slider
