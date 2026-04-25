@@ -1254,6 +1254,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      approve_cso_request: {
+        Args: { _notes?: string; _request_id: string }
+        Returns: string
+      }
+      cso_document_signed_url: {
+        Args: { _document_id: string; _expires_seconds?: number }
+        Returns: string
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -1286,6 +1294,10 @@ export type Database = {
           msg_id: number
           read_ct: number
         }[]
+      }
+      reject_cso_request: {
+        Args: { _notes?: string; _request_id: string }
+        Returns: boolean
       }
     }
     Enums: {

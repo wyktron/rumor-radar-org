@@ -2,16 +2,21 @@ import { useApp } from '@/context/AppContext';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ShieldCheck, Globe, Mail, Calendar } from 'lucide-react';
+import { CSORegistrationDialog } from '@/components/CSORegistrationDialog';
 
 export default function CSONetworkPage() {
   const { csos } = useApp();
   return (
     <div className="container py-6 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">CSO Network</h1>
-        <p className="text-sm text-muted-foreground">
-          Verified civil society organizations partnering with Rumor Radar to investigate and debunk claims.
-        </p>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-bold">CSO Network</h1>
+          <p className="text-sm text-muted-foreground max-w-2xl">
+            Verified civil society organizations partnering with Rumor Radar to investigate and debunk claims. Are
+            you a fact-checker or research unit? Apply for verification to publish on the platform.
+          </p>
+        </div>
+        <CSORegistrationDialog />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
