@@ -197,6 +197,18 @@ export default function SubmitRumorPage() {
             />
           </Field>
 
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={aiBusy}
+            onClick={handleAiAssist}
+            className="w-full gap-2 border-primary/40 text-primary hover:bg-primary/10"
+          >
+            {aiBusy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+            AI clean-up & auto-fill
+          </Button>
+
           <Field
             label="Origin country *"
             hint="Where YOU heard the rumor. For online sources, use the country where the platform/agency is registered."
