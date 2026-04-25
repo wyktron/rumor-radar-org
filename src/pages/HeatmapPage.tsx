@@ -275,7 +275,7 @@ export default function HeatmapPage() {
       </div>
       )}
 
-      <RumorDialog rumor={open} onClose={() => setOpen(null)} />
+      <RumorDetailDialog rumor={open} onClose={() => setOpen(null)} />
     </div>
   );
 }
