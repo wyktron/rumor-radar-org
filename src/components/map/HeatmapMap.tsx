@@ -155,6 +155,10 @@ export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = fal
   return (
     <div className="relative h-full w-full">
       <div ref={containerRef} className="h-full w-full overflow-hidden" />
+      {/* Radar sweep overlay — purely decorative, non-interactive */}
+      <div className="radar-overlay pointer-events-none absolute inset-0 z-[200] overflow-hidden">
+        <div className="radar-sweep-cone" />
+      </div>
       {/* Signal intensity legend — positioned above the bottom nav (h-14) so it's always visible */}
       <div className="pointer-events-none absolute bottom-20 left-1/2 -translate-x-1/2 z-[400] glass-panel rounded-md px-3 py-2 text-xs hidden xl:block">
         <div className="font-mono uppercase tracking-wider text-[10px] text-muted-foreground mb-1.5">Signal intensity</div>
