@@ -37,6 +37,10 @@ const inviteCsoSchema = z.object({
 const inviteRespondSchema = z.object({
   partyType: z.enum(['person', 'institution', 'organization']),
   name: z.string().trim().min(2, 'Name is required').max(200),
+  role: z.string().trim().max(200).optional().or(z.literal('')),
+  affiliation: z.string().trim().max(200).optional().or(z.literal('')),
+  jurisdiction: z.string().trim().max(200).optional().or(z.literal('')),
+  website: z.string().trim().url('Enter a valid URL').max(500).optional().or(z.literal('')),
   email: z.string().trim().email('Valid email required').max(320),
   message: z.string().trim().max(2000).optional().or(z.literal('')),
 });
