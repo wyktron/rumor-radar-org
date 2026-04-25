@@ -6,6 +6,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
+import { AuthProvider } from "@/context/AuthContext";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { SubscribeDialog } from "@/components/SubscribeDialog";
@@ -112,24 +113,26 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <AppProvider>
-        <BrowserRouter>
-          <WelcomeDialogs />
-          <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/timeline" element={<TimelinePage />} />
-              <Route path="/csos" element={<CSONetworkPage />} />
-              <Route path="/submit" element={<SubmitRumorPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/impact" element={<ImpactPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </AppProvider>
+      <AuthProvider>
+        <AppProvider>
+          <BrowserRouter>
+            <WelcomeDialogs />
+            <Routes>
+              <Route element={<Layout />}>
+                <Route path="/" element={<Index />} />
+                <Route path="/timeline" element={<TimelinePage />} />
+                <Route path="/csos" element={<CSONetworkPage />} />
+                <Route path="/submit" element={<SubmitRumorPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/impact" element={<ImpactPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </AppProvider>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

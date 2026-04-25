@@ -4,14 +4,14 @@ import { Radar, Phone, Globe, User as UserIcon, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { useApp } from '@/context/AppContext';
+import { useAuth } from '@/context/AuthContext';
 import { HOTLINE } from '@/constants/countries';
 import { HelpLovedOneDialog } from '@/components/HelpLovedOneDialog';
 import { CallExplainerDialog } from '@/components/CallExplainerDialog';
 import { SUPPORTED_LANGS } from '@/i18n';
 
 export function Header() {
-  const { user, logout } = useApp();
+  const { user, signOut, isStaff } = useAuth();
   const { t, i18n } = useTranslation();
   const [callOpen, setCallOpen] = useState(false);
   const currentLang = SUPPORTED_LANGS.find((l) => l.code === i18n.resolvedLanguage) ?? SUPPORTED_LANGS[0];
@@ -88,10 +88,10 @@ export function Header() {
               <RouterNavLink to="/dashboard">
                 <Button size="sm" variant="default" className="gap-1.5 font-mono uppercase tracking-wider text-xs">
                   <UserIcon className="h-3.5 w-3.5" />
-                  {user.role === 'moderator' ? t('header.console') : t('header.cso')}
+                  {isStaff ? t('header.console') : t('header.cso')}
                 </Button>
               </RouterNavLink>
-              <Button size="icon" variant="ghost" onClick={logout} aria-label={t('header.logOut')}>
+              <Button size="icon" variant="ghost" onClick={() => signOut()} aria-label={t('header.logOut')}>
                 <LogOut className="h-4 w-4" />
               </Button>
             </>
