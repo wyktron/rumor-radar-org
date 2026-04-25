@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { useApp } from '@/context/AppContext';
@@ -40,6 +41,7 @@ const NONE = '__none__';
 
 export default function SubmitRumorPage() {
   const { submitRumor } = useApp();
+  const { t } = useTranslation();
   const nav = useNavigate();
   const location = useLocation();
   const pickedCoords = (location.state as { originCoordinates?: [number, number] } | null)?.originCoordinates;
@@ -90,7 +92,7 @@ export default function SubmitRumorPage() {
   // If user navigates here directly without picking, send them back to the map to pick a spot
   useEffect(() => {
     if (!pickedCoords) {
-      toast.info('Pick the spot on the map where you heard the rumor first.');
+      toast.info(t('submit.pickFirst'));
       nav('/', { replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -142,7 +144,7 @@ export default function SubmitRumorPage() {
       toast.error('Submission failed', { description: error.message });
       return;
     }
-    toast.success('Submission received', { description: 'A moderator will review it shortly.' });
+    toast.success(t('submit.received'), { description: t('submit.receivedDesc') });
     nav('/timeline');
   }
 
@@ -156,12 +158,12 @@ export default function SubmitRumorPage() {
           <div className="flex-1 min-w-0">
             <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-success">Location captured</div>
             <div className="text-sm font-semibold mt-0.5">
-              You heard this rumor near <span className="text-foreground">{form.originCountry || '—'}</span>
+              {t('submit.heardNear')} <span className="text-foreground">{form.originCountry || '—'}</span>
             </div>
             <div className="text-xs text-muted-foreground font-mono mt-0.5">{coordLabel}</div>
           </div>
           <Button variant="outline" size="sm" className="text-xs gap-1.5" onClick={() => nav('/')}>
-            <MapPin className="h-3.5 w-3.5" /> Change spot
+            <MapPin className="h-3.5 w-3.5" /> {t('submit.changeSpot')}
           </Button>
         </div>
       </Card>
