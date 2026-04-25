@@ -254,9 +254,6 @@ export const ALL_COUNTRIES: { code: string; name: string }[] = [
   // be selectable. Codes use ISO 3166-1 user-assigned (X*) or widely-used
   // unofficial codes where no ISO code exists.
   { code: 'XK', name: 'Kosovo' },
-  { code: 'TW', name: 'Taiwan' }, // listed above as well; kept for clarity
-  { code: 'PS', name: 'Palestine' },
-  { code: 'EH', name: 'Western Sahara' },
   { code: 'XT', name: 'Transnistria' },
   { code: 'XA', name: 'Abkhazia' },
   { code: 'XS', name: 'South Ossetia' },
