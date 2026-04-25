@@ -260,17 +260,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       debunkSubmissions,
       csoRegistrations,
       lovedOneSubmissions,
-      user,
-      login(email, password) {
-        const found = dummyUsers.find((u) => u.email === email && u.password === password);
-        if (!found) return { ok: false, error: 'Invalid credentials' };
-        const { password: _pw, ...safe } = found;
-        setUser(safe);
-        return { ok: true };
-      },
-      logout() {
-        setUser(null);
-      },
       updateRumorIntensity(id, intensity) {
         setRumors((rs) => rs.map((r) => (r.id === id ? { ...r, intensity } : r)));
       },
