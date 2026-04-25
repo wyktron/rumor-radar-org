@@ -145,6 +145,42 @@ Deno.serve(async (req) => {
     )
   }
 
+  // Restrict which templates anonymous callers may invoke. Authenticated
+  // users may invoke any registered template (still subject to RLS elsewhere).
+  if (!isAuthenticatedUser && !PUBLIC_CALLABLE_TEMPLATES.has(templateName)) {
+    console.warn('Anon caller attempted non-public template', { templateName, callerIp })
+    return new Response(
+      JSON.stringify({ error: 'This template requires authentication' }),
+      { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+  }
+
+  // Create supabase client up here for rate-limit check
+  const rateLimitClient = createClient(supabaseUrl, supabaseServiceKey)
+
+  if (!isAuthenticatedUser && callerIp !== 'unknown') {
+    const since = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString()
+    const { count } = await rateLimitClient
+      .from('email_send_rate_limits')
+      .select('id', { count: 'exact', head: true })
+      .eq('ip_address', callerIp)
+      .gte('created_at', since)
+
+    if ((count ?? 0) >= RATE_LIMIT_MAX) {
+      console.warn('Rate limit exceeded', { callerIp, templateName })
+      return new Response(
+        JSON.stringify({ error: 'Too many requests. Please try again later.' }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    await rateLimitClient.from('email_send_rate_limits').insert({
+      ip_address: callerIp,
+      recipient_email: recipientEmail ?? null,
+      template_name: templateName,
+    })
+  }
+
   // Resolve effective recipient: template-level `to` takes precedence over
   // the caller-provided recipientEmail. This allows notification templates
   // to always send to a fixed address (e.g., site owner from env var).
