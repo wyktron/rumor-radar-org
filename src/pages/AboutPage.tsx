@@ -2,6 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Radar, Globe, ShieldCheck, Users, Activity, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { ContactForm } from '@/components/ContactForm';
 
 export default function AboutPage() {
   return (
@@ -35,10 +36,12 @@ export default function AboutPage() {
       <Card className="glass-panel p-6 space-y-3">
         <h2 className="text-lg font-bold">Become a CSO partner</h2>
         <p className="text-sm text-muted-foreground">
-          Verified civil society organizations get write access to publish debunks and verifications. Reach out to
-          partnerships@rumorradar.org with your organization profile and recent investigations.
+          Verified civil society organizations get write access to publish debunks and verifications. Use the contact
+          form below with your organization profile and recent investigations, and our partnerships team will be in touch.
         </p>
       </Card>
+
+      <ContactForm />
     </div>
   );
 }
