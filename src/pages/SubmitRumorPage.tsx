@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { COUNTRIES, TOPICS } from '@/constants/countries';
 import { toast } from 'sonner';
-import { Send, MapPin, Info, Crosshair, Loader2 } from 'lucide-react';
+import { Send, MapPin, Info, Crosshair, Loader2, Sparkles } from 'lucide-react';
 import type { Topic } from '@/types';
 
 function nearestCountry(lat: number, lng: number): string {

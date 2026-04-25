@@ -19,3 +19,12 @@ verify_jwt = false
 
 [functions.payments-webhook]
 verify_jwt = false
+
+[functions.summarize-submission]
+verify_jwt = false
+
+[functions.translate-rumor]
+verify_jwt = true
+
+[functions.classify-scraped-rumor]
+verify_jwt = true
