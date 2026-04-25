@@ -46,6 +46,10 @@ interface CsoRequestRow {
   staff_count: number | null;
   years_active: number | null;
   ifcn_signatory: boolean | null;
+  methodology_url: string | null;
+  corrections_policy_url: string | null;
+  funding_disclosure_url: string | null;
+  ownership_disclosure_url: string | null;
   status: string;
   submitted_at: string;
   reviewer_notes: string | null;
