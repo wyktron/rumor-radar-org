@@ -600,6 +600,6 @@ function PendingRumorsPanel({
   );
 }
 
-
+function Empty({ children }: { children: React.ReactNode }) {
   return <Card className="glass-panel p-8 text-center text-sm text-muted-foreground">{children}</Card>;
 }
