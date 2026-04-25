@@ -268,6 +268,20 @@ export default function CSOReviewPage() {
               )}
             </div>
 
+            {(r.methodology_url || r.corrections_policy_url || r.funding_disclosure_url || r.ownership_disclosure_url) && (
+              <div className="border-t border-border pt-3">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-2">
+                  Public policies
+                </div>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                  {r.methodology_url && <PolicyLink label="Methodology" href={r.methodology_url} />}
+                  {r.corrections_policy_url && <PolicyLink label="Corrections" href={r.corrections_policy_url} />}
+                  {r.funding_disclosure_url && <PolicyLink label="Funding" href={r.funding_disclosure_url} />}
+                  {r.ownership_disclosure_url && <PolicyLink label="Ownership" href={r.ownership_disclosure_url} />}
+                </ul>
+              </div>
+            )}
+
             {/* Documents */}
             <div className="border-t border-border pt-3">
               <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-2">
