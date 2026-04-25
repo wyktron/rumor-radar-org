@@ -14,6 +14,7 @@ import type {
   LovedOneStatus,
 } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 
 // ---------- Row → domain mappers ----------
