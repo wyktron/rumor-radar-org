@@ -189,6 +189,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setRumors((prev) => prev.filter((r) => r.id !== id));
     };
 
+    // Track previous status per rumor so we only toast on real transitions
+    // (e.g. pending → approved), not on every UPDATE echo or initial load.
+    const lastStatus = new Map<string, RumorStatus>();
+
     (async () => {
       const { data, error } = await supabase
         .from('rumors')
@@ -202,12 +206,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
         console.warn('[rumors] initial load failed', error.message);
         return;
       }
-      upsertLive((data ?? []).map((row) => rowToRumor(row as RumorRow)));
+      const rows = (data ?? []) as RumorRow[];
+      // Seed the status map so we don't toast for rumors already approved
+      // before the user opened the page.
+      for (const row of rows) lastStatus.set(row.id, row.status);
+      upsertLive(rows.map(rowToRumor));
     })();
-
-    // Track previous status per rumor so we only toast on real transitions
-    // (e.g. pending → approved), not on every UPDATE echo.
-    const lastStatus = new Map<string, RumorStatus>();
 
     const announce = (rumor: Rumor, prevStatus: RumorStatus | undefined) => {
       if (prevStatus === rumor.status) return;
