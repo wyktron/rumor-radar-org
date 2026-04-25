@@ -207,8 +207,8 @@ export function RumorDetailDialog({ rumor, onClose }: { rumor: Rumor | null; onC
                 </Button>
               </div>
 
-              <div className="rounded-md border border-accent/30 bg-accent/5 p-3 space-y-2">
-                <div className="flex items-center gap-2 text-accent-foreground text-[11px] font-mono uppercase tracking-wider">
+              <div className="rounded-md border border-secondary-foreground/20 bg-secondary/40 p-3 space-y-2">
+                <div className="flex items-center gap-2 text-foreground text-[11px] font-mono uppercase tracking-wider">
                   <Building2 className="h-3.5 w-3.5" /> Is this about someone?
                 </div>
                 <p className="text-sm text-muted-foreground">
