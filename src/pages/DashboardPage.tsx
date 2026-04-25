@@ -106,6 +106,15 @@ function ModeratorDashboard() {
           <ScrapeRumorsPanel />
         </TabsContent>
 
+        <TabsContent value="pending-rumors" className="space-y-2">
+          <PendingRumorsPanel
+            rumors={rumors.filter((r) => r.status === 'pending')}
+            onApprove={approveRumor}
+            onReject={rejectRumor}
+            onBulkApprove={bulkApproveRumors}
+          />
+        </TabsContent>
+
         <TabsContent value="submissions" className="space-y-2">
           {submissions.filter((s) => s.status === 'pending').length === 0 && <Empty>No pending submissions.</Empty>}
           {submissions.filter((s) => s.status === 'pending').map((s) => (
