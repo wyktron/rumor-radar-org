@@ -85,6 +85,13 @@ export function Header() {
           </DropdownMenu>
           {user ? (
             <>
+              {isStaff && (
+                <RouterNavLink to="/staff/cso-review" className="hidden md:block">
+                  <Button size="sm" variant="ghost" className="gap-1.5 font-mono uppercase tracking-wider text-xs">
+                    Review
+                  </Button>
+                </RouterNavLink>
+              )}
               <RouterNavLink to="/dashboard">
                 <Button size="sm" variant="default" className="gap-1.5 font-mono uppercase tracking-wider text-xs">
                   <UserIcon className="h-3.5 w-3.5" />
