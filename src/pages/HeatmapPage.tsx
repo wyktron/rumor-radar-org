@@ -29,6 +29,7 @@ export default function HeatmapPage() {
   const [submitInfoOpen, setSubmitInfoOpen] = useState(false);
   const [pickMode, setPickMode] = useState(false);
   const [panelsHidden, setPanelsHidden] = useState(false);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const startSubmitFlow = () => setSubmitInfoOpen(true);
   const enterPickMode = () => {
