@@ -82,7 +82,7 @@ export default function HeatmapPage() {
 
       {/* TOP-CENTER: Toggle floating panels */}
       {!pickMode && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[550]">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[450]">
           <Button
             variant="outline"
             size="sm"
@@ -103,7 +103,7 @@ export default function HeatmapPage() {
       )}
 
       {/* TOP-LEFT: LIVE stats panel */}
-      <div className={cn('absolute top-4 left-4 z-[500] glass-panel rounded-lg p-3 w-52 shadow-lg', panelsHidden && 'hidden')}>
+      <div className={cn('absolute top-4 left-4 z-[400] glass-panel rounded-lg p-3 w-52 shadow-lg', panelsHidden && 'hidden')}>
         <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em]" style={{ color: 'hsl(140 85% 45%)' }}>
           <span
             className="inline-block h-2 w-2 rounded-full ticker-blink"
@@ -122,7 +122,7 @@ export default function HeatmapPage() {
       </div>
 
       {/* TOP-RIGHT: Submit a Rumor */}
-      <div className={cn('absolute top-4 right-4 z-[500]', panelsHidden && 'hidden')}>
+      <div className={cn('absolute top-4 right-4 z-[400]', panelsHidden && 'hidden')}>
         <Button className="gap-1.5 shadow-lg" onClick={startSubmitFlow}>
           <Send className="h-3.5 w-3.5" /> Submit a Rumor
         </Button>
@@ -130,7 +130,7 @@ export default function HeatmapPage() {
 
       {/* PICK MODE banner — appears across the top once the user accepts the explainer */}
       {pickMode && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[600] glass-panel rounded-full px-4 py-2 shadow-lg flex items-center gap-3 animate-fade-in">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[500] glass-panel rounded-full px-4 py-2 shadow-lg flex items-center gap-3 animate-fade-in">
           <Crosshair className="h-4 w-4 text-primary" />
           <span className="text-sm font-medium">
             Click anywhere on the map to mark <strong>where you heard the rumor</strong>
@@ -182,7 +182,7 @@ export default function HeatmapPage() {
       </Dialog>
 
       {/* BOTTOM-LEFT: Trending scale legend — sits above the bottom nav AND above the map's built-in legend */}
-      <div className={cn('absolute bottom-32 left-4 z-[500] glass-panel rounded-lg p-3 w-56 shadow-lg', panelsHidden && 'hidden')}>
+      <div className={cn('absolute bottom-32 left-4 z-[400] glass-panel rounded-lg p-3 w-56 shadow-lg', panelsHidden && 'hidden')}>
         <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">
           Trending scale
         </div>
@@ -202,7 +202,7 @@ export default function HeatmapPage() {
 
       {/* BOTTOM-RIGHT: Filter panel */}
       {!panelsHidden && (
-      <div className="absolute bottom-20 right-4 z-[500] glass-panel rounded-lg p-3 w-72 shadow-lg max-h-[calc(100vh-12rem)] overflow-y-auto">
+      <div className="absolute bottom-20 right-4 z-[400] glass-panel rounded-lg p-3 w-72 shadow-lg max-h-[calc(100vh-12rem)] overflow-y-auto">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
             <Filter className="h-3 w-3" /> Filter rumors
