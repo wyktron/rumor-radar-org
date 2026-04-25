@@ -79,7 +79,7 @@ export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = fal
       const color = intensityColor(r.intensity, r.status);
       const viral = r.intensity >= 0.6 && r.status === 'pending';
       const marker = L.marker(r.coordinates, {
-        icon: buildIcon(color, viral),
+        icon: buildIcon(color, viral, r.id),
         draggable,
       });
       const aboutBadge = r.subjectCountry && r.subjectCountry !== r.originCountry
