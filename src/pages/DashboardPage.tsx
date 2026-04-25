@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useApp } from '@/context/AppContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { StatusBadge, IntensityBar } from '@/components/RumorBits';
-import { Check, X, ShieldCheck, ShieldAlert, Activity, Users, Sliders } from 'lucide-react';
+import { Check, X, ShieldCheck, ShieldAlert, Activity, Users, Sliders, Languages, Loader2 } from 'lucide-react';
 import { relativeTime } from '@/lib/rumor-utils';
 import { toast } from 'sonner';
 
@@ -26,6 +27,23 @@ function ModeratorDashboard() {
     approveSubmission, rejectSubmission, approveDebunk, rejectDebunk,
     approveCSORegistration, rejectCSORegistration, updateRumorIntensity, user,
   } = useApp();
+  const [translatingId, setTranslatingId] = useState<string | null>(null);
+
+  async function handleTranslate(rumorId: string) {
+    setTranslatingId(rumorId);
+    try {
+      const { data, error } = await supabase.functions.invoke('translate-rumor', {
+        body: { rumorId },
+      });
+      if (error) throw error;
+      toast.success(`Translated to ${(data?.languages ?? []).length} languages`);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Translation failed';
+      toast.error(msg);
+    } finally {
+      setTranslatingId(null);
+    }
+  }
 
   const stats = useMemo(() => ({
     total: rumors.length,
@@ -161,6 +179,19 @@ function ModeratorDashboard() {
                       <span className="text-xs text-muted-foreground font-mono">{r.originCountry}</span>
                     </div>
                     <div className="text-sm font-medium line-clamp-1">{r.title}</div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      className="h-6 px-2 text-[10px] gap-1 text-primary"
+                      disabled={translatingId === r.id}
+                      onClick={() => handleTranslate(r.id)}
+                    >
+                      {translatingId === r.id
+                        ? <Loader2 className="h-3 w-3 animate-spin" />
+                        : <Languages className="h-3 w-3" />}
+                      Translate (AI)
+                    </Button>
                   </div>
                   <div className="space-y-1.5">
                     <Slider
