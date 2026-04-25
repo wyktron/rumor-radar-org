@@ -12,7 +12,7 @@ const fr = {
   },
   nav: {
     heatmap: 'Carte', timeline: 'Chronologie', csos: 'Réseau OSC', impact: 'Impact',
-    dashboard: 'Tableau de bord', pricing: 'Tarifs', about: 'À propos', subscribe: 'S’abonner', donate: 'Faire un don',
+    dashboard: 'Tableau de bord', about: 'À propos', subscribe: 'S’abonner', donate: 'Faire un don',
     comingSoon: 'Bientôt disponible',
   },
   welcome: {

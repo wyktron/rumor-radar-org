@@ -19,7 +19,6 @@ const en = {
     csos: 'CSO Network',
     impact: 'Impact',
     dashboard: 'Dashboard',
-    pricing: 'Pricing',
     about: 'About',
     subscribe: 'Subscribe',
     donate: 'Donate',
