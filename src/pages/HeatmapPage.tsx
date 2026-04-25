@@ -147,36 +147,35 @@ export default function HeatmapPage() {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <HelpCircle className="h-5 w-5 text-primary" /> How to Submit a Rumor
+              <HelpCircle className="h-5 w-5 text-primary" /> {t('heatmap.explainerTitle')}
             </DialogTitle>
             <DialogDescription>
-              Help us track how misinformation spreads — not where the events take place.
+              {t('heatmap.explainerDesc')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 text-sm">
             <div className="rounded-md border border-primary/30 bg-primary/5 p-3 space-y-1.5">
               <div className="flex items-center gap-2 font-semibold">
-                <MapPin className="h-4 w-4 text-primary" /> Mark where you heard the rumor
+                <MapPin className="h-4 w-4 text-primary" /> {t('heatmap.markTitle')}
               </div>
               <ul className="list-disc pl-5 text-muted-foreground space-y-1 text-[13px]">
-                <li>Click on the map to mark where you first heard this rumor.</li>
-                <li>This helps us track how misinformation spreads geographically.</li>
+                <li>{t('heatmap.markBullet1')}</li>
+                <li>{t('heatmap.markBullet2')}</li>
               </ul>
             </div>
             <div className="rounded-md border border-warning/40 bg-warning/5 p-3 space-y-1">
-              <div className="font-semibold">Heard it online?</div>
+              <div className="font-semibold">{t('heatmap.onlineTitle')}</div>
               <p className="text-muted-foreground text-[13px]">
-                Select the capital city of the country where the service is registered, or the exact location of
-                the news agency's headquarters.
+                {t('heatmap.onlineDesc')}
               </p>
             </div>
             <p className="text-xs text-muted-foreground">
-              Your submission will be reviewed by our team before appearing on the map.
+              {t('heatmap.reviewNote')}
             </p>
           </div>
           <DialogFooter>
             <Button onClick={enterPickMode} className="w-full gap-2">
-              <Crosshair className="h-4 w-4" /> I understand, take me to the map
+              <Crosshair className="h-4 w-4" /> {t('heatmap.explainerCta')}
             </Button>
           </DialogFooter>
         </DialogContent>
