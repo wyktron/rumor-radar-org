@@ -36,11 +36,26 @@ export default function AboutPage() {
       </div>
 
       <Card className="glass-panel p-6 space-y-3">
-        <h2 className="text-lg font-bold">Become a CSO partner</h2>
+        <h2 className="text-lg font-bold">{t('about.partnerTitle')}</h2>
         <p className="text-sm text-muted-foreground">
-          Verified civil society organizations get write access to publish debunks and verifications. Use the contact
-          form below with your organization profile and recent investigations, and our partnerships team will be in touch.
+          {t('about.partnerDesc')}
         </p>
+      </Card>
+
+      <Card className="glass-panel p-6 space-y-4">
+        <div className="flex items-start gap-3">
+          <div className="h-9 w-9 rounded-md border border-primary/30 bg-primary/10 text-primary flex items-center justify-center shrink-0">
+            <FileText className="h-4 w-4" />
+          </div>
+          <div className="space-y-1">
+            <h2 className="text-lg font-bold">{t('about.legalTitle')}</h2>
+            <p className="text-sm text-muted-foreground">{t('about.legalDesc')}</p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Link to="/terms"><Button variant="outline">{t('about.terms')}</Button></Link>
+          <Link to="/privacy"><Button variant="outline">{t('about.privacyPolicy')}</Button></Link>
+        </div>
       </Card>
 
       <ContactForm />
