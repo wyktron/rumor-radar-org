@@ -13,12 +13,13 @@ interface Props {
   onPick?: (coords: [number, number]) => void;
 }
 
-function buildIcon(color: string, viral: boolean) {
+function buildIcon(color: string, viral: boolean, rumorId: string) {
   return L.divIcon({
     className: '',
-    html: `<div class="rumor-marker" style="color:${color}">
+    html: `<div class="rumor-marker" data-rumor-id="${rumorId}" style="color:${color}">
       ${viral ? '<div class="pulse"></div>' : ''}
       <div class="core"></div>
+      <div class="ping"></div>
     </div>`,
     iconSize: [18, 18],
     iconAnchor: [9, 9],
