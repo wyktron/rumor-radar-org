@@ -386,7 +386,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setLovedOneSubmissions((arr) => [sub, ...arr]);
       },
     }),
-    [rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions, user],
+    [rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
