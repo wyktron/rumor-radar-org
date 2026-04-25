@@ -204,7 +204,7 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
               />
               <span>
                 I agree to the{' '}
-                <a href="/about#terms" target="_blank" rel="noreferrer" className="text-primary underline">
+                <a href="/terms" target="_blank" rel="noreferrer" className="text-primary underline">
                   Terms of Service
                 </a>
                 .
@@ -218,7 +218,7 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
               />
               <span>
                 I have read the{' '}
-                <a href="/about#privacy" target="_blank" rel="noreferrer" className="text-primary underline">
+                <a href="/privacy" target="_blank" rel="noreferrer" className="text-primary underline">
                   Privacy Policy
                 </a>{' '}
                 and consent to receiving emails from Rumor Radar.
