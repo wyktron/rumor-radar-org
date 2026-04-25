@@ -164,7 +164,7 @@ const fr = {
     f6Title: 'Console modérateur',
     f6Desc: 'Approuvez les soumissions, validez les démentis, calibrez l’intensité tendance.',
     partnerTitle: 'Devenir partenaire OSC',
-    partnerDesc: 'Les OSC vérifiées obtiennent un accès en écriture pour publier démentis et vérifications. Contactez partnerships@rumorradar.org avec votre profil et vos enquêtes récentes.',
+    partnerDesc: 'Les OSC vérifiées obtiennent un accès en écriture pour publier démentis et vérifications. Utilisez le formulaire de contact ci-dessous avec votre profil et vos enquêtes récentes, et notre équipe partenariats vous recontactera.',
   },
   submit: {
     captured: 'Position capturée',

@@ -157,7 +157,7 @@ const es = {
     f6Title: 'Consola moderador',
     f6Desc: 'Aprueba envíos, valida desmentidos, calibra la intensidad de tendencia.',
     partnerTitle: 'Conviértete en socio OSC',
-    partnerDesc: 'Las OSC verificadas obtienen acceso de escritura para publicar desmentidos y verificaciones. Escribe a partnerships@rumorradar.org con el perfil de tu organización e investigaciones recientes.',
+    partnerDesc: 'Las OSC verificadas obtienen acceso de escritura para publicar desmentidos y verificaciones. Escribe a the contact form below con el perfil de tu organización e investigaciones recientes.',
   },
   submit: {
     captured: 'Ubicación capturada',
