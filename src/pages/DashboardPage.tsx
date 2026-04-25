@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { StatusBadge, IntensityBar } from '@/components/RumorBits';
-import { Check, X, ShieldCheck, ShieldAlert, Activity, Users, Sliders, Languages, Loader2, KeyRound } from 'lucide-react';
+import { Check, X, ShieldCheck, ShieldAlert, Activity, Users, Sliders, Languages, Loader2, KeyRound, Radar } from 'lucide-react';
 import { relativeTime } from '@/lib/rumor-utils';
 import { toast } from 'sonner';
 import { RolesAdmin } from '@/components/admin/RolesAdmin';
@@ -91,7 +91,7 @@ function ModeratorDashboard() {
           )}
         </TabsList>
 
-        <TabsContent value="overview">
+        <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <StatCard icon={<Activity />} label="Total rumors" value={stats.total} />
             <StatCard icon={<ShieldCheck className="text-success" />} label="Debunked" value={stats.debunked} />
@@ -99,6 +99,7 @@ function ModeratorDashboard() {
             <StatCard icon={<ShieldAlert className="text-warning" />} label="Pending" value={stats.pending} />
             <StatCard icon={<Users className="text-primary" />} label="CSO partners" value={stats.csos} />
           </div>
+          <ScrapeRumorsPanel />
         </TabsContent>
 
         <TabsContent value="submissions" className="space-y-2">
@@ -372,6 +373,112 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
         <div className="h-4 w-4 text-muted-foreground">{icon}</div>
       </div>
       <div className="text-3xl font-bold font-mono">{value}</div>
+    </Card>
+  );
+}
+
+const SCRAPE_PHASES = [
+  { id: 'europe', label: 'Europe' },
+  { id: 'americas', label: 'Americas' },
+  { id: 'mena', label: 'MENA' },
+  { id: 'africa', label: 'Sub-Saharan Africa' },
+  { id: 'asia-oceania', label: 'Asia & Oceania' },
+] as const;
+
+type PhaseId = typeof SCRAPE_PHASES[number]['id'];
+
+function ScrapeRumorsPanel() {
+  const [running, setRunning] = useState<PhaseId | 'all' | null>(null);
+  const [log, setLog] = useState<string[]>([]);
+
+  function append(line: string) {
+    setLog((l) => [...l.slice(-30), line]);
+  }
+
+  async function runPhase(phase: PhaseId): Promise<{ inserted: number; extracted: number } | null> {
+    append(`▶ Starting ${phase}…`);
+    const { data, error } = await supabase.functions.invoke('scrape-rumors-perplexity', {
+      body: { phase },
+    });
+    if (error) {
+      append(`✗ ${phase}: ${error.message}`);
+      toast.error(`${phase}: ${error.message}`);
+      return null;
+    }
+    if (data?.error) {
+      append(`✗ ${phase}: ${data.error}`);
+      toast.error(`${phase}: ${data.error}`);
+      return null;
+    }
+    append(`✓ ${phase}: extracted ${data.extracted}, inserted ${data.inserted}`);
+    return { inserted: data.inserted ?? 0, extracted: data.extracted ?? 0 };
+  }
+
+  async function runAll() {
+    setRunning('all');
+    let totalInserted = 0;
+    for (const p of SCRAPE_PHASES) {
+      const res = await runPhase(p.id);
+      if (res) totalInserted += res.inserted;
+    }
+    setRunning(null);
+    toast.success(`Scrape complete. ${totalInserted} new rumors added.`);
+  }
+
+  async function runOne(phase: PhaseId) {
+    setRunning(phase);
+    await runPhase(phase);
+    setRunning(null);
+  }
+
+  return (
+    <Card className="glass-panel p-4 space-y-3">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary flex items-center gap-1.5">
+            <Radar className="h-3 w-3" /> AI Rumor Scraper
+          </div>
+          <h3 className="text-base font-semibold mt-0.5">Pull this week's misinformation from the open web</h3>
+          <p className="text-xs text-muted-foreground mt-1 max-w-2xl">
+            Uses real-time web search across Reddit, Telegram, fringe news and social media, then classifies
+            each item with AI and drops it on the map as <span className="text-warning font-mono">pending</span> for review.
+          </p>
+        </div>
+        <Button onClick={runAll} disabled={running !== null} className="shrink-0">
+          {running === 'all' ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <Radar className="h-4 w-4 mr-1.5" />}
+          Run all phases
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+        {SCRAPE_PHASES.map((p) => (
+          <Button
+            key={p.id}
+            variant="outline"
+            size="sm"
+            disabled={running !== null}
+            onClick={() => runOne(p.id)}
+            className="justify-start text-xs"
+          >
+            {running === p.id ? (
+              <Loader2 className="h-3 w-3 mr-1.5 animate-spin" />
+            ) : (
+              <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2" />
+            )}
+            {p.label}
+          </Button>
+        ))}
+      </div>
+
+      {log.length > 0 && (
+        <div className="rounded border border-border bg-background/50 p-2 max-h-48 overflow-auto font-mono text-[11px] space-y-0.5">
+          {log.map((line, i) => (
+            <div key={i} className={line.startsWith('✗') ? 'text-destructive' : line.startsWith('✓') ? 'text-success' : 'text-muted-foreground'}>
+              {line}
+            </div>
+          ))}
+        </div>
+      )}
     </Card>
   );
 }
