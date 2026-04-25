@@ -109,6 +109,54 @@ export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = fal
     });
   }, [rumors, draggable, onSelect, updateRumorCoordinates]);
 
+  // Sweep-marker interaction — pulse markers as the radar sweep passes over them.
+  // The CSS sweep rotates 360° every 6s. We compute its current angle from
+  // performance.now() and toggle a `swept` class on markers within the cone.
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const SWEEP_PERIOD_MS = 6000;
+    const CONE_DEG = 28; // matches the visible bright portion of the cone
+    const recentlySwept = new Map<string, number>();
+    let raf = 0;
+
+    const tick = () => {
+      const overlay = container.querySelector<HTMLElement>('.radar-overlay');
+      if (overlay) {
+        const rect = overlay.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const t = (performance.now() % SWEEP_PERIOD_MS) / SWEEP_PERIOD_MS;
+        const sweepDeg = t * 360;
+        const now = performance.now();
+        const markers = container.querySelectorAll<HTMLElement>('.rumor-marker[data-rumor-id]');
+        markers.forEach((el) => {
+          const r = el.getBoundingClientRect();
+          const mx = r.left + r.width / 2 - cx;
+          const my = r.top + r.height / 2 - cy;
+          // Clockwise from 12 o'clock to match conic-gradient(from 0deg)
+          let deg = (Math.atan2(mx, -my) * 180) / Math.PI;
+          if (deg < 0) deg += 360;
+          let diff = sweepDeg - deg;
+          diff = ((diff % 360) + 360) % 360;
+          const id = el.dataset.rumorId!;
+          if (diff <= CONE_DEG) {
+            const last = recentlySwept.get(id) ?? 0;
+            if (now - last > SWEEP_PERIOD_MS - 500) {
+              recentlySwept.set(id, now);
+              el.classList.remove('swept');
+              void el.offsetWidth;
+              el.classList.add('swept');
+            }
+          }
+        });
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
   // pick mode — click anywhere on the map to capture coordinates
   useEffect(() => {
     const map = mapRef.current;
