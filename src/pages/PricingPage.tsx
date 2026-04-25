@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -85,17 +84,28 @@ export default function PricingPage() {
   const { user } = useAuth();
   const [active, setActive] = useState<Tier | null>(null);
 
+  useEffect(() => {
+    const prev = document.title;
+    document.title = "API Pricing — RumorRadar";
+    let meta = document.querySelector('meta[name="description"]');
+    const prevDesc = meta?.getAttribute("content") ?? "";
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "description");
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute(
+      "content",
+      "RumorRadar API pricing — track and respond to disinformation in real time. Free tier available, scaling to enterprise.",
+    );
+    return () => {
+      document.title = prev;
+      meta?.setAttribute("content", prevDesc);
+    };
+  }, []);
+
   return (
     <>
-      <Helmet>
-        <title>API Pricing — RumorRadar</title>
-        <meta
-          name="description"
-          content="RumorRadar API pricing — track and respond to disinformation in real time. Free tier available, scaling to enterprise."
-        />
-        <link rel="canonical" href="https://rumorradar.org/pricing" />
-      </Helmet>
-
       <div className="container mx-auto px-4 py-10">
         <div className="text-center mb-10 max-w-2xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">

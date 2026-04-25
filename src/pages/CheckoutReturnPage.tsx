@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,17 +10,17 @@ export default function CheckoutReturnPage() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Give webhooks a moment to update subscription / donation rows.
+    const prev = document.title;
+    document.title = "Thank you — RumorRadar";
     const t = setTimeout(() => setReady(true), 1500);
-    return () => clearTimeout(t);
+    return () => {
+      clearTimeout(t);
+      document.title = prev;
+    };
   }, []);
 
   return (
     <>
-      <Helmet>
-        <title>Thank you — RumorRadar</title>
-        <meta name="robots" content="noindex" />
-      </Helmet>
       <div className="container mx-auto px-4 py-16 max-w-lg">
         <Card>
           <CardHeader className="text-center">
