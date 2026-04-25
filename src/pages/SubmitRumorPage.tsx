@@ -172,30 +172,30 @@ export default function SubmitRumorPage() {
         <div className="flex gap-3">
           <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />
           <p className="text-xs text-muted-foreground">
-            Now tell us what the rumor is. Your submission stays anonymous and is reviewed before appearing on the map.
+            {t('submit.intro')}
           </p>
         </div>
       </Card>
 
       <Card className="glass-panel p-6 space-y-4">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-1">Anonymous · encrypted</div>
-          <h1 className="text-2xl font-bold">Submit a rumor</h1>
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-1">{t('submit.anonEnc')}</div>
+          <h1 className="text-2xl font-bold">{t('submit.title')}</h1>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <Field label="Claim *" error={errors.claim}>
+          <Field label={t('submit.claim')} error={errors.claim}>
             <Input
               value={form.claim}
               onChange={(e) => setForm({ ...form, claim: e.target.value })}
-              placeholder="e.g. Government to seize bank deposits overnight"
+              placeholder={t('submit.claimPh')}
               maxLength={280}
             />
           </Field>
-          <Field label="Description (optional)" error={errors.description}>
+          <Field label={t('submit.description')} error={errors.description}>
             <Textarea
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              placeholder="Additional context — exact wording, screenshots you saw, etc."
+              placeholder={t('submit.descriptionPh')}
               rows={4}
               maxLength={1000}
             />
@@ -214,8 +214,8 @@ export default function SubmitRumorPage() {
           </Button>
 
           <Field
-            label="Origin country *"
-            hint="Where YOU heard the rumor. For online sources, use the country where the platform/agency is registered."
+            label={t('submit.origin')}
+            hint={t('submit.originHint')}
             error={errors.originCountry}
           >
             <Select
@@ -225,7 +225,7 @@ export default function SubmitRumorPage() {
               <SelectTrigger>
                 <div className="flex items-center gap-2">
                   <MapPin className="h-3.5 w-3.5 text-primary" />
-                  <SelectValue placeholder="Select country of origin" />
+                  <SelectValue placeholder={t('submit.selectOrigin')} />
                 </div>
               </SelectTrigger>
               <SelectContent>
