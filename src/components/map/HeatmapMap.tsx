@@ -109,38 +109,35 @@ export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = fal
     });
   }, [rumors, draggable, onSelect, updateRumorCoordinates]);
 
-  // Sweep-marker interaction — pulse markers as the radar sweep passes over them.
-  // The CSS sweep rotates 360° every 6s. We compute its current angle from
-  // performance.now() and toggle a `swept` class on markers within the cone.
+  // Sweep-marker interaction — pulse markers as the horizontal radar sweep
+  // passes over them. The CSS sweep translates a vertical bar from -20% to
+  // 120% across the overlay every 6s; we mirror that math here.
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
     const SWEEP_PERIOD_MS = 6000;
-    const CONE_DEG = 28; // matches the visible bright portion of the cone
     const recentlySwept = new Map<string, number>();
     let raf = 0;
 
     const tick = () => {
       const overlay = container.querySelector<HTMLElement>('.radar-overlay');
-      if (overlay) {
-        const rect = overlay.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
+      const bar = container.querySelector<HTMLElement>('.radar-sweep-cone');
+      if (overlay && bar) {
+        const oRect = overlay.getBoundingClientRect();
         const t = (performance.now() % SWEEP_PERIOD_MS) / SWEEP_PERIOD_MS;
-        const sweepDeg = t * 360;
+        // Bar width is 18% of overlay; translateX -20%..120% of bar width.
+        const barWidth = oRect.width * 0.18;
+        const translateX = barWidth * (-0.2 + 1.4 * t);
+        // Leading edge x (right side of the bar) in viewport coords
+        const edgeX = oRect.left + translateX + barWidth;
         const now = performance.now();
         const markers = container.querySelectorAll<HTMLElement>('.rumor-marker[data-rumor-id]');
         markers.forEach((el) => {
           const r = el.getBoundingClientRect();
-          const mx = r.left + r.width / 2 - cx;
-          const my = r.top + r.height / 2 - cy;
-          // Clockwise from 12 o'clock to match conic-gradient(from 0deg)
-          let deg = (Math.atan2(mx, -my) * 180) / Math.PI;
-          if (deg < 0) deg += 360;
-          let diff = sweepDeg - deg;
-          diff = ((diff % 360) + 360) % 360;
+          const mx = r.left + r.width / 2;
           const id = el.dataset.rumorId!;
-          if (diff <= CONE_DEG) {
+          // Trigger when the leading edge crosses the marker (within a small band)
+          if (edgeX >= mx - 6 && edgeX <= mx + 24) {
             const last = recentlySwept.get(id) ?? 0;
             if (now - last > SWEEP_PERIOD_MS - 500) {
               recentlySwept.set(id, now);
