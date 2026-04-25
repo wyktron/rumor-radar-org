@@ -219,6 +219,9 @@ interface AppState {
   // rumors
   updateRumorIntensity: (id: string, intensity: number) => Promise<void>;
   updateRumorCoordinates: (id: string, coords: [number, number]) => Promise<void>;
+  approveRumor: (id: string) => Promise<void>;
+  rejectRumor: (id: string) => Promise<void>;
+  bulkApproveRumors: (ids: string[]) => Promise<number>;
   // submissions
   submitRumor: (s: Omit<RumorSubmission, 'id' | 'submittedAt' | 'status'>) => void;
   approveSubmission: (id: string) => Promise<void>;
