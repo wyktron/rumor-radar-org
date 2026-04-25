@@ -100,6 +100,57 @@ export type Database = {
           },
         ]
       }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          ip_address: string | null
+          message: string
+          name: string
+          organization: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          staff_notes: string | null
+          status: Database["public"]["Enums"]["contact_message_status"]
+          subject: string
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          ip_address?: string | null
+          message: string
+          name: string
+          organization?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          staff_notes?: string | null
+          status?: Database["public"]["Enums"]["contact_message_status"]
+          subject: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          ip_address?: string | null
+          message?: string
+          name?: string
+          organization?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          staff_notes?: string | null
+          status?: Database["public"]["Enums"]["contact_message_status"]
+          subject?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       cso_documents: {
         Row: {
           doc_type: string
@@ -1355,6 +1406,7 @@ export type Database = {
     Enums: {
       api_key_tier: "free" | "starter" | "pro" | "enterprise"
       app_role: "admin" | "moderator" | "cso_member" | "user"
+      contact_message_status: "new" | "read" | "archived" | "spam"
       contact_method: "phone" | "sms" | "email"
       cso_request_status:
         | "pending"
@@ -1532,6 +1584,7 @@ export const Constants = {
     Enums: {
       api_key_tier: ["free", "starter", "pro", "enterprise"],
       app_role: ["admin", "moderator", "cso_member", "user"],
+      contact_message_status: ["new", "read", "archived", "spam"],
       contact_method: ["phone", "sms", "email"],
       cso_request_status: [
         "pending",
