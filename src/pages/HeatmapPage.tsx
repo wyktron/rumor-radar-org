@@ -181,8 +181,14 @@ export default function HeatmapPage() {
         </DialogContent>
       </Dialog>
 
-      {/* BOTTOM-LEFT: Trending scale legend — sits above the bottom nav AND above the map's built-in legend */}
-      <div className={cn('absolute bottom-32 left-4 z-[400] glass-panel rounded-lg p-3 w-56 shadow-lg', panelsHidden && 'hidden')}>
+      {/* BOTTOM-LEFT: Trending scale legend — anchors above the bottom nav (which can change height when wrapping on mobile) */}
+      <div
+        className={cn(
+          'absolute left-4 z-[400] glass-panel rounded-lg p-3 w-44 sm:w-56 shadow-lg hidden sm:block',
+          panelsHidden && 'hidden',
+        )}
+        style={{ bottom: 'calc(var(--bottom-nav-h, 56px) + 0.75rem)' }}
+      >
         <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">
           Trending scale
         </div>
