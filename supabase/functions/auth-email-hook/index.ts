@@ -36,7 +36,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "rumor-radar-app"
+const SITE_NAME = "Rumor Radar"
 const SENDER_DOMAIN = "notify.rumorradar.org"
 const ROOT_DOMAIN = "rumorradar.org"
 const FROM_DOMAIN = "notify.rumorradar.org" // Domain shown in From address (may be root or sender subdomain)
