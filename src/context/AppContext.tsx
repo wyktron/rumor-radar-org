@@ -168,6 +168,70 @@ export function AppProvider({ children }: { children: ReactNode }) {
     else localStorage.removeItem(USER_KEY);
   }, [user]);
 
+  // Merge any live (Supabase) rumors on top of the dummy seed and subscribe
+  // to realtime changes so newly-approved rumors appear instantly on the heatmap.
+  useEffect(() => {
+    let cancelled = false;
+    const PUBLIC_STATUSES: RumorStatus[] = ['approved', 'debunked', 'verified-true'];
+
+    const upsertLive = (incoming: Rumor[]) => {
+      if (cancelled || incoming.length === 0) return;
+      setRumors((prev) => {
+        const byId = new Map(prev.map((r) => [r.id, r]));
+        for (const r of incoming) byId.set(r.id, r);
+        return Array.from(byId.values());
+      });
+    };
+
+    const removeLive = (id: string) => {
+      if (cancelled) return;
+      setRumors((prev) => prev.filter((r) => r.id !== id));
+    };
+
+    (async () => {
+      const { data, error } = await supabase
+        .from('rumors')
+        .select(
+          'id, title, description, origin_country, subject_country, topic, latitude, longitude, intensity, status, source_language, submitted_at, debunked_by, debunked_at, debunk_content, debunk_sources, verified_by, verified_at, verification_content, verification_sources',
+        )
+        .in('status', PUBLIC_STATUSES)
+        .order('submitted_at', { ascending: false })
+        .limit(500);
+      if (error) {
+        console.warn('[rumors] initial load failed', error.message);
+        return;
+      }
+      upsertLive((data ?? []).map((row) => rowToRumor(row as RumorRow)));
+    })();
+
+    const channel = supabase
+      .channel('rumors-public')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'rumors' },
+        (payload) => {
+          if (payload.eventType === 'DELETE') {
+            removeLive((payload.old as { id: string }).id);
+            return;
+          }
+          const row = payload.new as RumorRow;
+          if (!PUBLIC_STATUSES.includes(row.status)) {
+            // status moved out of public-visible range — drop from map
+            removeLive(row.id);
+            return;
+          }
+          upsertLive([rowToRumor(row)]);
+        },
+      )
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+
   const value = useMemo<AppState>(
     () => ({
       rumors,
