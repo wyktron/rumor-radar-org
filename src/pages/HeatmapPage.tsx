@@ -207,10 +207,34 @@ export default function HeatmapPage() {
         </div>
       </div>
 
-      {/* BOTTOM: Filters anchor above the nav; on mobile it spans the viewport so nothing can sit underneath it. */}
+      {/* MOBILE: collapsed filter icon button (shown when panel closed) */}
+      {!panelsHidden && !mobileFiltersOpen && (
+        <div
+          className="absolute right-4 z-[390] sm:hidden"
+          style={{ bottom: 'calc(var(--bottom-nav-h, 56px) + 0.75rem)' }}
+        >
+          <Button
+            size="icon"
+            variant="outline"
+            className="h-11 w-11 rounded-full shadow-lg bg-background/85 backdrop-blur-xl relative"
+            onClick={() => setMobileFiltersOpen(true)}
+            aria-label={t('heatmap.filterRumors')}
+          >
+            <Filter className="h-4 w-4" />
+            {filtersActive && (
+              <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-background" />
+            )}
+          </Button>
+        </div>
+      )}
+
+      {/* BOTTOM: Filters anchor above the nav. Hidden on mobile until expanded; always visible on desktop. */}
       {!panelsHidden && (
       <div
-        className="absolute inset-x-3 z-[390] glass-panel rounded-lg p-3 shadow-lg overflow-y-auto sm:inset-x-auto sm:right-4 sm:w-72 sm:z-[420]"
+        className={cn(
+          'absolute inset-x-3 z-[390] glass-panel rounded-lg p-3 shadow-lg overflow-y-auto sm:inset-x-auto sm:right-4 sm:w-72 sm:z-[420] sm:block',
+          mobileFiltersOpen ? 'block' : 'hidden',
+        )}
         style={{
           bottom: 'calc(var(--bottom-nav-h, 56px) + 0.75rem)',
           maxHeight: 'min(44dvh, calc(100dvh - var(--bottom-nav-h, 56px) - 5rem))',
@@ -220,15 +244,25 @@ export default function HeatmapPage() {
           <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
             <Filter className="h-3 w-3" /> {t('heatmap.filterRumors')}
           </div>
-          {filtersActive && (
+          <div className="flex items-center gap-2">
+            {filtersActive && (
+              <button
+                type="button"
+                onClick={clearAll}
+                className="text-[10px] font-mono uppercase tracking-wider text-primary hover:underline"
+              >
+                {t('heatmap.clear')}
+              </button>
+            )}
             <button
               type="button"
-              onClick={clearAll}
-              className="text-[10px] font-mono uppercase tracking-wider text-primary hover:underline"
+              onClick={() => setMobileFiltersOpen(false)}
+              className="sm:hidden text-muted-foreground hover:text-foreground"
+              aria-label="Collapse filters"
             >
-              {t('heatmap.clear')}
+              <X className="h-3.5 w-3.5" />
             </button>
-          )}
+          </div>
         </div>
 
         {/* How to read this map */}
