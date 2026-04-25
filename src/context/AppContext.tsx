@@ -335,7 +335,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           const row = payload.new as RumorRow;
           const prev = lastStatus.get(row.id);
           lastStatus.set(row.id, row.status);
-          if (!PUBLIC_STATUSES.includes(row.status)) {
+          if (!visibleStatuses.includes(row.status)) {
             removeLive(row.id);
             return;
           }
@@ -350,7 +350,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       cancelled = true;
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [isStaff]);
 
   // --- Public CSO directory + realtime ---
   useEffect(() => {
