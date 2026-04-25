@@ -114,17 +114,21 @@ export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = fal
   // stays correct at any viewport size.
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    // The sweep cone lives in the outer wrapper (sibling of the map container),
+    // so look it up from the parent — not from the map container itself.
+    const root = container?.parentElement;
+    if (!container || !root) return;
     const SWEEP_PERIOD_MS = 7000;
     const recentlySwept = new Map<string, number>();
     let raf = 0;
 
     const tick = () => {
-      const bar = container.querySelector<HTMLElement>('.radar-sweep-cone');
+      const bar = root.querySelector<HTMLElement>('.radar-sweep-cone');
       if (bar) {
         const bRect = bar.getBoundingClientRect();
         const edgeX = bRect.right; // leading (right) edge of the sweep bar
         const now = performance.now();
+        // Markers are rendered inside the map container by Leaflet
         const markers = container.querySelectorAll<HTMLElement>('.rumor-marker[data-rumor-id]');
         markers.forEach((el) => {
           const r = el.getBoundingClientRect();
