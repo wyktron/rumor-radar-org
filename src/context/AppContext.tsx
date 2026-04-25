@@ -673,7 +673,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }),
     [
       rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions,
-      updateRumorIntensity, updateRumorCoordinates, submitRumor, approveSubmission, rejectSubmission,
+      updateRumorIntensity, updateRumorCoordinates, approveRumor, rejectRumor, bulkApproveRumors,
+      submitRumor, approveSubmission, rejectSubmission,
       submitDebunk, approveDebunk, rejectDebunk, registerCSO, approveCSORegistration, rejectCSORegistration,
       addLovedOneSubmission,
     ],
