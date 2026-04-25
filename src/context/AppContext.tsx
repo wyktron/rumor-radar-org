@@ -219,6 +219,9 @@ interface AppState {
   // rumors
   updateRumorIntensity: (id: string, intensity: number) => Promise<void>;
   updateRumorCoordinates: (id: string, coords: [number, number]) => Promise<void>;
+  approveRumor: (id: string) => Promise<void>;
+  rejectRumor: (id: string) => Promise<void>;
+  bulkApproveRumors: (ids: string[]) => Promise<number>;
   // submissions
   submitRumor: (s: Omit<RumorSubmission, 'id' | 'submittedAt' | 'status'>) => void;
   approveSubmission: (id: string) => Promise<void>;
@@ -484,6 +487,32 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const approveRumor = useCallback(async (id: string) => {
+    setRumors((rs) => rs.map((r) => (r.id === id ? { ...r, status: 'approved' as RumorStatus } : r)));
+    const { error } = await supabase.from('rumors').update({ status: 'approved' }).eq('id', id);
+    if (error) toast.error('Could not approve rumor', { description: error.message });
+  }, []);
+
+  const rejectRumor = useCallback(async (id: string) => {
+    setRumors((rs) => rs.map((r) => (r.id === id ? { ...r, status: 'rejected' as RumorStatus } : r)));
+    const { error } = await supabase.from('rumors').update({ status: 'rejected' }).eq('id', id);
+    if (error) toast.error('Could not reject rumor', { description: error.message });
+  }, []);
+
+  const bulkApproveRumors = useCallback(async (ids: string[]) => {
+    if (ids.length === 0) return 0;
+    setRumors((rs) => rs.map((r) => (ids.includes(r.id) ? { ...r, status: 'approved' as RumorStatus } : r)));
+    const { error } = await supabase
+      .from('rumors')
+      .update({ status: 'approved' })
+      .in('id', ids);
+    if (error) {
+      toast.error('Bulk approve failed', { description: error.message });
+      return 0;
+    }
+    return ids.length;
+  }, []);
+
   const approveSubmission = useCallback(async (id: string) => {
     const sub = submissions.find((s) => s.id === id);
     if (!sub) return;
@@ -628,6 +657,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       lovedOneSubmissions,
       updateRumorIntensity,
       updateRumorCoordinates,
+      approveRumor,
+      rejectRumor,
+      bulkApproveRumors,
       submitRumor,
       approveSubmission,
       rejectSubmission,
@@ -641,7 +673,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }),
     [
       rumors, csos, submissions, debunkSubmissions, csoRegistrations, lovedOneSubmissions,
-      updateRumorIntensity, updateRumorCoordinates, submitRumor, approveSubmission, rejectSubmission,
+      updateRumorIntensity, updateRumorCoordinates, approveRumor, rejectRumor, bulkApproveRumors,
+      submitRumor, approveSubmission, rejectSubmission,
       submitDebunk, approveDebunk, rejectDebunk, registerCSO, approveCSORegistration, rejectCSORegistration,
       addLovedOneSubmission,
     ],

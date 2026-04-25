@@ -33,6 +33,7 @@ function ModeratorDashboard() {
     rumors, csos, submissions, debunkSubmissions, csoRegistrations,
     approveSubmission, rejectSubmission, approveDebunk, rejectDebunk,
     approveCSORegistration, rejectCSORegistration, updateRumorIntensity,
+    approveRumor, rejectRumor, bulkApproveRumors,
   } = useApp();
   const { user, isAdmin } = useAuth();
   const displayName = (user?.user_metadata as { display_name?: string } | undefined)?.display_name
@@ -74,6 +75,9 @@ function ModeratorDashboard() {
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList className="bg-card border border-border">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="pending-rumors">
+            Pending rumors <span className="ml-1.5 text-[10px] text-warning">{rumors.filter((r) => r.status === 'pending').length}</span>
+          </TabsTrigger>
           <TabsTrigger value="submissions">
             Submissions <span className="ml-1.5 text-[10px] text-warning">{submissions.filter((s) => s.status === 'pending').length}</span>
           </TabsTrigger>
@@ -100,6 +104,15 @@ function ModeratorDashboard() {
             <StatCard icon={<Users className="text-primary" />} label="CSO partners" value={stats.csos} />
           </div>
           <ScrapeRumorsPanel />
+        </TabsContent>
+
+        <TabsContent value="pending-rumors" className="space-y-2">
+          <PendingRumorsPanel
+            rumors={rumors.filter((r) => r.status === 'pending')}
+            onApprove={approveRumor}
+            onReject={rejectRumor}
+            onBulkApprove={bulkApproveRumors}
+          />
         </TabsContent>
 
         <TabsContent value="submissions" className="space-y-2">
@@ -479,6 +492,110 @@ function ScrapeRumorsPanel() {
           ))}
         </div>
       )}
+    </Card>
+  );
+}
+
+function PendingRumorsPanel({
+  rumors,
+  onApprove,
+  onReject,
+  onBulkApprove,
+}: {
+  rumors: ReturnType<typeof useApp>['rumors'];
+  onApprove: (id: string) => Promise<void>;
+  onReject: (id: string) => Promise<void>;
+  onBulkApprove: (ids: string[]) => Promise<number>;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [query, setQuery] = useState('');
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return rumors;
+    return rumors.filter((r) =>
+      r.title.toLowerCase().includes(q) ||
+      r.originCountry.toLowerCase().includes(q) ||
+      r.topic.toLowerCase().includes(q),
+    );
+  }, [rumors, query]);
+
+  async function handleBulkApproveAll() {
+    if (filtered.length === 0) return;
+    if (!confirm(`Approve all ${filtered.length} pending rumors? They will appear on the public map immediately.`)) return;
+    setBusy(true);
+    const n = await onBulkApprove(filtered.map((r) => r.id));
+    setBusy(false);
+    if (n > 0) toast.success(`Approved ${n} rumors`);
+  }
+
+  if (rumors.length === 0) {
+    return <Empty>No pending rumors. Run the AI scraper from the Overview tab.</Empty>;
+  }
+
+  return (
+    <Card className="glass-panel p-4 space-y-3">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div>
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary">Pending rumors</div>
+          <h3 className="text-base font-semibold mt-0.5">
+            {rumors.length} rumors awaiting review
+            {filtered.length !== rumors.length && ` (${filtered.length} filtered)`}
+          </h3>
+          <p className="text-xs text-muted-foreground mt-1">
+            These were ingested by the AI scraper or other automated sources. Approve to publish on the public map.
+          </p>
+        </div>
+        <Button onClick={handleBulkApproveAll} disabled={busy || filtered.length === 0} className="shrink-0">
+          {busy ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <Check className="h-4 w-4 mr-1.5" />}
+          Approve all ({filtered.length})
+        </Button>
+      </div>
+
+      <Input
+        placeholder="Filter by title, country or topic…"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        className="max-w-md"
+      />
+
+      <div className="space-y-2 max-h-[600px] overflow-auto pr-1">
+        {filtered.map((r) => (
+          <div key={r.id} className="border border-border/50 rounded p-3 space-y-2 bg-background/40">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
+                  <span className="text-primary">{r.originCountry}</span>
+                  <span>·</span>
+                  <span>{r.topic}</span>
+                  <span>·</span>
+                  <span>{relativeTime(r.submittedAt)}</span>
+                </div>
+                <h4 className="font-semibold text-sm mt-1">{r.title}</h4>
+                <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{r.description}</p>
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-success/40 text-success hover:bg-success/10"
+                  onClick={async () => { await onApprove(r.id); toast.success('Published to map'); }}
+                >
+                  <Check className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-destructive/40 text-destructive hover:bg-destructive/10"
+                  onClick={async () => { await onReject(r.id); toast('Rejected'); }}
+                >
+                  <X className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </Card>
   );
 }
