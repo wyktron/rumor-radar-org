@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { useApp } from '@/context/AppContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { COUNTRIES, TOPICS } from '@/constants/countries';
 import { toast } from 'sonner';
-import { Send, MapPin, Info, Crosshair } from 'lucide-react';
+import { Send, MapPin, Info, Crosshair, Loader2 } from 'lucide-react';
 import type { Topic } from '@/types';
 
 function nearestCountry(lat: number, lng: number): string {
@@ -51,6 +52,7 @@ export default function SubmitRumorPage() {
     source: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [busy, setBusy] = useState(false);
 
   // If user navigates here directly without picking, send them back to the map to pick a spot
   useEffect(() => {
@@ -66,7 +68,7 @@ export default function SubmitRumorPage() {
     [pickedCoords],
   );
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const parsed = schema.safeParse(form);
     if (!parsed.success) {
@@ -76,15 +78,36 @@ export default function SubmitRumorPage() {
       return;
     }
     const origin = COUNTRIES.find((c) => c.name === form.originCountry);
+    const coords = pickedCoords ?? origin?.coordinates ?? [0, 0];
+
+    setBusy(true);
+    const { error } = await supabase.from('rumor_submissions').insert({
+      claim: form.claim,
+      description: form.description || null,
+      origin_country: form.originCountry,
+      origin_country_code: origin?.code ?? null,
+      origin_latitude: coords[0],
+      origin_longitude: coords[1],
+      subject_country: form.subjectCountry || null,
+      topic: form.topic,
+      source: form.source || null,
+      source_language: 'en',
+    });
+    // Mirror locally for the in-app moderator dashboard view
     submitRumor({
       claim: form.claim,
       description: form.description || undefined,
       originCountry: form.originCountry,
-      originCoordinates: pickedCoords ?? origin?.coordinates ?? [0, 0],
+      originCoordinates: coords,
       subjectCountry: form.subjectCountry || undefined,
       topic: form.topic as Topic,
       source: form.source || undefined,
     });
+    setBusy(false);
+    if (error) {
+      toast.error('Submission failed', { description: error.message });
+      return;
+    }
     toast.success('Submission received', { description: 'A moderator will review it shortly.' });
     nav('/timeline');
   }
@@ -199,8 +222,9 @@ export default function SubmitRumorPage() {
             </Field>
           </div>
 
-          <Button type="submit" className="w-full gap-2 font-mono uppercase tracking-wider text-xs">
-            <Send className="h-3.5 w-3.5" /> Transmit submission
+          <Button type="submit" disabled={busy} className="w-full gap-2 font-mono uppercase tracking-wider text-xs">
+            {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
+            Transmit submission
           </Button>
         </form>
       </Card>
