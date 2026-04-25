@@ -100,6 +100,7 @@ function Layout() {
   if (isHeatmap) {
     return (
       <div className="h-screen flex flex-col overflow-hidden">
+        <PaymentTestModeBanner />
         <Header />
         <main className="flex-1 relative overflow-hidden">
           <Outlet />
@@ -111,6 +112,7 @@ function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <PaymentTestModeBanner />
       <Header />
       <main className="flex-1 pb-14">
         <Outlet />
