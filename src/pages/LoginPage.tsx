@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { useAuth } from '@/context/AuthContext';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Radar, Lock, UserPlus } from 'lucide-react';
+import { Radar, Lock, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
 const credSchema = z.object({
@@ -15,22 +14,12 @@ const credSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters').max(72),
 });
 
-const signupSchema = credSchema.extend({
-  displayName: z.string().trim().min(2, 'Name must be at least 2 characters').max(80),
-});
-
 export default function LoginPage() {
-  const { signIn, signUp, user, loading } = useAuth();
+  const { signIn, user, loading } = useAuth();
   const nav = useNavigate();
 
-  // Sign-in fields
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // Sign-up fields
-  const [suEmail, setSuEmail] = useState('');
-  const [suPassword, setSuPassword] = useState('');
-  const [suName, setSuName] = useState('');
-
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -52,20 +41,6 @@ export default function LoginPage() {
     }
   }
 
-  async function handleSignUp(e: React.FormEvent) {
-    e.preventDefault();
-    const parsed = signupSchema.safeParse({ email: suEmail, password: suPassword, displayName: suName });
-    if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
-    setBusy(true);
-    const res = await signUp(suEmail, suPassword, suName);
-    setBusy(false);
-    if (res.ok) {
-      toast.success('Account created — you can sign in now.');
-    } else {
-      toast.error(res.error || 'Sign-up failed');
-    }
-  }
-
   return (
     <div className="container py-12 max-w-md">
       <Card className="glass-panel p-6 space-y-5">
@@ -79,54 +54,29 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <Tabs defaultValue="signin" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="signin">Sign in</TabsTrigger>
-            <TabsTrigger value="signup">Create account</TabsTrigger>
-          </TabsList>
+        <form onSubmit={handleSignIn} className="space-y-3">
+          <div className="space-y-1.5">
+            <Label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Email</Label>
+            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Password</Label>
+            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+          </div>
+          <Button type="submit" disabled={busy} className="w-full gap-2 font-mono uppercase tracking-wider text-xs">
+            <Lock className="h-3.5 w-3.5" /> Authenticate
+          </Button>
+        </form>
 
-          <TabsContent value="signin" className="pt-4">
-            <form onSubmit={handleSignIn} className="space-y-3">
-              <div className="space-y-1.5">
-                <Label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Email</Label>
-                <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Password</Label>
-                <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-              </div>
-              <Button type="submit" disabled={busy} className="w-full gap-2 font-mono uppercase tracking-wider text-xs">
-                <Lock className="h-3.5 w-3.5" /> Authenticate
-              </Button>
-            </form>
-          </TabsContent>
-
-          <TabsContent value="signup" className="pt-4">
-            <form onSubmit={handleSignUp} className="space-y-3">
-              <div className="space-y-1.5">
-                <Label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Display name</Label>
-                <Input value={suName} onChange={(e) => setSuName(e.target.value)} required />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Email</Label>
-                <Input type="email" value={suEmail} onChange={(e) => setSuEmail(e.target.value)} required />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Password</Label>
-                <Input type="password" value={suPassword} onChange={(e) => setSuPassword(e.target.value)} required minLength={8} />
-                <p className="text-[11px] text-muted-foreground">Min 8 characters. Leaked-password protection is enabled.</p>
-              </div>
-              <Button type="submit" disabled={busy} className="w-full gap-2 font-mono uppercase tracking-wider text-xs">
-                <UserPlus className="h-3.5 w-3.5" /> Create account
-              </Button>
-            </form>
-          </TabsContent>
-        </Tabs>
-
-        <div className="border-t border-border pt-4">
-          <p className="text-[11px] text-muted-foreground text-center">
-            New accounts default to read-only. An administrator must grant you the <strong>moderator</strong> or <strong>cso_member</strong> role to access the operator dashboard.
-          </p>
+        <div className="rounded-md border border-primary/30 bg-primary/5 p-3 flex gap-2.5">
+          <ShieldCheck className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+          <div className="text-xs space-y-1">
+            <p className="font-semibold text-foreground">Accounts are issued, not self-created.</p>
+            <p className="text-muted-foreground">
+              Rumor Radar does not have public sign-up. Verified CSOs receive credentials after their organization is approved through{' '}
+              <Link to="/csos/register" className="text-primary underline">CSO registration</Link>. The rest of the site is fully usable without an account.
+            </p>
+          </div>
         </div>
       </Card>
     </div>
