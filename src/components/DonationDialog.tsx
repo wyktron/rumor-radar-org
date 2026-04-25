@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, Bitcoin, Zap, Copy, Check } from "lucide-react";
+import { Heart, Bitcoin, Zap, Copy, Check, ShieldCheck } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -8,6 +8,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -17,6 +18,9 @@ interface DonationDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const XMR_ADDRESS =
+  "42tSSXU6jA489k733nDdtLXPkp31owRwGUHgArJWwadq5SRkVDPjUjwPWoKydVkMHrWhov4GT5PRx2QzGXh8wk9x9kuD3rP";
+const XMR_URI = `monero:${XMR_ADDRESS}`;
 const BTC_STANDARD = "bc1q8qu6n2776j3ytx98ffhhy6ejay8cuhujgrjy7z";
 const BTC_PAYJOIN =
   "bitcoin:bc1q8qu6n2776j3ytx98ffhhy6ejay8cuhujgrjy7z?pjos=0&pj=https%3A%2F%2Fpayjo.in%2FEW0HD7LX36GSC%23RK1QFLS8X3RV9VZ7QUG6TWPMGCUMVE4UN8MV5ZGP3PVZA5SD42Q5L3F6%2BOH1QYPFLM8XL59R0XV4VGPLS7FRDSSM4TUXL07TXCWC4S0GLVLNK2SE4NQ%2BEX1MT0766G";
@@ -51,20 +55,66 @@ export function DonationDialog({ open, onOpenChange }: DonationDialogProps) {
           <DialogDescription>
             We're an independent, non-profit project. Your donation funds
             translation, fact-checker stipends, and the team that calls back
-            worried families. We accept Bitcoin only — no middlemen, no fees
+            worried families. We accept crypto only — no middlemen, no fees
             siphoned off.
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="standard" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+        <Tabs defaultValue="monero" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="monero">
+              <ShieldCheck className="h-4 w-4 mr-1.5" /> Monero
+            </TabsTrigger>
             <TabsTrigger value="standard">
-              <Bitcoin className="h-4 w-4 mr-1.5" /> Standard
+              <Bitcoin className="h-4 w-4 mr-1.5" /> BTC
             </TabsTrigger>
             <TabsTrigger value="payjoin">
               <Zap className="h-4 w-4 mr-1.5" /> PayJoin
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="monero" className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="gap-1">
+                <ShieldCheck className="h-3 w-3" /> Preferred
+              </Badge>
+              <span className="text-xs text-muted-foreground">
+                Strongest privacy for both of us
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Send XMR to the address below. Monero transactions are private
+              by default — neither the amount nor the sender is visible
+              on-chain.
+            </p>
+            <div
+              className={cn(
+                "rounded-md border bg-muted/40 p-3 font-mono text-[10px] leading-relaxed break-all select-all",
+              )}
+            >
+              {XMR_ADDRESS}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => copy(XMR_ADDRESS, "Monero address")}
+              >
+                {copied === "Monero address" ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
+                {copied === "Monero address" ? "Copied" : "Copy address"}
+              </Button>
+              <Button asChild size="sm" className="gap-2">
+                <a href={XMR_URI}>
+                  <ShieldCheck className="h-4 w-4" /> Open in wallet
+                </a>
+              </Button>
+            </div>
+          </TabsContent>
 
           <TabsContent value="standard" className="space-y-3">
             <p className="text-sm text-muted-foreground">
@@ -81,14 +131,14 @@ export function DonationDialog({ open, onOpenChange }: DonationDialogProps) {
               variant="outline"
               size="sm"
               className="w-full gap-2"
-              onClick={() => copy(BTC_STANDARD, "Address")}
+              onClick={() => copy(BTC_STANDARD, "BTC address")}
             >
-              {copied === "Address" ? (
+              {copied === "BTC address" ? (
                 <Check className="h-4 w-4" />
               ) : (
                 <Copy className="h-4 w-4" />
               )}
-              {copied === "Address" ? "Copied" : "Copy address"}
+              {copied === "BTC address" ? "Copied" : "Copy address"}
             </Button>
           </TabsContent>
 
