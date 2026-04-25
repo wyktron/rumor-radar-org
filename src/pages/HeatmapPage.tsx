@@ -103,7 +103,7 @@ export default function HeatmapPage() {
       )}
 
       {/* TOP-LEFT: LIVE stats panel */}
-      <div className={cn('absolute top-4 left-4 z-[500] glass-panel rounded-lg p-3 w-52 shadow-lg', panelsHidden && 'hidden')}>
+      <div className={cn('absolute top-4 left-1/2 -translate-x-1/2 z-[500] glass-panel rounded-lg p-3 w-52 shadow-lg', panelsHidden && 'hidden')}>
         <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em]" style={{ color: 'hsl(140 85% 45%)' }}>
           <span
             className="inline-block h-2 w-2 rounded-full ticker-blink"
@@ -182,7 +182,7 @@ export default function HeatmapPage() {
       </Dialog>
 
       {/* BOTTOM-LEFT: Trending scale legend — sits above the bottom nav AND above the map's built-in legend */}
-      <div className={cn('absolute bottom-32 left-1/2 -translate-x-1/2 z-[500] glass-panel rounded-lg p-3 w-56 shadow-lg', panelsHidden && 'hidden')}>
+      <div className={cn('absolute bottom-32 left-4 z-[500] glass-panel rounded-lg p-3 w-56 shadow-lg', panelsHidden && 'hidden')}>
         <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">
           Trending scale
         </div>
