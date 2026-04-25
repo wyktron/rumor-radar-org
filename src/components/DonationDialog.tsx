@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, Bitcoin, Wallet } from "lucide-react";
+import { Heart, Bitcoin, Zap, Copy, Check } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -8,47 +8,41 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
-import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
-import { isPaymentsConfigured } from "@/lib/stripe";
-import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface DonationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const PRESET_AMOUNTS = [5, 25, 100, 500] as const;
-const BTC_ADDRESS = "bc1qexamplebtcdonationaddressreplaceme00000";
+const BTC_STANDARD = "bc1q8qu6n2776j3ytx98ffhhy6ejay8cuhujgrjy7z";
+const BTC_PAYJOIN =
+  "bitcoin:bc1q8qu6n2776j3ytx98ffhhy6ejay8cuhujgrjy7z?pjos=0&pj=https%3A%2F%2Fpayjo.in%2FEW0HD7LX36GSC%23RK1QFLS8X3RV9VZ7QUG6TWPMGCUMVE4UN8MV5ZGP3PVZA5SD42Q5L3F6%2BOH1QYPFLM8XL59R0XV4VGPLS7FRDSSM4TUXL07TXCWC4S0GLVLNK2SE4NQ%2BEX1MT0766G";
 
 export function DonationDialog({ open, onOpenChange }: DonationDialogProps) {
-  const { user } = useAuth();
-  const [selected, setSelected] = useState<number>(25);
-  const [custom, setCustom] = useState<string>("");
-  const [showCheckout, setShowCheckout] = useState(false);
+  const { toast } = useToast();
+  const [copied, setCopied] = useState<string | null>(null);
 
-  const amount = custom ? Math.max(1, Math.floor(Number(custom) || 0)) : selected;
-  const amountCents = amount * 100;
-
-  function reset() {
-    setShowCheckout(false);
-    setCustom("");
-    setSelected(25);
+  async function copy(value: string, label: string) {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(label);
+      toast({ title: "Copied", description: `${label} copied to clipboard.` });
+      setTimeout(() => setCopied(null), 2000);
+    } catch {
+      toast({
+        title: "Copy failed",
+        description: "Please copy the address manually.",
+        variant: "destructive",
+      });
+    }
   }
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(o) => {
-        if (!o) reset();
-        onOpenChange(o);
-      }}
-    >
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Heart className="h-5 w-5 text-destructive" />
@@ -57,127 +51,90 @@ export function DonationDialog({ open, onOpenChange }: DonationDialogProps) {
           <DialogDescription>
             We're an independent, non-profit project. Your donation funds
             translation, fact-checker stipends, and the team that calls back
-            worried families.
+            worried families. We accept Bitcoin only — no middlemen, no fees
+            siphoned off.
           </DialogDescription>
         </DialogHeader>
 
-        <PaymentTestModeBanner />
-
-        <Tabs defaultValue="card" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="card">
-              <Wallet className="h-4 w-4 mr-1.5" /> Card
+        <Tabs defaultValue="standard" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="standard">
+              <Bitcoin className="h-4 w-4 mr-1.5" /> Standard
             </TabsTrigger>
-            <TabsTrigger value="btc">
-              <Bitcoin className="h-4 w-4 mr-1.5" /> Bitcoin
-            </TabsTrigger>
-            <TabsTrigger value="paypal" disabled>
-              PayPal
+            <TabsTrigger value="payjoin">
+              <Zap className="h-4 w-4 mr-1.5" /> PayJoin
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="card" className="space-y-4">
-            {!isPaymentsConfigured() ? (
-              <p className="text-sm text-muted-foreground p-4 border rounded-md">
-                Card payments aren't configured yet. Please try again shortly.
-              </p>
-            ) : !showCheckout ? (
-              <>
-                <div>
-                  <Label className="text-sm">Choose an amount (USD)</Label>
-                  <div className="grid grid-cols-4 gap-2 mt-2">
-                    {PRESET_AMOUNTS.map((a) => (
-                      <Button
-                        key={a}
-                        type="button"
-                        variant={selected === a && !custom ? "default" : "outline"}
-                        onClick={() => {
-                          setSelected(a);
-                          setCustom("");
-                        }}
-                      >
-                        ${a}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="custom-amount" className="text-sm">
-                    Or enter a custom amount
-                  </Label>
-                  <div className="relative mt-1">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                      $
-                    </span>
-                    <Input
-                      id="custom-amount"
-                      type="number"
-                      min={1}
-                      step={1}
-                      placeholder="Other amount"
-                      value={custom}
-                      onChange={(e) => setCustom(e.target.value)}
-                      className="pl-7"
-                    />
-                  </div>
-                </div>
-                <Button
-                  className="w-full"
-                  size="lg"
-                  disabled={amount < 1}
-                  onClick={() => setShowCheckout(true)}
-                >
-                  Donate ${amount}
-                </Button>
-                <p className="text-xs text-muted-foreground text-center">
-                  Secure payment via Stripe. We never see your card details.
-                </p>
-              </>
-            ) : (
-              <div>
-                <button
-                  type="button"
-                  onClick={() => setShowCheckout(false)}
-                  className="text-xs text-muted-foreground hover:text-foreground mb-2"
-                >
-                  ← Change amount
-                </button>
-                <StripeEmbeddedCheckout
-                  donationAmountCents={amountCents}
-                  customerEmail={user?.email}
-                />
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="btc" className="space-y-3">
+          <TabsContent value="standard" className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              Send BTC to the address below. Once confirmed on-chain, drop us
-              an email at{" "}
-              <a className="underline" href="mailto:donate@rumorradar.org">
-                donate@rumorradar.org
-              </a>{" "}
-              and we'll send a thank-you receipt.
+              Send BTC to the address below from any wallet.
             </p>
-            <div className={cn("rounded-md border bg-muted/40 p-3 font-mono text-xs break-all")}>
-              {BTC_ADDRESS}
+            <div
+              className={cn(
+                "rounded-md border bg-muted/40 p-3 font-mono text-xs break-all select-all",
+              )}
+            >
+              {BTC_STANDARD}
             </div>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => navigator.clipboard.writeText(BTC_ADDRESS)}
+              className="w-full gap-2"
+              onClick={() => copy(BTC_STANDARD, "Address")}
             >
-              Copy address
+              {copied === "Address" ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                <Copy className="h-4 w-4" />
+              )}
+              {copied === "Address" ? "Copied" : "Copy address"}
             </Button>
           </TabsContent>
 
-          <TabsContent value="paypal">
-            <p className="text-sm text-muted-foreground p-4 border rounded-md">
-              PayPal donations are coming soon. For now, please use card or
-              Bitcoin.
+          <TabsContent value="payjoin" className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              PayJoin improves on-chain privacy for both of us. Open this
+              link in a PayJoin-compatible wallet (e.g. BlueWallet, Wasabi,
+              Sparrow).
             </p>
+            <div
+              className={cn(
+                "rounded-md border bg-muted/40 p-3 font-mono text-[10px] leading-relaxed break-all select-all",
+              )}
+            >
+              {BTC_PAYJOIN}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => copy(BTC_PAYJOIN, "PayJoin URI")}
+              >
+                {copied === "PayJoin URI" ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
+                {copied === "PayJoin URI" ? "Copied" : "Copy URI"}
+              </Button>
+              <Button asChild size="sm" className="gap-2">
+                <a href={BTC_PAYJOIN}>
+                  <Zap className="h-4 w-4" /> Open in wallet
+                </a>
+              </Button>
+            </div>
           </TabsContent>
         </Tabs>
+
+        <p className="text-xs text-muted-foreground text-center pt-2">
+          Once your transaction confirms, drop us a note at{" "}
+          <a className="underline" href="mailto:donate@rumorradar.org">
+            donate@rumorradar.org
+          </a>{" "}
+          and we'll send a thank-you receipt.
+        </p>
       </DialogContent>
     </Dialog>
   );

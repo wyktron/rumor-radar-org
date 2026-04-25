@@ -12,8 +12,7 @@ import { Button } from "@/components/ui/button";
 import { SubscribeDialog } from "@/components/SubscribeDialog";
 import { DonationDialog } from "@/components/DonationDialog";
 import { WelcomeDialogs } from "@/components/WelcomeDialogs";
-import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
-import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail, Heart, CreditCard } from "lucide-react";
+import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Index from "./pages/Index.tsx";
 import TimelinePage from "./pages/TimelinePage";
@@ -23,8 +22,6 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import ImpactPage from "./pages/ImpactPage";
 import AboutPage from "./pages/AboutPage";
-import PricingPage from "./pages/PricingPage";
-import CheckoutReturnPage from "./pages/CheckoutReturnPage";
 import CSOReviewPage from "./pages/CSOReviewPage";
 import NotFound from "./pages/NotFound.tsx";
 
@@ -36,7 +33,6 @@ const secondaryLinks: { to: string; key: string; icon: typeof Map; end?: boolean
   { to: '/csos', key: 'csos', icon: Users },
   { to: '/impact', key: 'impact', icon: BarChart3 },
   { to: '/dashboard', key: 'dashboard', icon: LayoutDashboard },
-  { to: '/pricing', key: 'pricing', icon: CreditCard },
   { to: '/about', key: 'about', icon: Info },
 ];
 
@@ -100,7 +96,6 @@ function Layout() {
   if (isHeatmap) {
     return (
       <div className="h-screen flex flex-col overflow-hidden">
-        <PaymentTestModeBanner />
         <Header />
         <main className="flex-1 relative overflow-hidden">
           <Outlet />
@@ -112,7 +107,6 @@ function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <PaymentTestModeBanner />
       <Header />
       <main className="flex-1 pb-14">
         <Outlet />
@@ -141,8 +135,6 @@ const App = () => (
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/impact" element={<ImpactPage />} />
                 <Route path="/about" element={<AboutPage />} />
-                <Route path="/pricing" element={<PricingPage />} />
-                <Route path="/checkout/return" element={<CheckoutReturnPage />} />
                 <Route path="/staff/cso-review" element={<CSOReviewPage />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
