@@ -75,6 +75,9 @@ function ModeratorDashboard() {
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList className="bg-card border border-border">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="pending-rumors">
+            Pending rumors <span className="ml-1.5 text-[10px] text-warning">{rumors.filter((r) => r.status === 'pending').length}</span>
+          </TabsTrigger>
           <TabsTrigger value="submissions">
             Submissions <span className="ml-1.5 text-[10px] text-warning">{submissions.filter((s) => s.status === 'pending').length}</span>
           </TabsTrigger>
