@@ -41,9 +41,32 @@ function SecondaryNav() {
   const [subscribeOpen, setSubscribeOpen] = useState(false);
   const [donateOpen, setDonateOpen] = useState(false);
   const { t } = useTranslation();
+  const navRef = useRef<HTMLElement>(null);
+
+  // Publish the nav's actual rendered height as a CSS var so any page
+  // (especially the heatmap with floating panels) can position content
+  // above it correctly across viewport sizes & wrapping states.
+  useEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+    const update = () => {
+      const h = el.getBoundingClientRect().height;
+      document.documentElement.style.setProperty('--bottom-nav-h', `${Math.ceil(h)}px`);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    window.addEventListener('resize', update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0 border-t border-border/60 bg-background/85 backdrop-blur-xl z-[1000]">
+      <nav ref={navRef} className="fixed bottom-0 left-0 right-0 border-t border-border/60 bg-background/85 backdrop-blur-xl z-[1000]">
+
         <div className="flex flex-col gap-2 px-2 py-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-4">
           <div className="flex flex-wrap items-center justify-center gap-1 sm:flex-nowrap sm:overflow-x-auto sm:justify-start">
             {secondaryLinks.map((l) => (
