@@ -246,6 +246,34 @@
   100% { transform: scale(2.4); opacity: 0; }
 }
 
+/* Ping ring triggered when the radar sweep passes over a marker */
+.rumor-marker .ping {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid hsl(152 100% 65%);
+  box-shadow: 0 0 14px hsl(152 100% 65% / 0.9), inset 0 0 8px hsl(152 100% 65% / 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.6);
+}
+.rumor-marker.swept .ping {
+  animation: marker-ping 1.4s ease-out;
+}
+.rumor-marker.swept .core {
+  animation: marker-flash 0.9s ease-out;
+}
+@keyframes marker-ping {
+  0% { transform: scale(0.5); opacity: 0.95; }
+  70% { transform: scale(3); opacity: 0; }
+  100% { transform: scale(3); opacity: 0; }
+}
+@keyframes marker-flash {
+  0% { filter: brightness(1); box-shadow: 0 0 12px currentColor, 0 0 24px currentColor; }
+  30% { filter: brightness(2.2); box-shadow: 0 0 22px hsl(152 100% 65%), 0 0 44px hsl(152 100% 65%); }
+  100% { filter: brightness(1); box-shadow: 0 0 12px currentColor, 0 0 24px currentColor; }
+}
+
 @keyframes radar-sweep {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
