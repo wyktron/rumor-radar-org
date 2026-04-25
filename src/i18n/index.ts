@@ -7,12 +7,14 @@ import fr from './locales/fr';
 import es from './locales/es';
 import ru from './locales/ru';
 import ar from './locales/ar';
+import ro from './locales/ro';
 
 export const SUPPORTED_LANGS = [
   { code: 'en', label: 'English', short: 'EN', dir: 'ltr' },
   { code: 'fr', label: 'Français', short: 'FR', dir: 'ltr' },
   { code: 'es', label: 'Español', short: 'ES', dir: 'ltr' },
   { code: 'ru', label: 'Русский', short: 'RU', dir: 'ltr' },
+  { code: 'ro', label: 'Română', short: 'RO', dir: 'ltr' },
   { code: 'ar', label: 'العربية', short: 'AR', dir: 'rtl' },
 ] as const;
 
@@ -27,6 +29,7 @@ i18n
       fr: { translation: fr },
       es: { translation: es },
       ru: { translation: ru },
+      ro: { translation: ro },
       ar: { translation: ar },
     },
     fallbackLng: 'en',

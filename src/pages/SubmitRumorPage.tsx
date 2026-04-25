@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { useApp } from '@/context/AppContext';
@@ -10,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { COUNTRIES, TOPICS } from '@/constants/countries';
+import { ALL_COUNTRIES } from '@/constants/all-countries';
 import { toast } from 'sonner';
 import { Send, MapPin, Info, Crosshair, Loader2, Sparkles } from 'lucide-react';
 import type { Topic } from '@/types';
@@ -39,6 +41,7 @@ const NONE = '__none__';
 
 export default function SubmitRumorPage() {
   const { submitRumor } = useApp();
+  const { t } = useTranslation();
   const nav = useNavigate();
   const location = useLocation();
   const pickedCoords = (location.state as { originCoordinates?: [number, number] } | null)?.originCoordinates;
@@ -89,7 +92,7 @@ export default function SubmitRumorPage() {
   // If user navigates here directly without picking, send them back to the map to pick a spot
   useEffect(() => {
     if (!pickedCoords) {
-      toast.info('Pick the spot on the map where you heard the rumor first.');
+      toast.info(t('submit.pickFirst'));
       nav('/', { replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,8 +112,9 @@ export default function SubmitRumorPage() {
       setErrors(errs);
       return;
     }
-    const origin = COUNTRIES.find((c) => c.name === form.originCountry);
-    const coords = pickedCoords ?? origin?.coordinates ?? [0, 0];
+    const origin = ALL_COUNTRIES.find((c) => c.name === form.originCountry);
+    const mappedOrigin = COUNTRIES.find((c) => c.name === form.originCountry);
+    const coords = pickedCoords ?? mappedOrigin?.coordinates ?? [0, 0];
 
     setBusy(true);
     const { error } = await supabase.from('rumor_submissions').insert({
@@ -140,7 +144,7 @@ export default function SubmitRumorPage() {
       toast.error('Submission failed', { description: error.message });
       return;
     }
-    toast.success('Submission received', { description: 'A moderator will review it shortly.' });
+    toast.success(t('submit.received'), { description: t('submit.receivedDesc') });
     nav('/timeline');
   }
 
@@ -154,12 +158,12 @@ export default function SubmitRumorPage() {
           <div className="flex-1 min-w-0">
             <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-success">Location captured</div>
             <div className="text-sm font-semibold mt-0.5">
-              You heard this rumor near <span className="text-foreground">{form.originCountry || '—'}</span>
+              {t('submit.heardNear')} <span className="text-foreground">{form.originCountry || '—'}</span>
             </div>
             <div className="text-xs text-muted-foreground font-mono mt-0.5">{coordLabel}</div>
           </div>
           <Button variant="outline" size="sm" className="text-xs gap-1.5" onClick={() => nav('/')}>
-            <MapPin className="h-3.5 w-3.5" /> Change spot
+            <MapPin className="h-3.5 w-3.5" /> {t('submit.changeSpot')}
           </Button>
         </div>
       </Card>
@@ -168,30 +172,30 @@ export default function SubmitRumorPage() {
         <div className="flex gap-3">
           <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />
           <p className="text-xs text-muted-foreground">
-            Now tell us what the rumor is. Your submission stays anonymous and is reviewed before appearing on the map.
+            {t('submit.intro')}
           </p>
         </div>
       </Card>
 
       <Card className="glass-panel p-6 space-y-4">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-1">Anonymous · encrypted</div>
-          <h1 className="text-2xl font-bold">Submit a rumor</h1>
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary mb-1">{t('submit.anonEnc')}</div>
+          <h1 className="text-2xl font-bold">{t('submit.title')}</h1>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <Field label="Claim *" error={errors.claim}>
+          <Field label={t('submit.claim')} error={errors.claim}>
             <Input
               value={form.claim}
               onChange={(e) => setForm({ ...form, claim: e.target.value })}
-              placeholder="e.g. Government to seize bank deposits overnight"
+              placeholder={t('submit.claimPh')}
               maxLength={280}
             />
           </Field>
-          <Field label="Description (optional)" error={errors.description}>
+          <Field label={t('submit.description')} error={errors.description}>
             <Textarea
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              placeholder="Additional context — exact wording, screenshots you saw, etc."
+              placeholder={t('submit.descriptionPh')}
               rows={4}
               maxLength={1000}
             />
@@ -210,8 +214,8 @@ export default function SubmitRumorPage() {
           </Button>
 
           <Field
-            label="Origin country *"
-            hint="Where YOU heard the rumor. For online sources, use the country where the platform/agency is registered."
+            label={t('submit.origin')}
+            hint={t('submit.originHint')}
             error={errors.originCountry}
           >
             <Select
@@ -221,46 +225,46 @@ export default function SubmitRumorPage() {
               <SelectTrigger>
                 <div className="flex items-center gap-2">
                   <MapPin className="h-3.5 w-3.5 text-primary" />
-                  <SelectValue placeholder="Select country of origin" />
+                  <SelectValue placeholder={t('submit.selectOrigin')} />
                 </div>
               </SelectTrigger>
               <SelectContent>
-                {COUNTRIES.map((c) => <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>)}
+                {ALL_COUNTRIES.map((c) => <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>)}
               </SelectContent>
             </Select>
           </Field>
 
           <Field
-            label="Subject country (optional)"
-            hint="What country is the rumor ABOUT? Leave empty if the same as origin."
+            label={t('submit.subject')}
+            hint={t('submit.subjectHint')}
             error={errors.subjectCountry}
           >
             <Select
               value={form.subjectCountry || NONE}
               onValueChange={(v) => setForm({ ...form, subjectCountry: v === NONE ? '' : v })}
             >
-              <SelectTrigger><SelectValue placeholder="Same as origin" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder={t('submit.sameAsOrigin')} /></SelectTrigger>
               <SelectContent>
-                <SelectItem value={NONE}>Same as origin</SelectItem>
-                {COUNTRIES.map((c) => <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>)}
+                <SelectItem value={NONE}>{t('submit.sameAsOrigin')}</SelectItem>
+                {ALL_COUNTRIES.map((c) => <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>)}
               </SelectContent>
             </Select>
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Topic *" error={errors.topic}>
+            <Field label={t('submit.topic')} error={errors.topic}>
               <Select value={form.topic} onValueChange={(v) => setForm({ ...form, topic: v })}>
-                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={t('submit.select')} /></SelectTrigger>
                 <SelectContent>
                   {TOPICS.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                 </SelectContent>
               </Select>
             </Field>
-            <Field label="Source channel (optional)" error={errors.source}>
+            <Field label={t('submit.sourceChannel')} error={errors.source}>
               <Input
                 value={form.source}
                 onChange={(e) => setForm({ ...form, source: e.target.value })}
-                placeholder="WhatsApp, Telegram, X…"
+                placeholder={t('submit.sourcePh')}
                 maxLength={120}
               />
             </Field>
@@ -268,7 +272,7 @@ export default function SubmitRumorPage() {
 
           <Button type="submit" disabled={busy} className="w-full gap-2 font-mono uppercase tracking-wider text-xs">
             {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
-            Transmit submission
+            {t('submit.transmit')}
           </Button>
         </form>
       </Card>

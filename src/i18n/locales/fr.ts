@@ -27,7 +27,7 @@ const fr = {
     notSupported: 'Notifications non prises en charge',
     notSupportedDesc: 'Votre navigateur ne prend pas en charge les notifications.',
     demoBadge: 'Version démo', demoTitle: 'Bienvenue sur Rumor Radar !',
-    demoDesc: 'Ceci est une version démo préparée pour le hackathon Lovable. La plateforme complète avec données en temps réel et fonctionnalités étendues arrive bientôt !',
+    demoDesc: 'Rumor Radar est actif et continue d’étendre sa couverture de données en temps réel et ses outils partenaires.',
     demoExtra: 'Vous voulez en savoir plus sur le projet, notre mission et comment vous impliquer ? Consultez la section À propos.',
     learnMore: 'En savoir plus dans À propos', gotIt: 'Compris',
   },
@@ -164,7 +164,7 @@ const fr = {
     f6Title: 'Console modérateur',
     f6Desc: 'Approuvez les soumissions, validez les démentis, calibrez l’intensité tendance.',
     partnerTitle: 'Devenir partenaire OSC',
-    partnerDesc: 'Les OSC vérifiées obtiennent un accès en écriture pour publier démentis et vérifications. Contactez partnerships@rumorradar.org avec votre profil et vos enquêtes récentes.',
+    partnerDesc: 'Les OSC vérifiées obtiennent un accès en écriture pour publier démentis et vérifications. Utilisez le formulaire de contact ci-dessous avec votre profil et vos enquêtes récentes, et notre équipe partenariats vous recontactera.',
   },
   submit: {
     captured: 'Position capturée',
