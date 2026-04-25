@@ -110,34 +110,28 @@ export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = fal
   }, [rumors, draggable, onSelect, updateRumorCoordinates]);
 
   // Sweep-marker interaction — pulse markers as the horizontal radar sweep
-  // passes over them. The CSS sweep translates a vertical bar from -20% to
-  // 120% across the overlay every 6s; we mirror that math here.
+  // passes over them. We read the bar's actual position each frame so the math
+  // stays correct at any viewport size.
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    const SWEEP_PERIOD_MS = 6000;
+    const SWEEP_PERIOD_MS = 7000;
     const recentlySwept = new Map<string, number>();
     let raf = 0;
 
     const tick = () => {
-      const overlay = container.querySelector<HTMLElement>('.radar-overlay');
       const bar = container.querySelector<HTMLElement>('.radar-sweep-cone');
-      if (overlay && bar) {
-        const oRect = overlay.getBoundingClientRect();
-        const t = (performance.now() % SWEEP_PERIOD_MS) / SWEEP_PERIOD_MS;
-        // Bar width is 18% of overlay; translateX -20%..120% of bar width.
-        const barWidth = oRect.width * 0.18;
-        const translateX = barWidth * (-0.2 + 1.4 * t);
-        // Leading edge x (right side of the bar) in viewport coords
-        const edgeX = oRect.left + translateX + barWidth;
+      if (bar) {
+        const bRect = bar.getBoundingClientRect();
+        const edgeX = bRect.right; // leading (right) edge of the sweep bar
         const now = performance.now();
         const markers = container.querySelectorAll<HTMLElement>('.rumor-marker[data-rumor-id]');
         markers.forEach((el) => {
           const r = el.getBoundingClientRect();
           const mx = r.left + r.width / 2;
           const id = el.dataset.rumorId!;
-          // Trigger when the leading edge crosses the marker (within a small band)
-          if (edgeX >= mx - 6 && edgeX <= mx + 24) {
+          // Trigger when the leading edge crosses the marker
+          if (edgeX >= mx - 6 && edgeX <= mx + 30) {
             const last = recentlySwept.get(id) ?? 0;
             if (now - last > SWEEP_PERIOD_MS - 500) {
               recentlySwept.set(id, now);

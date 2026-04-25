@@ -275,14 +275,17 @@
 }
 
 @keyframes radar-sweep-x {
-  0% { transform: translateX(-20%); }
-  100% { transform: translateX(120%); }
+  /* Travel from fully off-screen left to fully off-screen right.
+     `left` is the bar's left edge; bar width is fixed via `--sweep-w`. */
+  0%   { left: calc(-1 * var(--sweep-w)); }
+  100% { left: 100%; }
 }
 
 /* Decorative radar sweep over the map — horizontal left→right pass */
 .radar-overlay {
   mix-blend-mode: screen;
   opacity: 0.7;
+  --sweep-w: 220px;
 }
 .radar-overlay::before {
   /* Soft concentric rings + faint center glow (kept for ambience) */
@@ -302,8 +305,7 @@
 .radar-sweep-cone {
   position: absolute;
   top: 0;
-  left: 0;
-  width: 18%;
+  width: var(--sweep-w);
   height: 100%;
   background: linear-gradient(
     90deg,
@@ -313,8 +315,9 @@
     hsl(152 100% 65% / 0.55) 96%,
     hsl(152 100% 75% / 0.85) 100%
   );
-  animation: radar-sweep-x 6s linear infinite;
+  animation: radar-sweep-x 7s linear infinite;
   filter: blur(1px);
+  will-change: left;
 }
 .radar-sweep-cone::after {
   /* Bright leading edge */
