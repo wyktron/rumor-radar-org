@@ -236,15 +236,19 @@ export type Database = {
           contact_email: string
           contact_name: string
           contact_phone: string | null
+          corrections_policy_url: string | null
           country: string
           country_code: string | null
           created_at: string
           description: string
+          funding_disclosure_url: string | null
           id: string
           ifcn_signatory: boolean | null
           legal_name: string | null
+          methodology_url: string | null
           mission_statement: string | null
           organization_name: string
+          ownership_disclosure_url: string | null
           provisioned_cso_id: string | null
           provisioned_user_id: string | null
           registration_number: string | null
@@ -262,15 +266,19 @@ export type Database = {
           contact_email: string
           contact_name: string
           contact_phone?: string | null
+          corrections_policy_url?: string | null
           country: string
           country_code?: string | null
           created_at?: string
           description: string
+          funding_disclosure_url?: string | null
           id?: string
           ifcn_signatory?: boolean | null
           legal_name?: string | null
+          methodology_url?: string | null
           mission_statement?: string | null
           organization_name: string
+          ownership_disclosure_url?: string | null
           provisioned_cso_id?: string | null
           provisioned_user_id?: string | null
           registration_number?: string | null
@@ -288,15 +296,19 @@ export type Database = {
           contact_email?: string
           contact_name?: string
           contact_phone?: string | null
+          corrections_policy_url?: string | null
           country?: string
           country_code?: string | null
           created_at?: string
           description?: string
+          funding_disclosure_url?: string | null
           id?: string
           ifcn_signatory?: boolean | null
           legal_name?: string | null
+          methodology_url?: string | null
           mission_statement?: string | null
           organization_name?: string
+          ownership_disclosure_url?: string | null
           provisioned_cso_id?: string | null
           provisioned_user_id?: string | null
           registration_number?: string | null

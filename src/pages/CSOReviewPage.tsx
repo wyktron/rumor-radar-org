@@ -46,6 +46,10 @@ interface CsoRequestRow {
   staff_count: number | null;
   years_active: number | null;
   ifcn_signatory: boolean | null;
+  methodology_url: string | null;
+  corrections_policy_url: string | null;
+  funding_disclosure_url: string | null;
+  ownership_disclosure_url: string | null;
   status: string;
   submitted_at: string;
   reviewer_notes: string | null;
@@ -264,6 +268,20 @@ export default function CSOReviewPage() {
               )}
             </div>
 
+            {(r.methodology_url || r.corrections_policy_url || r.funding_disclosure_url || r.ownership_disclosure_url) && (
+              <div className="border-t border-border pt-3">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-2">
+                  Public policies
+                </div>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                  {r.methodology_url && <PolicyLink label="Methodology" href={r.methodology_url} />}
+                  {r.corrections_policy_url && <PolicyLink label="Corrections" href={r.corrections_policy_url} />}
+                  {r.funding_disclosure_url && <PolicyLink label="Funding" href={r.funding_disclosure_url} />}
+                  {r.ownership_disclosure_url && <PolicyLink label="Ownership" href={r.ownership_disclosure_url} />}
+                </ul>
+              </div>
+            )}
+
             {/* Documents */}
             <div className="border-t border-border pt-3">
               <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-2">
@@ -351,6 +369,23 @@ function DetailRow({
       <span className="text-muted-foreground">{label}:</span>
       <span className="min-w-0 break-words">{children}</span>
     </div>
+  );
+}
+
+function PolicyLink({ label, href }: { label: string; href: string }) {
+  return (
+    <li className="flex items-center gap-2">
+      <ExternalLink className="h-3 w-3 text-muted-foreground shrink-0" />
+      <span className="text-muted-foreground">{label}:</span>
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        className="text-primary hover:underline truncate min-w-0"
+      >
+        {href.replace(/^https?:\/\//, '')}
+      </a>
+    </li>
   );
 }
 
