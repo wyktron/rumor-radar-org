@@ -1,22 +1,8 @@
-import type { CSO, Rumor, RumorSubmission, DebunkSubmission, CSORegistration, User } from '@/types';
+import type { CSO, Rumor, RumorSubmission, DebunkSubmission, CSORegistration } from '@/types';
 
-export const dummyUsers: (User & { password: string })[] = [
-  {
-    id: 'mod-1',
-    email: 'admin@rumorradar.org',
-    password: 'RumorRadar2024!Secure',
-    name: 'Alex Moderator',
-    role: 'moderator',
-  },
-  {
-    id: 'cso-user-1',
-    email: 'cso@rumorradar.org',
-    password: 'CSOPartner2024!Demo',
-    name: 'Maria FactChecker',
-    role: 'cso',
-    csoId: 'cso-1',
-  },
-];
+// Note: legacy demo credentials were removed. Authentication is handled via
+// the Supabase-backed AuthContext (see src/context/AuthContext.tsx). Never
+// embed real or demo passwords in client-side bundles.
 
 export const dummyCSOs: CSO[] = [
   { id: 'cso-1', name: 'FactCheck Alliance', country: 'United States', coordinates: [38.9, -77.0], verified: true, description: 'Independent verification network covering North American media ecosystems.', website: 'https://factcheck.example.org', contactEmail: 'contact@factcheck.example.org', dateJoined: '2023-01-12' },
