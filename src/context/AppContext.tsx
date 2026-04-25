@@ -7,6 +7,9 @@ import type {
   CSO,
   User,
   LovedOneSubmission,
+  Topic,
+  RumorStatus,
+  Language,
 } from '@/types';
 import {
   dummyRumors,
@@ -16,6 +19,54 @@ import {
   dummyCSOs,
   dummyUsers,
 } from '@/data/dummyData';
+import { supabase } from '@/integrations/supabase/client';
+
+type RumorRow = {
+  id: string;
+  title: string;
+  description: string;
+  origin_country: string;
+  subject_country: string | null;
+  topic: string;
+  latitude: number;
+  longitude: number;
+  intensity: number;
+  status: RumorStatus;
+  source_language: string;
+  submitted_at: string;
+  debunked_by: string | null;
+  debunked_at: string | null;
+  debunk_content: string | null;
+  debunk_sources: string[] | null;
+  verified_by: string | null;
+  verified_at: string | null;
+  verification_content: string | null;
+  verification_sources: string[] | null;
+};
+
+function rowToRumor(row: RumorRow): Rumor {
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    originCountry: row.origin_country,
+    subjectCountry: row.subject_country ?? undefined,
+    topic: row.topic as Topic,
+    coordinates: [Number(row.latitude), Number(row.longitude)],
+    intensity: Number(row.intensity),
+    status: row.status,
+    submittedAt: row.submitted_at,
+    sourceLanguage: (row.source_language || 'en') as Language,
+    debunkedBy: row.debunked_by ?? undefined,
+    debunkedAt: row.debunked_at ?? undefined,
+    debunkContent: row.debunk_content ?? undefined,
+    debunkSources: row.debunk_sources ?? undefined,
+    verifiedBy: row.verified_by ?? undefined,
+    verifiedAt: row.verified_at ?? undefined,
+    verificationContent: row.verification_content ?? undefined,
+    verificationSources: row.verification_sources ?? undefined,
+  };
+}
 
 interface AppState {
   rumors: Rumor[];
