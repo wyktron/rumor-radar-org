@@ -67,7 +67,7 @@ function ModeratorDashboard() {
     <div className="container py-6 space-y-4">
       <div>
         <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary">Moderator console</div>
-        <h1 className="text-2xl font-bold">Welcome back, {user?.name}</h1>
+        <h1 className="text-2xl font-bold">Welcome back, {displayName}</h1>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
