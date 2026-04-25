@@ -6,22 +6,29 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bell, Info, Mail, Search } from 'lucide-react';
+import { Bell, Info, Mail, Search, Loader2 } from 'lucide-react';
 import { ALL_COUNTRIES } from '@/constants/all-countries';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { z } from 'zod';
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+const emailSchema = z.string().trim().email().max(320);
+
 export function SubscribeDialog({ open, onOpenChange }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [email, setEmail] = useState('');
   const [debunks, setDebunks] = useState(true);
   const [confirmations, setConfirmations] = useState(true);
   const [countries, setCountries] = useState<string[]>([]);
   const [query, setQuery] = useState('');
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   const filteredCountries = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -33,9 +40,14 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
     setCountries((prev) => (prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name]));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || (!debunks && !confirmations)) {
+    const parsed = emailSchema.safeParse(email);
+    if (!parsed.success) {
+      toast({ title: 'Invalid email', description: parsed.error.issues[0].message, variant: 'destructive' });
+      return;
+    }
+    if (!debunks && !confirmations) {
       toast({
         title: t('subscribe.almostThere'),
         description: t('subscribe.almostThereDesc'),
@@ -43,16 +55,49 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
       });
       return;
     }
-    const scope = countries.length
-      ? t('subscribe.forCountries', { count: countries.length })
-      : '';
+    if (!acceptedTerms || !acceptedPrivacy) {
+      toast({
+        title: 'Consent required',
+        description: 'Please accept the Terms of Service and Privacy Policy to continue.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setBusy(true);
+    const { error } = await supabase.from('subscribers').insert({
+      email: parsed.data.toLowerCase(),
+      countries,
+      notify_debunks: debunks,
+      notify_confirmations: confirmations,
+      consented_terms: acceptedTerms,
+      consented_privacy: acceptedPrivacy,
+      preferred_language: i18n.resolvedLanguage ?? 'en',
+      user_agent: typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 500) : null,
+    });
+    setBusy(false);
+
+    if (error) {
+      const isDuplicate = error.code === '23505' || /duplicate/i.test(error.message);
+      toast({
+        title: isDuplicate ? 'Already subscribed' : 'Subscription failed',
+        description: isDuplicate
+          ? 'This email is already in our list. Check your inbox for the confirmation email.'
+          : error.message,
+        variant: isDuplicate ? 'default' : 'destructive',
+      });
+      return;
+    }
+
     toast({
-      title: t('subscribe.subscribed'),
-      description: t('subscribe.subscribedDesc', { email, scope }),
+      title: 'Check your inbox',
+      description: `We sent a confirmation link to ${parsed.data}. Please confirm to activate your subscription.`,
     });
     setEmail('');
     setCountries([]);
     setQuery('');
+    setAcceptedTerms(false);
+    setAcceptedPrivacy(false);
     onOpenChange(false);
   };
 
@@ -126,7 +171,7 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
                 className="pl-8 h-9"
               />
             </div>
-            <ScrollArea className="h-48 rounded-md border border-border">
+            <ScrollArea className="h-40 rounded-md border border-border">
               <div className="grid grid-cols-2 gap-x-3 gap-y-2 p-3">
                 {filteredCountries.map((c) => (
                   <label
@@ -149,8 +194,41 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
             </ScrollArea>
           </div>
 
-          <Button type="submit" className="w-full gap-2">
-            <Mail className="h-4 w-4" /> {t('subscribe.submit')}
+          {/* Consent */}
+          <div className="space-y-2 rounded-md border border-border bg-secondary/30 p-3">
+            <label className="flex items-start gap-2 text-xs cursor-pointer">
+              <Checkbox
+                checked={acceptedTerms}
+                onCheckedChange={(v) => setAcceptedTerms(v === true)}
+                className="mt-0.5"
+              />
+              <span>
+                I agree to the{' '}
+                <a href="/about#terms" target="_blank" rel="noreferrer" className="text-primary underline">
+                  Terms of Service
+                </a>
+                .
+              </span>
+            </label>
+            <label className="flex items-start gap-2 text-xs cursor-pointer">
+              <Checkbox
+                checked={acceptedPrivacy}
+                onCheckedChange={(v) => setAcceptedPrivacy(v === true)}
+                className="mt-0.5"
+              />
+              <span>
+                I have read the{' '}
+                <a href="/about#privacy" target="_blank" rel="noreferrer" className="text-primary underline">
+                  Privacy Policy
+                </a>{' '}
+                and consent to receiving emails from Rumor Radar.
+              </span>
+            </label>
+          </div>
+
+          <Button type="submit" disabled={busy} className="w-full gap-2">
+            {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
+            {t('subscribe.submit')}
           </Button>
           <p className="text-xs text-center text-muted-foreground -mt-2">
             {t('subscribe.privacy')}
