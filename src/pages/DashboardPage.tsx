@@ -223,6 +223,12 @@ function ModeratorDashboard() {
             </div>
           </Card>
         </TabsContent>
+
+        {isAdmin && (
+          <TabsContent value="roles">
+            <RolesAdmin />
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );
