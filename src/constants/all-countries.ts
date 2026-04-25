@@ -249,4 +249,27 @@ export const ALL_COUNTRIES: { code: string; name: string }[] = [
   { code: 'YE', name: 'Yemen' },
   { code: 'ZM', name: 'Zambia' },
   { code: 'ZW', name: 'Zimbabwe' },
+  // ── Disputed, partially recognized & de facto territories ──
+  // Disinformation can originate from any of these regions, so they must
+  // be selectable. Codes use ISO 3166-1 user-assigned (X*) or widely-used
+  // unofficial codes where no ISO code exists.
+  { code: 'XK', name: 'Kosovo' },
+  { code: 'TW', name: 'Taiwan' }, // listed above as well; kept for clarity
+  { code: 'PS', name: 'Palestine' },
+  { code: 'EH', name: 'Western Sahara' },
+  { code: 'XT', name: 'Transnistria' },
+  { code: 'XA', name: 'Abkhazia' },
+  { code: 'XS', name: 'South Ossetia' },
+  { code: 'XN', name: 'Nagorno-Karabakh (Artsakh)' },
+  { code: 'XC', name: 'Northern Cyprus' },
+  { code: 'XL', name: 'Somaliland' },
+  { code: 'XD', name: 'Donetsk People\'s Republic (occupied)' },
+  { code: 'XU', name: 'Luhansk People\'s Republic (occupied)' },
+  { code: 'XR', name: 'Crimea (occupied)' },
+  { code: 'XG', name: 'Gaza Strip' },
+  { code: 'XW', name: 'West Bank' },
+  { code: 'XJ', name: 'Jammu and Kashmir (disputed)' },
+  { code: 'XB', name: 'Bougainville' },
+  { code: 'XZ', name: 'Zanzibar' },
+  { code: 'XE', name: 'Sealand (micronation)' },
 ];
