@@ -111,7 +111,8 @@ export default function SubmitRumorPage() {
       return;
     }
     const origin = ALL_COUNTRIES.find((c) => c.name === form.originCountry);
-    const coords = pickedCoords ?? origin?.coordinates ?? [0, 0];
+    const mappedOrigin = COUNTRIES.find((c) => c.name === form.originCountry);
+    const coords = pickedCoords ?? mappedOrigin?.coordinates ?? [0, 0];
 
     setBusy(true);
     const { error } = await supabase.from('rumor_submissions').insert({
