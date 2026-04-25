@@ -8,7 +8,7 @@ const ru = {
   },
   nav: {
     heatmap: 'Карта', timeline: 'Лента', csos: 'Сеть ОГО', impact: 'Влияние',
-    dashboard: 'Панель', about: 'О проекте', subscribe: 'Подписаться', donate: 'Пожертвовать',
+    dashboard: 'Панель', pricing: 'Тарифы', about: 'О проекте', subscribe: 'Подписаться', donate: 'Пожертвовать',
     comingSoon: 'Скоро',
   },
   welcome: {

@@ -8,7 +8,7 @@ const es = {
   },
   nav: {
     heatmap: 'Mapa', timeline: 'Cronología', csos: 'Red OSC', impact: 'Impacto',
-    dashboard: 'Panel', about: 'Acerca de', subscribe: 'Suscribirse', donate: 'Donar',
+    dashboard: 'Panel', pricing: 'Precios', about: 'Acerca de', subscribe: 'Suscribirse', donate: 'Donar',
     comingSoon: 'Próximamente',
   },
   welcome: {
