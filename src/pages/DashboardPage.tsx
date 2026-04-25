@@ -27,6 +27,23 @@ function ModeratorDashboard() {
     approveSubmission, rejectSubmission, approveDebunk, rejectDebunk,
     approveCSORegistration, rejectCSORegistration, updateRumorIntensity, user,
   } = useApp();
+  const [translatingId, setTranslatingId] = useState<string | null>(null);
+
+  async function handleTranslate(rumorId: string) {
+    setTranslatingId(rumorId);
+    try {
+      const { data, error } = await supabase.functions.invoke('translate-rumor', {
+        body: { rumorId },
+      });
+      if (error) throw error;
+      toast.success(`Translated to ${(data?.languages ?? []).length} languages`);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Translation failed';
+      toast.error(msg);
+    } finally {
+      setTranslatingId(null);
+    }
+  }
 
   const stats = useMemo(() => ({
     total: rumors.length,
