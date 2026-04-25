@@ -217,7 +217,7 @@ export default function HeatmapPage() {
       >
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
-            <Filter className="h-3 w-3" /> Filter rumors
+            <Filter className="h-3 w-3" /> {t('heatmap.filterRumors')}
           </div>
           {filtersActive && (
             <button
@@ -225,7 +225,7 @@ export default function HeatmapPage() {
               onClick={clearAll}
               className="text-[10px] font-mono uppercase tracking-wider text-primary hover:underline"
             >
-              Clear
+              {t('heatmap.clear')}
             </button>
           )}
         </div>
@@ -244,44 +244,44 @@ export default function HeatmapPage() {
             <div className="flex gap-1.5 pr-4">
               <Info className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
               <p className="text-[11px] leading-snug">
-                <strong>How to read this map:</strong> Points show where each rumor <strong>originated</strong> (spread from), not where events happened. Use filters to find rumors about each region.
+                <strong>{t('heatmap.howToRead')}</strong> <Trans i18nKey="heatmap.howToReadDesc" components={[<strong />]} />
               </p>
             </div>
           </div>
         )}
 
         <div className="space-y-2.5">
-          <FilterField label="Origin country">
+          <FilterField label={t('heatmap.originCountry')}>
             <Select value={country} onValueChange={setCountry}>
               <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All countries</SelectItem>
+                <SelectItem value="all">{t('heatmap.allCountries')}</SelectItem>
                 {COUNTRIES.map((c) => <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>)}
               </SelectContent>
             </Select>
           </FilterField>
 
-          <FilterField label="Topic">
+          <FilterField label={t('heatmap.topic')}>
             <div className="flex flex-wrap gap-1">
-              <ChipBtn active={topic === 'all'} onClick={() => setTopic('all')}>All</ChipBtn>
+              <ChipBtn active={topic === 'all'} onClick={() => setTopic('all')}>{t('heatmap.all')}</ChipBtn>
               {TOPICS.map((t) => (
                 <ChipBtn key={t} active={topic === t} onClick={() => setTopic(t)}>{t}</ChipBtn>
               ))}
             </div>
           </FilterField>
 
-          <FilterField label="Status">
+          <FilterField label={t('heatmap.status')}>
             <div className="flex flex-wrap gap-1">
-              <ChipBtn active={status === 'all'} onClick={() => setStatus('all')}>All</ChipBtn>
-              <ChipBtn active={status === 'debunked'} onClick={() => setStatus('debunked')}>Debunked</ChipBtn>
-              <ChipBtn active={status === 'verified-true'} onClick={() => setStatus('verified-true')}>Verified True</ChipBtn>
-              <ChipBtn active={status === 'pending'} onClick={() => setStatus('pending')}>Pending</ChipBtn>
+              <ChipBtn active={status === 'all'} onClick={() => setStatus('all')}>{t('heatmap.all')}</ChipBtn>
+              <ChipBtn active={status === 'debunked'} onClick={() => setStatus('debunked')}>{t('heatmap.debunkedLegend')}</ChipBtn>
+              <ChipBtn active={status === 'verified-true'} onClick={() => setStatus('verified-true')}>{t('heatmap.verifiedTrueChip')}</ChipBtn>
+              <ChipBtn active={status === 'pending'} onClick={() => setStatus('pending')}>{t('heatmap.pending')}</ChipBtn>
             </div>
           </FilterField>
 
           <div className="text-[10px] font-mono text-muted-foreground pt-1.5 border-t border-border/60">
-            {filtered.length} / {rumors.length} signals
-            {isModerator && <span className="ml-2 text-primary">● drag mode</span>}
+            {t('heatmap.signals', { count: filtered.length, total: rumors.length })}
+            {isModerator && <span className="ml-2 text-primary">{t('heatmap.dragMode')}</span>}
           </div>
         </div>
       </div>
