@@ -372,6 +372,23 @@ function DetailRow({
   );
 }
 
+function PolicyLink({ label, href }: { label: string; href: string }) {
+  return (
+    <li className="flex items-center gap-2">
+      <ExternalLink className="h-3 w-3 text-muted-foreground shrink-0" />
+      <span className="text-muted-foreground">{label}:</span>
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        className="text-primary hover:underline truncate min-w-0"
+      >
+        {href.replace(/^https?:\/\//, '')}
+      </a>
+    </li>
+  );
+}
+
 function StatusPill({ status }: { status: string }) {
   const cls =
     status === 'approved'
