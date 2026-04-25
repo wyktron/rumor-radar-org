@@ -34,7 +34,7 @@ function ModeratorDashboard() {
     approveSubmission, rejectSubmission, approveDebunk, rejectDebunk,
     approveCSORegistration, rejectCSORegistration, updateRumorIntensity,
   } = useApp();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const displayName = (user?.user_metadata as { display_name?: string } | undefined)?.display_name
     ?? user?.email
     ?? 'operator';
