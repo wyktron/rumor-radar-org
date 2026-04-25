@@ -23,7 +23,7 @@ const es = {
     notSupported: 'Notificaciones no compatibles',
     notSupportedDesc: 'Tu navegador no admite notificaciones.',
     demoBadge: 'Versión demo', demoTitle: '¡Bienvenido a Rumor Radar!',
-    demoDesc: 'Esta es una versión demo preparada para el hackathon Lovable. ¡La plataforma completa con datos en tiempo real y funciones ampliadas llegará pronto!',
+    demoDesc: 'Rumor Radar está activo y sigue ampliando la cobertura de datos en tiempo real y las herramientas para socios.',
     demoExtra: '¿Quieres saber más sobre el proyecto, nuestra misión y cómo participar? Consulta la sección Acerca de.',
     learnMore: 'Más información en Acerca de', gotIt: 'Entendido',
   },

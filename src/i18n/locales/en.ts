@@ -38,7 +38,7 @@ const en = {
     notSupportedDesc: 'Your browser does not support notifications.',
     demoBadge: 'Demo Version',
     demoTitle: 'Welcome to Rumor Radar!',
-    demoDesc: 'This is a demo version prepared for the Lovable hackathon. The full platform with real-time data and expanded features is coming soon!',
+    demoDesc: 'Rumor Radar is live and continuing to expand real-time data coverage and partner tools.',
     demoExtra: 'Want to learn more about the project, our mission, and how you can get involved? Check out the About section for more information.',
     learnMore: 'Learn More in About',
     gotIt: 'Got it',
