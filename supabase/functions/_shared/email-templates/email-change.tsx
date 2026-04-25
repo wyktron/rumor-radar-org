@@ -48,7 +48,7 @@ export const EmailChangeEmail = ({
           Click the button below to confirm this change:
         </Text>
         <Button style={button} href={confirmationUrl}>
-          Confirm Email Change
+          Confirm email change
         </Button>
         <Text style={footer}>
           If you didn't request this change, please secure your account
