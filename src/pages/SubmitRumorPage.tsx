@@ -53,6 +53,38 @@ export default function SubmitRumorPage() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
+  const [aiBusy, setAiBusy] = useState(false);
+
+  async function handleAiAssist() {
+    if (!form.claim.trim() && !form.description.trim()) {
+      toast.error('Write a claim or description first');
+      return;
+    }
+    setAiBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('summarize-submission', {
+        body: {
+          claim: form.claim,
+          description: form.description,
+          originCountry: form.originCountry,
+        },
+      });
+      if (error) throw error;
+      setForm((f) => ({
+        ...f,
+        claim: data.title || f.claim,
+        description: data.description || f.description,
+        topic: data.topic || f.topic,
+        subjectCountry: data.subject_country || f.subjectCountry,
+      }));
+      toast.success('AI cleaned up your submission');
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'AI assist failed';
+      toast.error(msg);
+    } finally {
+      setAiBusy(false);
+    }
+  }
 
   // If user navigates here directly without picking, send them back to the map to pick a spot
   useEffect(() => {
