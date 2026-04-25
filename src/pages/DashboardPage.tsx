@@ -12,9 +12,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { StatusBadge, IntensityBar } from '@/components/RumorBits';
-import { Check, X, ShieldCheck, ShieldAlert, Activity, Users, Sliders, Languages, Loader2 } from 'lucide-react';
+import { Check, X, ShieldCheck, ShieldAlert, Activity, Users, Sliders, Languages, Loader2, KeyRound } from 'lucide-react';
 import { relativeTime } from '@/lib/rumor-utils';
 import { toast } from 'sonner';
+import { RolesAdmin } from '@/components/admin/RolesAdmin';
 
 export default function DashboardPage() {
   // Authentication state comes from Supabase, not from client-side localStorage.
