@@ -1,24 +1,21 @@
 project_id = "vtqvrjgibzbkherokimb"
-[functions.process-email-queue]
-verify_jwt = true
 
-[functions.send-transactional-email]
-verify_jwt = true
-
-[functions.preview-transactional-email]
-verify_jwt = false
-
-[functions.handle-email-unsubscribe]
-verify_jwt = false
-
-[functions.handle-email-suppression]
-verify_jwt = false
-
-[functions.summarize-submission]
-verify_jwt = false
-
-[functions.translate-rumor]
-verify_jwt = true
-
-[functions.classify-scraped-rumor]
-verify_jwt = true
+[functions]
+  [functions.auth-email-hook]
+    verify_jwt = false
+  [functions.classify-scraped-rumor]
+    verify_jwt = true
+  [functions.handle-email-suppression]
+    verify_jwt = false
+  [functions.handle-email-unsubscribe]
+    verify_jwt = false
+  [functions.preview-transactional-email]
+    verify_jwt = false
+  [functions.process-email-queue]
+    verify_jwt = true
+  [functions.send-transactional-email]
+    verify_jwt = true
+  [functions.summarize-submission]
+    verify_jwt = false
+  [functions.translate-rumor]
+    verify_jwt = true
