@@ -8,7 +8,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Heart, AlertTriangle, ShieldCheck, Phone, MessageSquare, Mail, Loader2 } from 'lucide-react';
 import { COUNTRIES } from '@/constants/countries';
-import { useApp } from '@/context/AppContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import type { LovedOneContactMethod, LovedOneCallTime } from '@/types';
@@ -18,7 +17,6 @@ interface Props {
 }
 
 export function HelpLovedOneDialog({ trigger }: Props) {
-  const { addLovedOneSubmission } = useApp();
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [method, setMethod] = useState<LovedOneContactMethod>('phone');
@@ -63,15 +61,6 @@ export function HelpLovedOneDialog({ trigger }: Props) {
       best_time_to_call: method === 'phone' ? bestTime : null,
       country,
       country_code: countryRow?.code ?? null,
-      relationship: relationship.trim(),
-      notes: notes.trim(),
-    });
-    // Mirror locally so the moderator dashboard (still localStorage-backed in this batch) shows it
-    addLovedOneSubmission({
-      contactMethod: method,
-      contactValue: contactValue.trim(),
-      bestTimeToCall: method === 'phone' ? bestTime : undefined,
-      country,
       relationship: relationship.trim(),
       notes: notes.trim(),
     });
