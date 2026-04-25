@@ -115,10 +115,10 @@ export default function HeatmapPage() {
         <div className="mt-1 text-3xl font-bold font-mono leading-none">{stats.total}</div>
         <div className="text-xs text-muted-foreground mt-0.5">{t('heatmap.activeRumors')}</div>
         <div className="mt-3 space-y-1 text-xs font-mono">
-          <Stat label="debunked" value={stats.debunked} color="text-success" />
-          <Stat label="verified true" value={stats.verified} color="text-signal-verified" />
-          <Stat label="viral" value={stats.viral} color="text-viral" />
-          <Stat label="high" value={stats.high} color="text-warning" />
+          <Stat label={t('heatmap.debunked')} value={stats.debunked} color="text-success" />
+          <Stat label={t('heatmap.verifiedTrue')} value={stats.verified} color="text-signal-verified" />
+          <Stat label={t('heatmap.viral')} value={stats.viral} color="text-viral" />
+          <Stat label={t('heatmap.high')} value={stats.high} color="text-warning" />
         </div>
       </div>
 
@@ -190,19 +190,19 @@ export default function HeatmapPage() {
         style={{ bottom: 'calc(var(--bottom-nav-h, 56px) + 0.75rem)' }}
       >
         <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">
-          Trending scale
+          {t('heatmap.trendingScale')}
         </div>
         <div className="space-y-1 text-xs">
-          <LegendRow color="hsl(var(--signal-low))" label="Low (0–25%)" />
-          <LegendRow color="hsl(var(--signal-moderate))" label="Moderate (25–50%)" />
-          <LegendRow color="hsl(var(--signal-high))" label="High (50–75%)" />
-          <LegendRow color="hsl(var(--signal-viral))" label="Viral (75–100%)" />
+          <LegendRow color="hsl(var(--signal-low))" label={t('heatmap.low')} />
+          <LegendRow color="hsl(var(--signal-moderate))" label={t('heatmap.moderate')} />
+          <LegendRow color="hsl(var(--signal-high))" label={t('heatmap.highRange')} />
+          <LegendRow color="hsl(var(--signal-viral))" label={t('heatmap.viralRange')} />
           <div className="h-px bg-border/60 my-1.5" />
-          <LegendRow color="hsl(var(--signal-debunked))" label="Debunked" />
-          <LegendRow color="hsl(var(--signal-verified))" label="Verified True" />
+          <LegendRow color="hsl(var(--signal-debunked))" label={t('heatmap.debunkedLegend')} />
+          <LegendRow color="hsl(var(--signal-verified))" label={t('heatmap.verifiedLegend')} />
         </div>
         <div className="text-[10px] text-muted-foreground mt-2 pt-2 border-t border-border/60">
-          {isModerator ? 'Drag points · Click for details' : 'Click point for details'}
+          {isModerator ? t('heatmap.dragHint') : t('heatmap.clickHint')}
         </div>
       </div>
 
