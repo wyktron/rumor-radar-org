@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, Bitcoin, Zap, Copy, Check, ShieldCheck } from "lucide-react";
+import { Heart, Bitcoin, Zap, Copy, Check, ShieldCheck, FileText, ArrowLeft } from "lucide-react";
 import {
   Dialog,
   DialogContent,
