@@ -20,6 +20,7 @@ import {
   dummyUsers,
 } from '@/data/dummyData';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 type RumorRow = {
   id: string;
