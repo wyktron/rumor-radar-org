@@ -413,6 +413,76 @@ function InviteCsoDialog({
   );
 }
 
+type PartyType = 'person' | 'institution' | 'organization';
+
+const PARTY_CONFIG: Record<
+  PartyType,
+  {
+    label: string;
+    shortLabel: string;
+    icon: typeof UserIcon;
+    description: string;
+    namePlaceholder: string;
+    emailPlaceholder: string;
+    extraField: { key: 'role' | 'affiliation' | 'jurisdiction'; label: string; placeholder: string; helper?: string };
+    websiteLabel?: string;
+    defaultMessage: (rumorTitle: string) => string;
+  }
+> = {
+  person: {
+    label: 'Person',
+    shortLabel: 'Person',
+    icon: UserIcon,
+    description:
+      'Invite the individual mentioned in this rumor to share their side of the story.',
+    namePlaceholder: 'e.g., Jane Doe',
+    emailPlaceholder: 'jane@example.com',
+    extraField: {
+      key: 'role',
+      label: 'Role / Title (optional)',
+      placeholder: 'e.g., Member of Parliament, Journalist',
+      helper: 'How they are publicly known.',
+    },
+    defaultMessage: (t) =>
+      `Hello, a rumor titled "${t}" mentions you. We invite you to review it and share your response — on the record or as background.`,
+  },
+  institution: {
+    label: 'Public Institution',
+    shortLabel: 'Institution',
+    icon: Building2,
+    description:
+      'Invite a government body, agency or public office to issue an official response.',
+    namePlaceholder: 'e.g., Ministry of Health',
+    emailPlaceholder: 'press@ministry.gov',
+    extraField: {
+      key: 'jurisdiction',
+      label: 'Jurisdiction / Country (optional)',
+      placeholder: 'e.g., Republic of Moldova',
+      helper: 'The country or region this institution serves.',
+    },
+    websiteLabel: 'Official website (optional)',
+    defaultMessage: (t) =>
+      `Dear team, a rumor titled "${t}" references your institution. We invite an official statement or clarification for the public record.`,
+  },
+  organization: {
+    label: 'Organization',
+    shortLabel: 'Org',
+    icon: Briefcase,
+    description:
+      'Invite a company, NGO or other organization to comment on this rumor.',
+    namePlaceholder: 'e.g., Acme Corp',
+    emailPlaceholder: 'press@acme.com',
+    extraField: {
+      key: 'affiliation',
+      label: 'Sector / Industry (optional)',
+      placeholder: 'e.g., NGO, Pharma, Tech',
+    },
+    websiteLabel: 'Website (optional)',
+    defaultMessage: (t) =>
+      `Hello, a rumor titled "${t}" mentions your organization. We invite you to provide a response or clarification.`,
+  },
+};
+
 function InviteToRespondDialog({
   open,
   onClose,
@@ -422,31 +492,65 @@ function InviteToRespondDialog({
   onClose: () => void;
   rumor: Rumor;
 }) {
-  const [partyType, setPartyType] = useState<'person' | 'institution' | 'organization'>('person');
+  const [partyType, setPartyType] = useState<PartyType>('person');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('A rumor has been posted that mentions you. We invite you to review and respond.');
+  const [extra, setExtra] = useState('');
+  const [website, setWebsite] = useState('');
+  const [message, setMessage] = useState(PARTY_CONFIG.person.defaultMessage(rumor.title));
   const [submitting, setSubmitting] = useState(false);
 
-  const kindMap = {
+  const config = PARTY_CONFIG[partyType];
+
+  const handlePartyChange = (next: PartyType) => {
+    const prevDefault = PARTY_CONFIG[partyType].defaultMessage(rumor.title);
+    setPartyType(next);
+    setExtra('');
+    setWebsite('');
+    if (message.trim() === '' || message.trim() === prevDefault.trim()) {
+      setMessage(PARTY_CONFIG[next].defaultMessage(rumor.title));
+    }
+  };
+
+  const kindMap: Record<PartyType, 'person_respond' | 'institution_respond' | 'organization_respond'> = {
     person: 'person_respond',
     institution: 'institution_respond',
     organization: 'organization_respond',
-  } as const;
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const parsed = inviteRespondSchema.safeParse({ partyType, name, email, message });
+    const payload = {
+      partyType,
+      name,
+      email,
+      message,
+      role: config.extraField.key === 'role' ? extra : '',
+      affiliation: config.extraField.key === 'affiliation' ? extra : '',
+      jurisdiction: config.extraField.key === 'jurisdiction' ? extra : '',
+      website,
+    };
+    const parsed = inviteRespondSchema.safeParse(payload);
     if (!parsed.success) {
       toast.error(parsed.error.issues[0]?.message ?? 'Invalid input');
       return;
     }
     setSubmitting(true);
     try {
+      const inviteeRole = [
+        config.extraField.key === 'role' ? extra : null,
+        config.extraField.key === 'affiliation' ? `Sector: ${extra}` : null,
+        config.extraField.key === 'jurisdiction' ? `Jurisdiction: ${extra}` : null,
+        website ? `Website: ${website}` : null,
+      ]
+        .filter((v) => v && String(v).trim().length > 2)
+        .join(' · ') || null;
+
       const { error: insertError } = await supabase.from('rumor_invites').insert({
         rumor_id: rumor.id,
         invitee_email: email.trim().toLowerCase(),
         invitee_name: name.trim(),
+        invitee_role: inviteeRole,
         kind: kindMap[partyType],
         party_type: partyType,
         message: message.trim() || null,
@@ -461,8 +565,10 @@ function InviteToRespondDialog({
           templateData: {
             inviteeName: name.trim(),
             partyType,
+            partyLabel: config.label,
             rumorTitle: rumor.title,
             inviteMessage: message.trim() || undefined,
+            inviteeRole: inviteeRole || undefined,
           },
         },
       });
@@ -471,6 +577,8 @@ function InviteToRespondDialog({
       toast.success('Invitation sent.');
       setName('');
       setEmail('');
+      setExtra('');
+      setWebsite('');
       onClose();
     } catch (err: any) {
       console.error(err);
@@ -480,23 +588,23 @@ function InviteToRespondDialog({
     }
   }
 
-  const partyOptions: Array<{ value: typeof partyType; label: string; icon: typeof UserIcon }> = [
-    { value: 'person', label: 'Person', icon: UserIcon },
-    { value: 'institution', label: 'Institution', icon: Building2 },
-    { value: 'organization', label: 'Org', icon: Briefcase },
+  const partyOptions: Array<{ value: PartyType; label: string; icon: typeof UserIcon }> = [
+    { value: 'person', label: PARTY_CONFIG.person.shortLabel, icon: PARTY_CONFIG.person.icon },
+    { value: 'institution', label: PARTY_CONFIG.institution.shortLabel, icon: PARTY_CONFIG.institution.icon },
+    { value: 'organization', label: PARTY_CONFIG.organization.shortLabel, icon: PARTY_CONFIG.organization.icon },
   ];
+
+  const HeaderIcon = config.icon;
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Building2 className="h-5 w-5 text-primary" /> Invite to Respond
+            <HeaderIcon className="h-5 w-5 text-primary" /> Invite {config.label} to Respond
           </DialogTitle>
         </DialogHeader>
-        <p className="text-sm text-muted-foreground">
-          If this rumor mentions a specific person, institution, or organization, invite them to respond directly.
-        </p>
+        <p className="text-sm text-muted-foreground">{config.description}</p>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="space-y-1.5">
             <Label>Party Type</Label>
@@ -508,7 +616,7 @@ function InviteToRespondDialog({
                   <button
                     key={opt.value}
                     type="button"
-                    onClick={() => setPartyType(opt.value)}
+                    onClick={() => handlePartyChange(opt.value)}
                     className={cn(
                       'flex items-center justify-center gap-1.5 rounded-md border px-3 py-2 text-sm transition-colors',
                       active
@@ -522,46 +630,82 @@ function InviteToRespondDialog({
               })}
             </div>
           </div>
+
           <div className="space-y-1.5">
-            <Label htmlFor="respond-name">Name *</Label>
+            <Label htmlFor="respond-name">
+              {partyType === 'person' ? 'Full name *' : `${config.label} name *`}
+            </Label>
             <Input
               id="respond-name"
-              placeholder="e.g., John Smith"
+              placeholder={config.namePlaceholder}
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
               maxLength={200}
             />
           </div>
+
           <div className="space-y-1.5">
-            <Label htmlFor="respond-email">Email *</Label>
+            <Label htmlFor="respond-extra">{config.extraField.label}</Label>
+            <Input
+              id="respond-extra"
+              placeholder={config.extraField.placeholder}
+              value={extra}
+              onChange={(e) => setExtra(e.target.value)}
+              maxLength={200}
+            />
+            {config.extraField.helper && (
+              <p className="text-[11px] text-muted-foreground">{config.extraField.helper}</p>
+            )}
+          </div>
+
+          {config.websiteLabel && (
+            <div className="space-y-1.5">
+              <Label htmlFor="respond-website">{config.websiteLabel}</Label>
+              <Input
+                id="respond-website"
+                type="url"
+                placeholder="https://example.org"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+                maxLength={500}
+              />
+            </div>
+          )}
+
+          <div className="space-y-1.5">
+            <Label htmlFor="respond-email">
+              {partyType === 'person' ? 'Email *' : 'Press / contact email *'}
+            </Label>
             <Input
               id="respond-email"
               type="email"
-              placeholder="contact@example.com"
+              placeholder={config.emailPlaceholder}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               maxLength={320}
             />
           </div>
+
           <div className="space-y-1.5">
             <Label htmlFor="respond-message">Message (optional)</Label>
             <Textarea
               id="respond-message"
-              rows={3}
+              rows={4}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               maxLength={2000}
             />
           </div>
+
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={onClose} disabled={submitting} className="gap-2">
               <X className="h-4 w-4" /> Cancel
             </Button>
             <Button type="submit" disabled={submitting} className="gap-2">
-              {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Building2 className="h-4 w-4" />}
-              Invite to Respond
+              {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <HeaderIcon className="h-4 w-4" />}
+              Send Invitation
             </Button>
           </div>
         </form>
