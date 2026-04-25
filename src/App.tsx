@@ -141,7 +141,7 @@ function Layout() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 pb-14">
+      <main className="flex-1" style={{ paddingBottom: 'var(--bottom-nav-h, 56px)' }}>
         <Outlet />
       </main>
       <SecondaryNav />
