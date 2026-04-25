@@ -46,20 +46,82 @@ export function DonationDialog({ open, onOpenChange }: DonationDialogProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) setShowTerms(false); }}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Heart className="h-5 w-5 text-destructive" />
-            Support RumorRadar
+            {showTerms ? (
+              <>
+                <FileText className="h-5 w-5 text-primary" />
+                Donation Terms
+              </>
+            ) : (
+              <>
+                <Heart className="h-5 w-5 text-destructive" />
+                Support RumorRadar
+              </>
+            )}
           </DialogTitle>
           <DialogDescription>
-            We're an independent, non-profit project. Your donation funds
-            translation, fact-checker stipends, and the team that calls back
-            worried families. We accept crypto only — no middlemen, no fees
-            siphoned off.
+            {showTerms
+              ? "Please read these terms before sending any donation."
+              : "We're an independent, non-profit project. Your donation funds translation, fact-checker stipends, and the team that calls back worried families. We accept crypto only — no middlemen, no fees siphoned off."}
           </DialogDescription>
         </DialogHeader>
+
+        {showTerms ? (
+          <div className="space-y-4 text-sm">
+            <ul className="space-y-3 text-muted-foreground list-disc pl-5">
+              <li>
+                <span className="text-foreground font-medium">No refunds.</span>{" "}
+                Cryptocurrency donations are final and irreversible. We cannot
+                reverse, refund, or recover sent transactions for any reason.
+              </li>
+              <li>
+                <span className="text-foreground font-medium">Voluntary gift.</span>{" "}
+                Donations are voluntary contributions, not payments for goods
+                or services. You receive no product, license, or guarantee in
+                exchange.
+              </li>
+              <li>
+                <span className="text-foreground font-medium">No tax receipts.</span>{" "}
+                We are not a registered 501(c)(3) or equivalent charity in
+                most jurisdictions. Donations are generally not tax-deductible.
+              </li>
+              <li>
+                <span className="text-foreground font-medium">Send the right asset.</span>{" "}
+                Only send XMR to the Monero address and BTC to the Bitcoin
+                address. Funds sent on the wrong network or to the wrong
+                address are permanently lost.
+              </li>
+              <li>
+                <span className="text-foreground font-medium">Your responsibility.</span>{" "}
+                You are solely responsible for the legality of your donation
+                in your jurisdiction and for the security of your own wallet.
+              </li>
+              <li>
+                <span className="text-foreground font-medium">Editorial independence.</span>{" "}
+                Donations do not buy influence. Donors have no control over
+                editorial decisions, debunks, or which rumors we investigate.
+              </li>
+              <li>
+                <span className="text-foreground font-medium">Privacy.</span>{" "}
+                We do not collect personal data through the donation flow
+                itself. If you email us for a thank-you note, we keep that
+                correspondence private.
+              </li>
+            </ul>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={() => setShowTerms(false)}
+            >
+              <ArrowLeft className="h-4 w-4" /> Back to donation
+            </Button>
+          </div>
+        ) : (
+        <>
 
         <Tabs defaultValue="monero" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
