@@ -91,7 +91,7 @@ function ModeratorDashboard() {
           )}
         </TabsList>
 
-        <TabsContent value="overview">
+        <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <StatCard icon={<Activity />} label="Total rumors" value={stats.total} />
             <StatCard icon={<ShieldCheck className="text-success" />} label="Debunked" value={stats.debunked} />
@@ -99,6 +99,7 @@ function ModeratorDashboard() {
             <StatCard icon={<ShieldAlert className="text-warning" />} label="Pending" value={stats.pending} />
             <StatCard icon={<Users className="text-primary" />} label="CSO partners" value={stats.csos} />
           </div>
+          <ScrapeRumorsPanel />
         </TabsContent>
 
         <TabsContent value="submissions" className="space-y-2">
