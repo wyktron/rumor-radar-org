@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { useApp } from '@/context/AppContext';
 import type { Rumor } from '@/types';
 import { intensityColor, intensityLabel, statusLabel, relativeTime } from '@/lib/rumor-utils';
