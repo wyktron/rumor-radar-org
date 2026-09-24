@@ -46,18 +46,17 @@ export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = fal
       minZoom: 2,
     });
     L.control.zoom({ position: 'topleft' }).addTo(map);
+    // Esri Light Gray Canvas — free, no API key required.
     L.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
+      'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
       {
-        attribution:
-          '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> &copy; <a href="https://carto.com">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 19,
+        attribution: 'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors',
+        maxZoom: 16,
       },
     ).addTo(map);
     L.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',
-      { subdomains: 'abcd', maxZoom: 19, opacity: 0.7 },
+      'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+      { maxZoom: 16, opacity: 0.8 },
     ).addTo(map);
     mapRef.current = map;
     layerRef.current = L.layerGroup().addTo(map);
