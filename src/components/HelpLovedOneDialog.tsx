@@ -25,6 +25,7 @@ export function HelpLovedOneDialog({ trigger }: Props) {
   const [country, setCountry] = useState('');
   const [relationship, setRelationship] = useState('');
   const [notes, setNotes] = useState('');
+  const [consent, setConsent] = useState(false);
 
   const selectedCountry = useMemo(() => COUNTRIES.find((c) => c.name === country), [country]);
 
@@ -45,12 +46,17 @@ export function HelpLovedOneDialog({ trigger }: Props) {
     setCountry('');
     setRelationship('');
     setNotes('');
+    setConsent(false);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!contactValue.trim() || !country || !relationship.trim() || !notes.trim()) {
       toast.error('Please fill all required fields');
+      return;
+    }
+    if (!consent) {
+      toast.error('Please confirm you have permission to share this person\'s data');
       return;
     }
     setBusy(true);
@@ -218,14 +224,39 @@ export function HelpLovedOneDialog({ trigger }: Props) {
             />
           </div>
 
-          <div className="rounded-md border border-success/30 bg-success/5 p-2.5 flex gap-2 text-xs">
-            <ShieldCheck className="h-3.5 w-3.5 text-success shrink-0 mt-0.5" />
-            <p>Their info is confidential and used only for this outreach. We never share it with third parties.</p>
+          {/* EU data protection notice (GDPR Reg. (EU) 2016/679, ePrivacy Dir. 2002/58/EC) */}
+          <div className="rounded-md border border-success/30 bg-success/5 p-3 space-y-2 text-xs">
+            <div className="flex gap-2">
+              <ShieldCheck className="h-3.5 w-3.5 text-success shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="font-semibold text-foreground">Data protection notice (EU GDPR)</p>
+                <p className="text-muted-foreground">
+                  You are sharing another person's personal data. Under the General Data Protection Regulation
+                  (EU) 2016/679 we may only contact them with a lawful basis (Art. 6) and must inform them how we
+                  obtained their details (Art. 14). We use this data only for one-off, fact-checking outreach,
+                  never for marketing, never shared with third parties, stored encrypted and erased within 30 days
+                  or immediately on request (Art. 17). They may object at any time (Art. 21).
+                </p>
+              </div>
+            </div>
+            <label className="flex gap-2.5 items-start cursor-pointer rounded-md border border-border bg-background/60 p-2.5">
+              <input
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                required
+                className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
+              />
+              <span className="leading-snug">
+                I confirm I have the person's explicit permission to share their phone number, email address and
+                other personal data with Rumor Radar for this outreach, and that I am acting in their interest. *
+              </span>
+            </label>
           </div>
 
           <div className="flex justify-end gap-2 pt-1">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button type="submit" disabled={busy} className="gap-1.5">
+            <Button type="submit" disabled={busy || !consent} className="gap-1.5">
               {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Heart className="h-3.5 w-3.5" />}
               Submit outreach
             </Button>

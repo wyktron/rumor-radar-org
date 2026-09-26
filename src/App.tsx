@@ -1,22 +1,14 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, Outlet, NavLink as RouterNavLink, useLocation } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
+import { BrowserRouter, Route, Routes, Outlet, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { Header } from "@/components/Header";
-import { Button } from "@/components/ui/button";
-import { SubscribeDialog } from "@/components/SubscribeDialog";
 import { WelcomeDialogs } from "@/components/WelcomeDialogs";
 import { HackathonBanner } from "@/components/HackathonBanner";
 import { DeckTriggerButton } from "@/components/deck/DeckTriggerButton";
-import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail } from "lucide-react";
-
-
-import { cn } from "@/lib/utils";
 import Index from "./pages/Index.tsx";
 import TimelinePage from "./pages/TimelinePage";
 import CSONetworkPage from "./pages/CSONetworkPage";
@@ -32,92 +24,6 @@ import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
 
-const secondaryLinks: { to: string; key: string; icon: typeof Map; end?: boolean }[] = [
-  { to: '/', key: 'heatmap', icon: Map, end: true },
-  { to: '/timeline', key: 'timeline', icon: Clock },
-  { to: '/csos', key: 'csos', icon: Users },
-  { to: '/impact', key: 'impact', icon: BarChart3 },
-  { to: '/dashboard', key: 'dashboard', icon: LayoutDashboard },
-  { to: '/about', key: 'about', icon: Info },
-];
-
-function SecondaryNav() {
-  const [subscribeOpen, setSubscribeOpen] = useState(false);
-  const { t } = useTranslation();
-  const navRef = useRef<HTMLElement>(null);
-
-  // Publish the nav's actual rendered height as a CSS var so any page
-  // (especially the heatmap with floating panels) can position content
-  // above it correctly across viewport sizes & wrapping states.
-  useEffect(() => {
-    const el = navRef.current;
-    if (!el) return;
-    const update = () => {
-      const h = el.getBoundingClientRect().height;
-      document.documentElement.style.setProperty('--bottom-nav-h', `${Math.ceil(h)}px`);
-    };
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    window.addEventListener('resize', update);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener('resize', update);
-    };
-  }, []);
-
-  return (
-    <>
-      <nav ref={navRef} className="fixed bottom-0 left-0 right-0 border-t border-border/60 bg-background/85 backdrop-blur-xl z-[1000]">
-
-        <div className="flex flex-col gap-2 px-2 py-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-4">
-          <div className="flex flex-wrap items-center justify-center gap-1 sm:flex-nowrap sm:overflow-x-auto sm:justify-start">
-            {secondaryLinks.map((l) => (
-              <RouterNavLink
-                key={l.to}
-                to={l.to}
-                end={l.end}
-                aria-label={t(`nav.${l.key}`)}
-                title={t(`nav.${l.key}`)}
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center justify-center gap-1.5 rounded-md whitespace-nowrap transition-colors',
-                    'h-11 min-w-[44px] px-3 sm:h-auto sm:min-w-0 sm:px-3 sm:py-1.5 text-xs font-medium',
-                    isActive
-                      ? 'text-primary bg-primary/10'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50',
-                  )
-                }
-              >
-                <l.icon className="h-5 w-5 sm:h-3.5 sm:w-3.5" />
-                <span className="hidden sm:inline">{t(`nav.${l.key}`)}</span>
-              </RouterNavLink>
-
-            ))}
-          </div>
-          <div className="flex items-center justify-center gap-2 shrink-0 sm:justify-end">
-            <DeckTriggerButton />
-            <Button
-
-              variant="outline"
-              size="sm"
-              aria-label={t('nav.subscribe')}
-              title={t('nav.subscribe')}
-              className="gap-1.5 text-xs h-11 px-4 sm:h-8 sm:px-3"
-              onClick={() => setSubscribeOpen(true)}
-            >
-              <Mail className="h-5 w-5 sm:h-3.5 sm:w-3.5" />
-              <span className="hidden sm:inline">{t('nav.subscribe')}</span>
-            </Button>
-          </div>
-        </div>
-
-      </nav>
-      <SubscribeDialog open={subscribeOpen} onOpenChange={setSubscribeOpen} />
-    </>
-  );
-}
-
 function Layout() {
   const location = useLocation();
   const isHeatmap = location.pathname === '/';
@@ -130,7 +36,7 @@ function Layout() {
         <main className="flex-1 relative overflow-hidden">
           <Outlet />
         </main>
-        <SecondaryNav />
+        <DeckTriggerButton />
       </div>
     );
   }
@@ -139,10 +45,10 @@ function Layout() {
     <div className="min-h-screen flex flex-col">
       <HackathonBanner />
       <Header />
-      <main className="flex-1" style={{ paddingBottom: 'var(--bottom-nav-h, 56px)' }}>
+      <main className="flex-1 pb-24">
         <Outlet />
       </main>
-      <SecondaryNav />
+      <DeckTriggerButton />
     </div>
   );
 }

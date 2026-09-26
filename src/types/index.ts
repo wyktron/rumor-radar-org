@@ -7,7 +7,10 @@ export type Topic =
   | 'Economy'
   | 'Conflict'
   | 'Environment'
-  | 'Technology';
+  | 'Technology'
+  | 'Cultural'
+  | 'Scamming'
+  | 'Other';
 
 export type RumorStatus = 'pending' | 'approved' | 'debunked' | 'verified-true' | 'rejected';
 
