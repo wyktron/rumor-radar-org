@@ -443,7 +443,7 @@ export default function HelpLovedOnePage() {
                 />
                 <span className="leading-snug">
                   I have read the{' '}
-                  <Link to="/legal" className="text-primary underline">privacy policy</Link> and consent to my
+                  <Link to="/privacy" className="text-primary underline">privacy policy</Link> and consent to my
                   identity data being processed to prevent misuse of this service. *
                 </span>
               </label>
