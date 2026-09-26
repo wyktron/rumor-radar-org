@@ -340,7 +340,7 @@ const en = {
     privacyRights: 'You can unsubscribe from emails at any time and contact us with privacy questions, including access, correction, or deletion requests where permitted by security and recordkeeping obligations.',
   },
   intensity: {"low":"Low","moderate":"Moderate","high":"High","viral":"Viral"},
-  statusLabel: {"pending":"Pending","approved":"Approved","debunked":"Debunked","verifiedTrue":"Verified True","rejected":"Rejected"},
+  statusLabel: {"pending":"Pending","approved":"Unconfirmed","debunked":"Debunked","verifiedTrue":"Verified True","rejected":"Rejected"},
   time: {"justNow":"just now","minutes":"{{m}}m ago","hours":"{{h}}h ago","days":"{{d}}d ago"},
 };
 export default en;

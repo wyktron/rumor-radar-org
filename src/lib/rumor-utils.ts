@@ -20,7 +20,7 @@ export function intensityLabel(intensity: number): string {
 export function statusLabel(status: Rumor['status']): string {
   switch (status) {
     case 'pending': return i18n.t('statusLabel.pending', { defaultValue: 'Pending' });
-    case 'approved': return i18n.t('statusLabel.approved', { defaultValue: 'Approved' });
+    case 'approved': return i18n.t('statusLabel.approved', { defaultValue: 'Unconfirmed' });
     case 'debunked': return i18n.t('statusLabel.debunked', { defaultValue: 'Debunked' });
     case 'verified-true': return i18n.t('statusLabel.verifiedTrue', { defaultValue: 'Verified True' });
     case 'rejected': return i18n.t('statusLabel.rejected', { defaultValue: 'Rejected' });
