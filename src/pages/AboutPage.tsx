@@ -88,6 +88,15 @@ export default function AboutPage() {
   );
 }
 
+function Crit({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="rounded-md border border-border/60 bg-secondary/30 p-3">
+      <div className="font-semibold text-[13px] mb-1">{title}</div>
+      <p className="text-xs text-muted-foreground leading-relaxed">{body}</p>
+    </div>
+  );
+}
+
 function Feature({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
     <Card className="glass-panel p-5 space-y-2 hover:shadow-glow transition-shadow">
