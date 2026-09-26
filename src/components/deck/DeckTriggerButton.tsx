@@ -11,27 +11,11 @@ export function DeckTriggerButton() {
         onClick={() => setOpen(true)}
         aria-label="Open rumor deck"
         title="Rumor deck"
-        className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full animate-attention-shake"
+        className="animate-attention-shake fixed bottom-5 right-4 z-[1100] flex h-14 w-14 items-center justify-center rounded-full border-2 border-primary/50 bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-90"
       >
-        <span
-          aria-hidden
-          className="animate-aura-breathe pointer-events-none absolute inset-0 rounded-full blur-lg"
-          style={{
-            background:
-              'conic-gradient(from 0deg, hsl(var(--signal-verified, 152 60% 40%)), hsl(var(--signal-debunked, 221 83% 53%)), hsl(270 80% 60%), hsl(38 92% 55%), hsl(var(--signal-verified, 152 60% 40%)))',
-          }}
-        />
-        <span
-          aria-hidden
-          className="animate-hue-cycle absolute inset-0 rounded-full"
-          style={{
-            background:
-              'conic-gradient(from 0deg, hsl(152 60% 40%), hsl(221 83% 53%), hsl(270 80% 60%), hsl(38 92% 55%), hsl(152 60% 40%))',
-          }}
-        />
         <svg
           viewBox="0 0 24 24"
-          className="relative h-5 w-5 text-white drop-shadow"
+          className="relative h-6 w-6 drop-shadow"
           fill="none"
           stroke="currentColor"
           strokeWidth="1.8"
