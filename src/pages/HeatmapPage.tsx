@@ -21,6 +21,25 @@ export default function HeatmapPage() {
   const { isStaff } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const legendRef = useRef<HTMLDivElement>(null);
+
+  // Publish the trending-scale legend's height as a CSS var so the filters
+  // panel can stack above it on mobile (they share the bottom-left corner).
+  useEffect(() => {
+    const el = legendRef.current;
+    if (!el) return;
+    const update = () => {
+      document.documentElement.style.setProperty(
+        '--trending-scale-h',
+        `${Math.ceil(el.getBoundingClientRect().height)}px`,
+      );
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const [country, setCountry] = useState<string>('all');
   const [topic, setTopic] = useState<string>('all');
   const [status, setStatus] = useState<string>('all');
@@ -168,6 +187,7 @@ export default function HeatmapPage() {
 
       {/* BOTTOM-LEFT: Trending scale legend — anchors above the bottom nav */}
       <div
+        ref={legendRef}
         className={cn(
           'absolute left-3 sm:left-4 z-[400] glass-panel rounded-lg p-2.5 sm:p-3 w-36 sm:w-56 shadow-lg',
           panelsHidden && 'hidden',
