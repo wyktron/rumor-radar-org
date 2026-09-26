@@ -10,41 +10,42 @@ const TOPICS = ["Health", "Politics", "Migration", "Economy", "Conflict", "Envir
 
 // Phases — each one targets a different region with a different search angle.
 // Calling the function multiple times rotates through these to cover the globe.
+const CURRENT_PERIOD = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 const PHASES: { id: string; label: string; region: string; query: string }[] = [
   {
     id: "europe",
     label: "Europe — political & migration rumors",
     region: "Europe",
     query:
-      "List the most-shared misinformation, conspiracy theories, viral rumors and hoaxes circulating this week (April 2026) across Europe — including from Reddit, Telegram channels, fringe news sites, 4chan, and unverified social media. Cover Germany, France, UK, Italy, Spain, Poland, Romania, Netherlands, Greece, Hungary, Sweden, Ukraine, Russia, Belarus, Serbia, Czechia, and the Balkans. Include politics, migration, EU policy, war, and economy. For each: short claim, country mainly affected, and a source URL if you have one.",
+      `List the most-shared misinformation, conspiracy theories, viral rumors and hoaxes circulating this week (${CURRENT_PERIOD}) across Europe — including from Reddit, Telegram channels, fringe news sites, 4chan, and unverified social media. Cover Germany, France, UK, Italy, Spain, Poland, Romania, Netherlands, Greece, Hungary, Sweden, Ukraine, Russia, Belarus, Serbia, Czechia, and the Balkans. Include politics, migration, EU policy, war, and economy. For each: short claim, country mainly affected, and a source URL if you have one.`,
   },
   {
     id: "americas",
     label: "Americas — politics, health & cartels",
     region: "Americas",
     query:
-      "List the most-shared misinformation, conspiracy theories, and viral rumors circulating this week (April 2026) across the Americas — North, Central, and South. Cover the United States, Canada, Mexico, Brazil, Argentina, Colombia, Venezuela, Chile, Peru, Cuba, Haiti, Guatemala, Honduras, El Salvador, Ecuador, Bolivia. Include rumors from Reddit, Telegram, X/Twitter fringe accounts, and Spanish/Portuguese language sources. Topics: politics, elections, health, immigration, cartels, economy. For each: short claim, country, source URL if known.",
+      `List the most-shared misinformation, conspiracy theories, and viral rumors circulating this week (${CURRENT_PERIOD}) across the Americas — North, Central, and South. Cover the United States, Canada, Mexico, Brazil, Argentina, Colombia, Venezuela, Chile, Peru, Cuba, Haiti, Guatemala, Honduras, El Salvador, Ecuador, Bolivia. Include rumors from Reddit, Telegram, X/Twitter fringe accounts, and Spanish/Portuguese language sources. Topics: politics, elections, health, immigration, cartels, economy. For each: short claim, country, source URL if known.`,
   },
   {
     id: "mena",
     label: "MENA — conflict, religion, geopolitics",
     region: "Middle East & North Africa",
     query:
-      "List the most-shared misinformation, viral rumors, conspiracy theories, and hoaxes circulating this week (April 2026) across the Middle East and North Africa. Cover Israel, Palestine, Lebanon, Syria, Iraq, Iran, Saudi Arabia, UAE, Qatar, Yemen, Egypt, Libya, Tunisia, Algeria, Morocco, Turkey, Jordan. Include Telegram channels, Arabic-language Twitter, fringe news. Topics: war, religion, geopolitics, regional politics. For each: short claim, country, source URL if known.",
+      `List the most-shared misinformation, viral rumors, conspiracy theories, and hoaxes circulating this week (${CURRENT_PERIOD}) across the Middle East and North Africa. Cover Israel, Palestine, Lebanon, Syria, Iraq, Iran, Saudi Arabia, UAE, Qatar, Yemen, Egypt, Libya, Tunisia, Algeria, Morocco, Turkey, Jordan. Include Telegram channels, Arabic-language Twitter, fringe news. Topics: war, religion, geopolitics, regional politics. For each: short claim, country, source URL if known.`,
   },
   {
     id: "africa",
     label: "Sub-Saharan Africa — health, conflict, elections",
     region: "Sub-Saharan Africa",
     query:
-      "List the most-shared misinformation, viral rumors, conspiracy theories, and health hoaxes circulating this week (April 2026) across Sub-Saharan Africa. Cover Nigeria, Kenya, Ethiopia, South Africa, Ghana, DRC, Sudan, Uganda, Tanzania, Senegal, Côte d'Ivoire, Cameroon, Mali, Burkina Faso, Somalia, Mozambique, Zimbabwe, Rwanda, Madagascar. Include WhatsApp-spread rumors, fringe radio claims, Telegram. Topics: health (vaccines, epidemics), elections, conflict, NGOs, foreign interference. For each: short claim, country, source URL if known.",
+      `List the most-shared misinformation, viral rumors, conspiracy theories, and health hoaxes circulating this week (${CURRENT_PERIOD}) across Sub-Saharan Africa. Cover Nigeria, Kenya, Ethiopia, South Africa, Ghana, DRC, Sudan, Uganda, Tanzania, Senegal, Côte d'Ivoire, Cameroon, Mali, Burkina Faso, Somalia, Mozambique, Zimbabwe, Rwanda, Madagascar. Include WhatsApp-spread rumors, fringe radio claims, Telegram. Topics: health (vaccines, epidemics), elections, conflict, NGOs, foreign interference. For each: short claim, country, source URL if known.`,
   },
   {
     id: "asia-oceania",
     label: "Asia & Oceania — tech, politics, health",
     region: "Asia & Oceania",
     query:
-      "List the most-shared misinformation, viral rumors, conspiracy theories, and hoaxes circulating this week (April 2026) across Asia and Oceania. Cover China, India, Pakistan, Bangladesh, Indonesia, Philippines, Vietnam, Thailand, Myanmar, Japan, South Korea, North Korea, Taiwan, Malaysia, Singapore, Sri Lanka, Nepal, Afghanistan, Australia, New Zealand, Papua New Guinea, Kazakhstan, Uzbekistan. Include rumors from Weibo, Telegram, Reddit, regional fringe sites, WhatsApp. Topics: politics, technology/AI, health, geopolitics, religion. For each: short claim, country, source URL if known.",
+      `List the most-shared misinformation, viral rumors, conspiracy theories, and hoaxes circulating this week (${CURRENT_PERIOD}) across Asia and Oceania. Cover China, India, Pakistan, Bangladesh, Indonesia, Philippines, Vietnam, Thailand, Myanmar, Japan, South Korea, North Korea, Taiwan, Malaysia, Singapore, Sri Lanka, Nepal, Afghanistan, Australia, New Zealand, Papua New Guinea, Kazakhstan, Uzbekistan. Include rumors from Weibo, Telegram, Reddit, regional fringe sites, WhatsApp. Topics: politics, technology/AI, health, geopolitics, religion. For each: short claim, country, source URL if known.`,
   },
 ];
 
