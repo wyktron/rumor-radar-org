@@ -46,6 +46,10 @@ export default {
           DEFAULT: "hsl(var(--viral))",
           foreground: "hsl(var(--viral-foreground))",
         },
+        attention: {
+          DEFAULT: "hsl(var(--attention))",
+          foreground: "hsl(var(--attention-foreground))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
@@ -91,6 +95,7 @@ export default {
         glow: 'var(--shadow-glow)',
         panel: 'var(--shadow-panel)',
         elev: 'var(--shadow-elev)',
+        attention: 'var(--shadow-attention)',
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -47,6 +47,13 @@
     --viral: 0 84% 55%;
     --viral-foreground: 0 0% 100%;
 
+    /* High-visibility attention accent — used for the one control the user
+       should notice first on a screen (e.g. the map filter). */
+    --attention: 28 95% 52%;
+    --attention-foreground: 222 47% 11%;
+    --shadow-attention: 0 0 26px -4px hsl(var(--attention) / 0.75),
+      0 0 58px -14px hsl(var(--attention) / 0.55);
+
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 217 91% 55%;
@@ -110,6 +117,8 @@
     --warning-foreground: 222 47% 6%;
     --viral: 0 90% 62%;
     --viral-foreground: 210 40% 98%;
+    --attention: 28 95% 58%;
+    --attention-foreground: 222 47% 6%;
     --border: 222 30% 16%;
     --input: 222 30% 14%;
     --ring: 190 95% 55%;
@@ -350,3 +359,27 @@
   50% { opacity: 0.4; }
 }
 .ticker-blink { animation: ticker-blink 1.4s ease-in-out infinite; }
+
+/* Filter CTA — sonar ping that radiates a few times on load to pull the eye
+   to the filter control, then settles so it doesn't compete with the map. */
+.filter-cta-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: hsl(var(--attention) / 0.45);
+  pointer-events: none;
+  opacity: 0;
+  animation: cta-ping 2.4s cubic-bezier(0, 0, 0.2, 1) 5 both;
+}
+.filter-cta-ring--slow {
+  animation-delay: 0.9s;
+  animation-iteration-count: 4;
+}
+@keyframes cta-ping {
+  0% { transform: scale(1); opacity: 0.6; }
+  70% { transform: scale(2.1); opacity: 0; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .filter-cta-ring { animation: none; opacity: 0; }
+}

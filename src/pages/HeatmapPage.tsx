@@ -90,6 +90,7 @@ export default function HeatmapPage() {
     setStatus('all');
   };
   const filtersActive = country !== 'all' || topic !== 'all' || status !== 'all';
+  const activeCount = [country, topic, status].filter((v) => v !== 'all').length;
   const countryOptions = useMemo(
     () => Array.from(new Set(rumors.map((r) => r.originCountry).filter(Boolean))).sort(),
     [rumors],
@@ -211,24 +212,34 @@ export default function HeatmapPage() {
         </div>
       </div>
 
-      {/* Filter toggle — sits above the bottom nav, to the right (mobile & desktop) */}
+      {/* Filter toggle — high-visibility attention affordance above the bottom nav */}
       {!panelsHidden && !filtersOpen && (
         <div
           className="absolute right-3 sm:right-4 z-[390]"
           style={{ bottom: 'calc(var(--bottom-nav-h, 56px) + 4rem)' }}
         >
-          <Button
-            size="icon"
-            variant="outline"
-            className="h-14 w-14 rounded-full shadow-lg bg-background/85 backdrop-blur-xl relative sm:h-10 sm:w-10"
-            onClick={() => setFiltersOpen(true)}
-            aria-label={t('heatmap.filterRumors')}
-          >
-            <Filter className="h-6 w-6 sm:h-4 sm:w-4" />
-            {filtersActive && (
-              <span className="absolute top-1 right-1 h-3 w-3 rounded-full bg-primary ring-2 ring-background" />
-            )}
-          </Button>
+          <div className="relative flex items-center justify-center">
+            {/* One-time sonar ping: radiates a few times on load, then settles */}
+            <span className="filter-cta-ring" aria-hidden="true" />
+            <span className="filter-cta-ring filter-cta-ring--slow" aria-hidden="true" />
+            <button
+              type="button"
+              onClick={() => setFiltersOpen(true)}
+              aria-label={t('heatmap.filterRumors')}
+              className="group relative z-10 flex h-14 w-14 items-center justify-center rounded-full border-2 border-attention/50 bg-attention text-attention-foreground shadow-attention transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-attention focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-90 sm:h-11 sm:w-11"
+            >
+              <Filter className="h-6 w-6 drop-shadow-sm sm:h-5 sm:w-5" strokeWidth={2.5} />
+              {activeCount > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-attention-foreground px-1 text-[10px] font-bold leading-none text-attention ring-2 ring-background">
+                  {activeCount}
+                </span>
+              )}
+              {/* Hover label (desktop) */}
+              <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-md border border-attention/30 bg-card/90 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-attention opacity-0 backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 sm:block">
+                {t('heatmap.filterRumors')}
+              </span>
+            </button>
+          </div>
         </div>
       )}
 
