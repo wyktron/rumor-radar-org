@@ -1,6 +1,7 @@
 # GigaHack adaptation roadmap
 
 ## Current request
+- [ ] Add one genuinely corroborated verified-true rumor with claim-specific links and accurate source attribution
 - [x] Show Unconfirmed instead of Approved on rumor statuses
 - [x] Soften the rumor deck background animation
 - [x] Remove unsupported verified-true verdicts and their attribution (including the Ukraine item, pending claim-specific evidence)
