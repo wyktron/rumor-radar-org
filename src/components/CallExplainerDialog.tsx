@@ -17,6 +17,7 @@ interface Props {
 
 export function CallExplainerDialog({ open, onOpenChange }: Props) {
   const { t } = useTranslation();
+  const { isAdmin } = useAuth();
   const [isConnecting, setIsConnecting] = useState(false);
 
   const conversation = useConversation({
