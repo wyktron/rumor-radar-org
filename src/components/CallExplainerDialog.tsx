@@ -45,7 +45,7 @@ export function CallExplainerDialog({ open, onOpenChange }: Props) {
     } finally {
       setIsConnecting(false);
     }
-  }, [conversation, t]);
+  }, [conversation, t, isAdmin]);
 
   const endWebCall = useCallback(async () => {
     try {
