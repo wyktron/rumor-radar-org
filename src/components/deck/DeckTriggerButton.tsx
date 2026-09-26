@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { RumorDeck } from './RumorDeck';
 
-export function DeckTriggerButton() {
+export function DeckTriggerButton({ docked = false }: { docked?: boolean }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -11,7 +11,7 @@ export function DeckTriggerButton() {
         onClick={() => setOpen(true)}
         aria-label="Open rumor deck"
         title="Rumor deck"
-        className="deck-trigger flex h-14 w-14 items-center justify-center rounded-full border-2 border-primary/50 bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-90"
+        className={`deck-trigger ${docked ? 'deck-trigger--map' : 'deck-trigger--page'} flex h-14 w-14 items-center justify-center rounded-full border-2 border-primary/50 bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-90`}
       >
         <svg
           viewBox="0 0 24 24"

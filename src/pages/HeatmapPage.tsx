@@ -284,7 +284,7 @@ export default function HeatmapPage() {
       {!panelsHidden && (
       <div
         className={cn(
-          'filters-panel absolute inset-x-3 z-[390] glass-panel rounded-lg p-3 shadow-lg overflow-y-auto sm:inset-x-auto sm:right-4 sm:w-72 sm:z-[420]',
+          'filters-panel absolute inset-x-3 z-[390] glass-panel rounded-lg p-3 shadow-lg overflow-y-auto sm:inset-x-auto sm:right-20 sm:w-72 sm:z-[420]',
           filtersOpen ? 'block' : 'hidden',
         )}
       >
