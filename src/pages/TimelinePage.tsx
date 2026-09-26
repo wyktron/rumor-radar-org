@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Rss, Copy, Check } from 'lucide-react';
+import { Search, Rss, Check } from 'lucide-react';
 import { COUNTRIES, TOPICS } from '@/constants/countries';
 import { StatusBadge, IntensityBar, RumorMeta } from '@/components/RumorBits';
 import { RumorDetailDialog } from '@/components/RumorDetailDialog';
