@@ -64,15 +64,14 @@ export default function TimelinePage() {
         <code className="hidden md:inline-block text-[11px] font-mono text-muted-foreground bg-secondary/60 border border-border/60 rounded px-2 py-1 truncate max-w-[260px]">
           {feedUrl}
         </code>
-        <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={handleCopy}>
-          {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
-          {copied ? 'Copied' : 'Copy link'}
+        <Button
+          size="sm"
+          className="gap-1.5 text-xs bg-warning text-warning-foreground hover:bg-warning/90"
+          onClick={handleCopy}
+        >
+          {copied ? <Check className="h-3.5 w-3.5" /> : <Rss className="h-3.5 w-3.5" />}
+          {copied ? 'Copied successfully' : 'Subscribe'}
         </Button>
-        <a href={feedUrl} target="_blank" rel="noreferrer">
-          <Button size="sm" className="gap-1.5 text-xs bg-warning text-warning-foreground hover:bg-warning/90">
-            <Rss className="h-3.5 w-3.5" /> Subscribe
-          </Button>
-        </a>
       </Card>
 
       <Card className="glass-panel p-3 flex flex-wrap gap-2">
