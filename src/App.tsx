@@ -60,38 +60,37 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <ConversationProvider>
-      <Toaster />
-      <Sonner />
-      <AuthProvider>
-
-        <AppProvider>
-          <BrowserRouter>
-            <WelcomeDialogs />
-            <Routes>
-              <Route element={<Layout />}>
-                <Route path="/" element={<Index />} />
-                <Route path="/timeline" element={<TimelinePage />} />
-                <Route path="/csos" element={<CSONetworkPage />} />
-                <Route path="/csos/register" element={<CSORegisterPage />} />
-                <Route path="/submit" element={<SubmitRumorPage />} />
-                <Route path="/help-a-loved-one" element={<HelpLovedOnePage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/impact" element={<ImpactPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/terms" element={<LegalPage type="terms" />} />
-                <Route path="/privacy" element={<LegalPage type="privacy" />} />
-                <Route path="/staff/cso-review" element={<CSOReviewPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </AppProvider>
-      </AuthProvider>
+        <Toaster />
+        <Sonner />
+        <AuthProvider>
+          <AppProvider>
+            <BrowserRouter>
+              <WelcomeDialogs />
+              <Routes>
+                <Route element={<Layout />}>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/timeline" element={<TimelinePage />} />
+                  <Route path="/csos" element={<CSONetworkPage />} />
+                  <Route path="/csos/register" element={<CSORegisterPage />} />
+                  <Route path="/submit" element={<SubmitRumorPage />} />
+                  <Route path="/help-a-loved-one" element={<HelpLovedOnePage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/impact" element={<ImpactPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/terms" element={<LegalPage type="terms" />} />
+                  <Route path="/privacy" element={<LegalPage type="privacy" />} />
+                  <Route path="/staff/cso-review" element={<CSOReviewPage />} />
+                  <Route path="*" element={<NotFound />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </AppProvider>
+        </AuthProvider>
       </ConversationProvider>
     </TooltipProvider>
-
   </QueryClientProvider>
 );
+
 
 export default App;
