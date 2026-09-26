@@ -47,6 +47,13 @@
     --viral: 0 84% 55%;
     --viral-foreground: 0 0% 100%;
 
+    /* High-visibility attention accent — used for the one control the user
+       should notice first on a screen (e.g. the map filter). */
+    --attention: 28 95% 52%;
+    --attention-foreground: 222 47% 11%;
+    --shadow-attention: 0 0 26px -4px hsl(var(--attention) / 0.75),
+      0 0 58px -14px hsl(var(--attention) / 0.55);
+
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 217 91% 55%;
