@@ -12,7 +12,9 @@ import { Button } from "@/components/ui/button";
 import { SubscribeDialog } from "@/components/SubscribeDialog";
 import { WelcomeDialogs } from "@/components/WelcomeDialogs";
 import { HackathonBanner } from "@/components/HackathonBanner";
-import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail, Flame } from "lucide-react";
+import { DeckTriggerButton } from "@/components/deck/DeckTriggerButton";
+import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail } from "lucide-react";
+
 
 import { cn } from "@/lib/utils";
 import Index from "./pages/Index.tsx";
