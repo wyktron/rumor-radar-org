@@ -1,9 +1,9 @@
 # GigaHack adaptation roadmap
 
 ## Current request
-- [ ] Show Unconfirmed instead of Approved on rumor statuses
-- [ ] Soften the rumor deck background animation
-- [ ] Remove unsupported verified-true verdicts and their attribution (including the Ukraine item, pending claim-specific evidence)
+- [x] Show Unconfirmed instead of Approved on rumor statuses
+- [x] Soften the rumor deck background animation
+- [x] Remove unsupported verified-true verdicts and their attribution (including the Ukraine item, pending claim-specific evidence)
 
 - [ ] Demo credentials: admin / moderator / CSO member
 - [ ] Remove logo mark on main page (EU regulation caution)
