@@ -109,13 +109,21 @@ export function CallExplainerDialog({ open, onOpenChange }: Props) {
                 <PhoneOff className="h-4 w-4" /> {t('call.webCallEnd')}
               </Button>
             </div>
-          ) : (
+          ) : isAdmin ? (
             <div className="space-y-2">
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+                <ShieldCheck className="h-3 w-3" /> {t('call.webCallAdminBadge')}
+              </div>
               <p className="text-xs text-muted-foreground">{t('call.webCallHint')}</p>
               <Button className="w-full gap-2" onClick={startWebCall} disabled={isConnecting}>
                 {isConnecting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mic className="h-4 w-4" />}
                 {isConnecting ? t('call.webCallConnecting') : t('call.webCallBtn')}
               </Button>
+            </div>
+          ) : (
+            <div className="flex items-start gap-2">
+              <Lock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+              <p className="text-xs text-muted-foreground">{t('call.webCallAdminOnly')}</p>
             </div>
           )}
         </div>
