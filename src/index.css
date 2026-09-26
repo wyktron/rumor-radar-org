@@ -178,15 +178,42 @@
   }
 }
 
+/* Floating rumor-deck trigger — centered directly above the hide-panels control */
+.deck-trigger {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1100;
+  bottom: calc(var(--bottom-nav-h, 56px) + 4rem);
+}
+@media (min-width: 640px) {
+  .deck-trigger {
+    bottom: calc(var(--bottom-nav-h, 56px) + 3.25rem);
+  }
+}
+
+/* Trending-scale legend + filter toggle share one row. On mobile they lift
+   clear of the deck trigger so nothing overlaps. */
+.map-panel-row {
+  bottom: calc(var(--bottom-nav-h, 56px) + 4rem);
+}
+@media (max-width: 639px) {
+  .map-panel-row {
+    bottom: calc(var(--bottom-nav-h, 56px) + 8rem);
+  }
+}
+
 /* Filters panel on the map: collapsed by default on all sizes.
    Desktop anchors above the bottom nav; on mobile it stacks above the
    trending-scale legend (height published as --trending-scale-h). */
 .filters-panel {
   bottom: calc(var(--bottom-nav-h, 56px) + 4rem);
+  max-height: min(52dvh, calc(100dvh - var(--bottom-nav-h, 56px) - 9rem));
 }
 @media (max-width: 639px) {
   .filters-panel {
-    bottom: calc(var(--bottom-nav-h, 56px) + 4rem + var(--trending-scale-h, 0px) + 0.5rem);
+    bottom: calc(var(--bottom-nav-h, 56px) + 8rem + var(--trending-scale-h, 0px) + 0.5rem);
+    max-height: min(50dvh, calc(100dvh - var(--bottom-nav-h, 56px) - 19rem - var(--trending-scale-h, 0px)));
   }
 }
 

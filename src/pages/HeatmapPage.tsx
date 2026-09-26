@@ -205,10 +205,9 @@ export default function HeatmapPage() {
       <div
         ref={legendRef}
         className={cn(
-          'absolute left-3 sm:left-4 z-[400] glass-panel rounded-lg p-2.5 sm:p-3 w-36 sm:w-56 shadow-lg',
+          'map-panel-row absolute left-3 sm:left-4 z-[400] glass-panel rounded-lg p-2.5 sm:p-3 w-36 sm:w-56 shadow-lg',
           panelsHidden && 'hidden',
         )}
-        style={{ bottom: 'calc(var(--bottom-nav-h, 56px) + 4rem)' }}
       >
         <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">
           {t('heatmap.trendingScale')}
@@ -229,10 +228,7 @@ export default function HeatmapPage() {
 
       {/* Filter toggle — high-visibility attention affordance above the bottom nav */}
       {!panelsHidden && !filtersOpen && (
-        <div
-          className="absolute right-3 sm:right-4 z-[390]"
-          style={{ bottom: 'calc(var(--bottom-nav-h, 56px) + 4rem)' }}
-        >
+        <div className="map-panel-row absolute right-3 sm:right-4 z-[390]">
           <div className="relative flex items-center justify-center">
             {/* One-time sonar ping: radiates a few times on load, then settles */}
             <span className="filter-cta-ring" aria-hidden="true" />
@@ -241,9 +237,9 @@ export default function HeatmapPage() {
               type="button"
               onClick={() => setFiltersOpen(true)}
               aria-label={t('heatmap.filterRumors')}
-              className="group relative z-10 flex h-14 w-14 items-center justify-center rounded-full border-2 border-primary/50 bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-90 sm:h-11 sm:w-11"
+              className="group relative z-10 flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary/50 bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-90 sm:h-14 sm:w-14"
             >
-              <Filter className="h-6 w-6 drop-shadow-sm sm:h-5 sm:w-5" strokeWidth={2.5} />
+              <Filter className="h-8 w-8 drop-shadow-sm sm:h-7 sm:w-7" strokeWidth={2.5} />
               {activeCount > 0 && (
                 <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary-foreground px-1 text-[10px] font-bold leading-none text-primary ring-2 ring-background">
                   {activeCount}
@@ -291,9 +287,6 @@ export default function HeatmapPage() {
           'filters-panel absolute inset-x-3 z-[390] glass-panel rounded-lg p-3 shadow-lg overflow-y-auto sm:inset-x-auto sm:right-4 sm:w-72 sm:z-[420]',
           filtersOpen ? 'block' : 'hidden',
         )}
-        style={{
-          maxHeight: 'min(52dvh, calc(100dvh - var(--bottom-nav-h, 56px) - 9rem))',
-        }}
       >
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
