@@ -160,7 +160,6 @@ const App = () => (
             <Routes>
               <Route element={<Layout />}>
                 <Route path="/" element={<Index />} />
-                <Route path="/feed" element={<FeedPage />} />
                 <Route path="/timeline" element={<TimelinePage />} />
                 <Route path="/csos" element={<CSONetworkPage />} />
                 <Route path="/csos/register" element={<CSORegisterPage />} />
