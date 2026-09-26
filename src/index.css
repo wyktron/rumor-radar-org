@@ -169,6 +169,18 @@
   }
 }
 
+/* Filters panel on the map: collapsed by default on all sizes.
+   Desktop anchors above the bottom nav; on mobile it stacks above the
+   trending-scale legend (height published as --trending-scale-h). */
+.filters-panel {
+  bottom: calc(var(--bottom-nav-h, 56px) + 4rem);
+}
+@media (max-width: 639px) {
+  .filters-panel {
+    bottom: calc(var(--bottom-nav-h, 56px) + 4rem + var(--trending-scale-h, 0px) + 0.5rem);
+  }
+}
+
 /* Zoom controls sit top-right, directly under the "Submit a rumor" button */
 .leaflet-top.leaflet-left { display: none; }
 .leaflet-top.leaflet-right { top: 4rem; }

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { HeatmapMap } from '@/components/map/HeatmapMap';
@@ -21,6 +21,25 @@ export default function HeatmapPage() {
   const { isStaff } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const legendRef = useRef<HTMLDivElement>(null);
+
+  // Publish the trending-scale legend's height as a CSS var so the filters
+  // panel can stack above it on mobile (they share the bottom-left corner).
+  useEffect(() => {
+    const el = legendRef.current;
+    if (!el) return;
+    const update = () => {
+      document.documentElement.style.setProperty(
+        '--trending-scale-h',
+        `${Math.ceil(el.getBoundingClientRect().height)}px`,
+      );
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const [country, setCountry] = useState<string>('all');
   const [topic, setTopic] = useState<string>('all');
   const [status, setStatus] = useState<string>('all');
@@ -29,7 +48,7 @@ export default function HeatmapPage() {
   const [submitInfoOpen, setSubmitInfoOpen] = useState(false);
   const [pickMode, setPickMode] = useState(false);
   const [panelsHidden, setPanelsHidden] = useState(false);
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const startSubmitFlow = () => setSubmitInfoOpen(true);
   const enterPickMode = () => {
@@ -168,6 +187,7 @@ export default function HeatmapPage() {
 
       {/* BOTTOM-LEFT: Trending scale legend — anchors above the bottom nav */}
       <div
+        ref={legendRef}
         className={cn(
           'absolute left-3 sm:left-4 z-[400] glass-panel rounded-lg p-2.5 sm:p-3 w-36 sm:w-56 shadow-lg',
           panelsHidden && 'hidden',
@@ -191,20 +211,20 @@ export default function HeatmapPage() {
         </div>
       </div>
 
-      {/* MOBILE: filter button — sits above the bottom nav, to the right */}
-      {!panelsHidden && !mobileFiltersOpen && (
+      {/* Filter toggle — sits above the bottom nav, to the right (mobile & desktop) */}
+      {!panelsHidden && !filtersOpen && (
         <div
-          className="absolute right-3 z-[390] sm:hidden"
+          className="absolute right-3 sm:right-4 z-[390]"
           style={{ bottom: 'calc(var(--bottom-nav-h, 56px) + 4rem)' }}
         >
           <Button
             size="icon"
             variant="outline"
-            className="h-14 w-14 rounded-full shadow-lg bg-background/85 backdrop-blur-xl relative"
-            onClick={() => setMobileFiltersOpen(true)}
+            className="h-14 w-14 rounded-full shadow-lg bg-background/85 backdrop-blur-xl relative sm:h-10 sm:w-10"
+            onClick={() => setFiltersOpen(true)}
             aria-label={t('heatmap.filterRumors')}
           >
-            <Filter className="h-6 w-6" />
+            <Filter className="h-6 w-6 sm:h-4 sm:w-4" />
             {filtersActive && (
               <span className="absolute top-1 right-1 h-3 w-3 rounded-full bg-primary ring-2 ring-background" />
             )}
@@ -238,18 +258,16 @@ export default function HeatmapPage() {
       )}
 
 
-      {/* BOTTOM: Filters anchor above the nav. Hidden on mobile until expanded; always visible on desktop. */}
+      {/* BOTTOM: Filters — collapsed by default on all sizes; stacks above the trending scale on mobile */}
       {!panelsHidden && (
       <div
         className={cn(
-          'absolute inset-x-3 z-[390] glass-panel rounded-lg p-3 shadow-lg overflow-y-auto sm:inset-x-auto sm:right-4 sm:w-72 sm:z-[420] sm:block',
-          mobileFiltersOpen ? 'block' : 'hidden',
+          'filters-panel absolute inset-x-3 z-[390] glass-panel rounded-lg p-3 shadow-lg overflow-y-auto sm:inset-x-auto sm:right-4 sm:w-72 sm:z-[420]',
+          filtersOpen ? 'block' : 'hidden',
         )}
         style={{
-          bottom: 'calc(var(--bottom-nav-h, 56px) + 4rem)',
           maxHeight: 'min(52dvh, calc(100dvh - var(--bottom-nav-h, 56px) - 9rem))',
         }}
-
       >
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
@@ -267,8 +285,8 @@ export default function HeatmapPage() {
             )}
             <button
               type="button"
-              onClick={() => setMobileFiltersOpen(false)}
-              className="sm:hidden text-muted-foreground hover:text-foreground"
+              onClick={() => setFiltersOpen(false)}
+              className="text-muted-foreground hover:text-foreground"
               aria-label="Collapse filters"
             >
               <X className="h-3.5 w-3.5" />
