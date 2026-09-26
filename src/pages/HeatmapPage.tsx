@@ -90,6 +90,22 @@ export default function HeatmapPage() {
         />
       </div>
 
+      {/* TOP-LEFT: LIVE stats panel */}
+      <div className={cn('absolute top-4 left-4 z-[410] glass-panel rounded-lg p-2 sm:p-3 w-36 sm:w-52 shadow-lg', panelsHidden && 'hidden')}>
+        <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-success">
+          <span className="inline-block h-2 w-2 rounded-full ticker-blink bg-success shadow-glow" />
+          {t('heatmap.live')}
+        </div>
+        <div className="mt-1 text-3xl font-bold font-mono leading-none">{stats.total}</div>
+        <div className="text-xs text-muted-foreground mt-0.5">{t('heatmap.activeRumors')}</div>
+        <div className="mt-3 space-y-1 text-xs font-mono">
+          <Stat label={t('heatmap.debunked')} value={stats.debunked} color="text-success" />
+          <Stat label={t('heatmap.verifiedTrue')} value={stats.verified} color="text-signal-verified" />
+          <Stat label={t('heatmap.viral')} value={stats.viral} color="text-viral" />
+          <Stat label={t('heatmap.high')} value={stats.high} color="text-warning" />
+        </div>
+      </div>
+
       {/* TOP-RIGHT: Submit a Rumor — aligned with the live tracker panel */}
       <div className={cn('absolute top-4 right-4 z-[410]', panelsHidden && 'hidden')}>
         <Button className="gap-1.5 shadow-lg h-11 sm:h-9" onClick={startSubmitFlow}>
