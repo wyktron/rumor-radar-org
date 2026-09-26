@@ -191,13 +191,27 @@ export function Header() {
       </div>
 
       {/* Mobile hotline strip */}
-      <div className="md:hidden flex items-center justify-between gap-2 px-4 py-2 border-t border-border/40 text-xs">
-        <div className="flex items-center gap-2 min-w-0">
-          <Phone className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-          <span className="font-bold truncate">{HOTLINE.display}</span>
+      <div className="md:hidden flex items-center justify-center gap-2 px-4 py-2 border-t border-border/40 text-xs">
+        <div ref={stripRef} className="flex min-w-0 max-w-full items-center gap-2 flex-nowrap">
+          <button
+            type="button"
+            ref={iconRef}
+            onClick={() => setCallOpen(true)}
+            aria-label="Call the hotline"
+            className="shrink-0 cursor-pointer"
+          >
+            <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+          </button>
+          <span
+            ref={numberRef}
+            className={cn('min-w-0 whitespace-nowrap truncate font-bold', compactHotline && 'hidden')}
+          >
+            {HOTLINE.display}
+          </span>
           <Button
+            ref={callBtnRef}
             size="sm"
-            className="h-6 px-2 text-[10px] font-mono uppercase"
+            className="h-6 shrink-0 px-2 text-[10px] font-mono uppercase"
             onClick={() => setCallOpen(true)}
           >
             {t('header.call')}
