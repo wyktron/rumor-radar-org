@@ -225,9 +225,10 @@ export default function HeatmapPage() {
           mobileFiltersOpen ? 'block' : 'hidden',
         )}
         style={{
-          bottom: 'calc(var(--bottom-nav-h, 56px) + 0.75rem)',
-          maxHeight: 'min(44dvh, calc(100dvh - var(--bottom-nav-h, 56px) - 5rem))',
+          bottom: 'calc(var(--bottom-nav-h, 56px) + 4rem)',
+          maxHeight: 'min(52dvh, calc(100dvh - var(--bottom-nav-h, 56px) - 9rem))',
         }}
+
       >
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
