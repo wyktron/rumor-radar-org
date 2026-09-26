@@ -96,7 +96,9 @@ function SecondaryNav() {
             ))}
           </div>
           <div className="flex items-center justify-center gap-2 shrink-0 sm:justify-end">
+            <DeckTriggerButton />
             <Button
+
               variant="outline"
               size="sm"
               aria-label={t('nav.subscribe')}
