@@ -205,10 +205,9 @@ export default function HeatmapPage() {
       <div
         ref={legendRef}
         className={cn(
-          'absolute left-3 sm:left-4 z-[400] glass-panel rounded-lg p-2.5 sm:p-3 w-36 sm:w-56 shadow-lg',
+          'map-panel-row absolute left-3 sm:left-4 z-[400] glass-panel rounded-lg p-2.5 sm:p-3 w-36 sm:w-56 shadow-lg',
           panelsHidden && 'hidden',
         )}
-        style={{ bottom: 'calc(var(--bottom-nav-h, 56px) + 4rem)' }}
       >
         <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">
           {t('heatmap.trendingScale')}
