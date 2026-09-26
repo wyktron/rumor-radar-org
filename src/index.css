@@ -220,7 +220,7 @@
 @media (max-width: 639px) {
   .filters-panel {
     bottom: calc(
-      var(--bottom-nav-h, 56px) + 16.5rem +
+      var(--bottom-nav-h, 56px) + 8rem +
       max(var(--trending-scale-h, 0px), 8.5rem) + 0.5rem
     );
     max-height: min(46dvh, calc(100dvh - var(--bottom-nav-h, 56px) - 22rem));
