@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { useConversation } from '@elevenlabs/react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Phone, Sparkles, Heart, ShieldCheck, PhoneCall, Mic, PhoneOff, Loader2 } from 'lucide-react';
+import { Phone, Sparkles, Heart, ShieldCheck, PhoneCall, Mic, PhoneOff, Loader2, Lock } from 'lucide-react';
 import { HOTLINE } from '@/constants/countries';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/context/AuthContext';
 
 const ELEVENLABS_AGENT_ID = 'Mmxv1SKByrTiQvVFpJY7';
 
