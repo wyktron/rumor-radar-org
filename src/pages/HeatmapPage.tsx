@@ -134,10 +134,10 @@ export default function HeatmapPage() {
         <div className="mt-1 text-3xl font-bold font-mono leading-none">{stats.total}</div>
         <div className="text-xs text-muted-foreground mt-0.5">{t('heatmap.activeRumors')}</div>
         <div className="mt-3 space-y-1 text-xs font-mono">
-          <Stat label={t('heatmap.debunked')} value={stats.debunked} color="text-success" />
-          <Stat label={t('heatmap.verifiedTrue')} value={stats.verified} color="text-signal-verified" />
-          <Stat label={t('heatmap.viral')} value={stats.viral} color="text-viral" />
-          <Stat label={t('heatmap.high')} value={stats.high} color="text-warning" />
+          <Stat label={t('heatmap.debunked')} value={stats.debunked} color="text-foreground" />
+          <Stat label={t('heatmap.verifiedTrue')} value={stats.verified} color="text-foreground" />
+          <Stat label={t('heatmap.viral')} value={stats.viral} color="text-foreground" />
+          <Stat label={t('heatmap.high')} value={stats.high} color="text-foreground" />
         </div>
       </div>
 
