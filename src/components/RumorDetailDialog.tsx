@@ -139,7 +139,7 @@ export function RumorDetailDialog({ rumor, onClose }: { rumor: Rumor | null; onC
               </div>
               <div className="min-w-0">
                 <div className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
-                  {isDebunked ? 'Debunked by Certified CSO' : 'Verified by Certified CSO'}
+                  {isDebunked ? 'Debunked by Certified CSO' : 'Verified against primary sources'}
                 </div>
                 <div className="font-semibold leading-tight">{isDebunked ? rumor.debunkedBy : rumor.verifiedBy}</div>
                 <div className="text-xs text-muted-foreground">{rumor.subjectCountry || rumor.originCountry}</div>
