@@ -15,6 +15,7 @@ const en = {
   },
   nav: {
     heatmap: 'Heatmap',
+    feed: 'Feed',
     timeline: 'Timeline',
     csos: 'CSO Network',
     impact: 'Impact',
