@@ -157,33 +157,26 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile hotline strip */}
-      <div className="md:hidden flex items-center justify-center gap-2 px-4 py-2 border-t border-border/40 text-xs">
-        <div ref={stripRef} className="flex min-w-0 max-w-full items-center gap-2 flex-nowrap">
-          <button
-            type="button"
-            ref={iconRef}
-            onClick={() => setCallOpen(true)}
-            aria-label="Call the hotline"
-            className="shrink-0 cursor-pointer"
-          >
-            <Phone className="h-3.5 w-3.5 text-muted-foreground" />
-          </button>
-          <span
-            ref={numberRef}
-            className={cn('min-w-0 whitespace-nowrap truncate font-bold', compactHotline && 'hidden')}
-          >
-            {HOTLINE.display}
-          </span>
-          <Button
-            ref={callBtnRef}
-            size="sm"
-            className="h-6 shrink-0 px-2 text-[10px] font-mono uppercase"
-            onClick={() => setCallOpen(true)}
-          >
-            {t('header.call')}
-          </Button>
-        </div>
+      {/* Mobile hotline strip — one centered row, never wraps; number hides on very narrow phones */}
+      <div className="md:hidden flex items-center justify-center gap-1.5 overflow-hidden whitespace-nowrap border-t border-border/40 px-2 py-2 text-xs">
+        <button
+          type="button"
+          onClick={() => setCallOpen(true)}
+          aria-label="Call the hotline"
+          className="shrink-0 cursor-pointer"
+        >
+          <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+        </button>
+        <span className="hidden shrink-0 font-bold min-[380px]:inline">
+          {HOTLINE.display}
+        </span>
+        <Button
+          size="sm"
+          className="h-6 shrink-0 px-2 text-[10px] font-mono uppercase"
+          onClick={() => setCallOpen(true)}
+        >
+          {t('header.call')}
+        </Button>
       </div>
       <CallExplainerDialog open={callOpen} onOpenChange={setCallOpen} />
       <SubscribeDialog open={subscribeOpen} onOpenChange={setSubscribeOpen} />
