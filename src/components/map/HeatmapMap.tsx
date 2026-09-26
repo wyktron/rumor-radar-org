@@ -27,6 +27,51 @@ function buildIcon(color: string, viral: boolean, rumorId: string) {
   });
 }
 
+/**
+ * Approximate "spread radius" in degrees of latitude for each country, so markers
+ * fan out inside the country instead of stacking on one centroid.
+ */
+const SMALL_COUNTRIES = new Set([
+  'Moldova', 'Belgium', 'Netherlands', 'Luxembourg', 'Slovenia', 'Albania', 'North Macedonia',
+  'Montenegro', 'Kosovo', 'Estonia', 'Latvia', 'Lithuania', 'Switzerland', 'Denmark', 'Israel',
+  'Lebanon', 'Cyprus', 'Malta', 'Bosnia and Herzegovina', 'Croatia', 'Serbia', 'Slovakia',
+  'Armenia', 'Georgia', 'Azerbaijan', 'Singapore', 'Qatar', 'Kuwait',
+]);
+const LARGE_COUNTRIES = new Set([
+  'Russia', 'United States', 'Canada', 'China', 'Brazil', 'Australia', 'India', 'Argentina',
+  'Kazakhstan', 'Algeria', 'Democratic Republic of the Congo', 'Sudan', 'Libya', 'Mexico',
+  'Indonesia', 'Saudi Arabia',
+]);
+
+function spreadRadius(country: string): number {
+  if (SMALL_COUNTRIES.has(country)) return 0.55;
+  if (LARGE_COUNTRIES.has(country)) return 7;
+  return 2.2;
+}
+
+function hash01(s: string, salt: number): number {
+  let h = 2166136261 ^ salt;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return ((h >>> 0) % 100000) / 100000;
+}
+
+/**
+ * Deterministically scatters a marker around its country anchor, so rumors from
+ * the same country spread out instead of stacking on one point. Position depends
+ * only on the rumor id, so it stays put across filters and reloads.
+ */
+function scatteredCoords(r: Rumor): [number, number] {
+  const [baseLat, baseLng] = r.coordinates;
+  const radius = spreadRadius(r.originCountry);
+  const t = Math.sqrt(hash01(r.id, 7)) * radius;
+  const angle = hash01(r.id, 131) * Math.PI * 2;
+  const lngScale = 1 / Math.max(0.25, Math.cos((baseLat * Math.PI) / 180));
+  return [baseLat + t * Math.sin(angle), baseLng + t * Math.cos(angle) * lngScale];
+}
+
 export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = false, onPick }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -80,7 +125,7 @@ export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = fal
     rumors.forEach((r) => {
       const color = intensityColor(r.intensity, r.status);
       const viral = r.intensity >= 0.6 && r.status === 'pending';
-      const marker = L.marker(r.coordinates, {
+      const marker = L.marker(draggable ? r.coordinates : scatteredCoords(r), {
         icon: buildIcon(color, viral, r.id),
         draggable,
       });
