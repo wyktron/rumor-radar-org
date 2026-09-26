@@ -58,27 +58,27 @@ void main() {
   float aspect = uRes.x / max(uRes.y, 1.0);
   vec2 sp = vec2(p.x * aspect, p.y);
 
-  float t = uTime * (0.09 + uVel * 0.25);
+  float t = uTime * (0.065 + uVel * 0.08);
 
   vec2 q = vec2(
-    fbm(sp * 2.2 + vec2(t * 0.6, -t * 0.4)),
-    fbm(sp * 2.4 + vec2(-t * 0.5, t * 0.7))
+    fbm(sp * 1.5 + vec2(t * 0.6, -t * 0.4)),
+    fbm(sp * 1.6 + vec2(-t * 0.5, t * 0.7))
   );
   vec2 r = vec2(
-    fbm(sp * 3.6 + q * 1.8 + vec2(t * 0.3, t * 0.2)),
-    fbm(sp * 3.2 + q * 1.5 - vec2(t * 0.25, t * 0.35))
+    fbm(sp * 2.1 + q * 1.3 + vec2(t * 0.3, t * 0.2)),
+    fbm(sp * 2.0 + q * 1.2 - vec2(t * 0.25, t * 0.35))
   );
-  float w = fbm(sp * 2.0 + r * (1.2 + uVel * 0.6) + vec2(0.0, t * 0.15));
+  float w = fbm(sp * 1.4 + r * (0.8 + uVel * 0.15) + vec2(0.0, t * 0.15));
 
   // vertical gradient, folded by the fluid field
-  float g = clamp(p.y + (w - 0.5) * 0.55, 0.0, 1.0);
+  float g = clamp(p.y + (w - 0.5) * 0.3, 0.0, 1.0);
   vec3 col = g < 0.5
     ? mix(uBottom, uMid, smoothstep(0.0, 0.5, g))
     : mix(uMid, uTop, smoothstep(0.5, 1.0, g));
 
   // specular crests
   float crest = pow(smoothstep(0.55, 0.95, w), 3.0);
-  col += crest * (0.35 + uVel * 0.6) * vec3(1.0, 0.94, 0.85);
+  col += crest * (0.12 + uVel * 0.08) * vec3(1.0, 0.94, 0.85);
 
   // subtle vignette for text legibility
   vec2 d = p - 0.5;
@@ -149,8 +149,8 @@ export function FluidBackground({ palette, scrollRef }: Props) {
       if (!el) return;
       const now = performance.now();
       const dt = Math.max(16, now - lastT);
-      const v = (Math.abs(el.scrollTop - lastY) / dt) * 12;
-      vel = Math.min(1.5, Math.max(vel, v));
+      const v = (Math.abs(el.scrollTop - lastY) / dt) * 4;
+      vel = Math.min(0.6, Math.max(vel, v));
       lastY = el.scrollTop;
       lastT = now;
     };
@@ -174,7 +174,7 @@ export function FluidBackground({ palette, scrollRef }: Props) {
           cur[i][c] += (targets[i][c] - cur[i][c]) * 0.04;
         }
       }
-      vel *= 0.94;
+      vel *= 0.88;
       gl.uniform1f(uVel, vel);
       gl.uniform1f(uTime, (performance.now() - start) / 1000);
       gl.uniform3fv(uTop, cur[0]);
