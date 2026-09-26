@@ -108,7 +108,7 @@ export function Header() {
                       )
                     }
                   >
-                    <l.icon className="h-4.5 w-4.5" />
+                    <l.icon className="h-4 w-4" />
                     {t(`nav.${l.key}`)}
                   </RouterNavLink>
                 ))}
@@ -126,7 +126,7 @@ export function Header() {
                       )
                     }
                   >
-                    <Users className="h-4.5 w-4.5" /> Review
+                    <Users className="h-4 w-4" /> Review
                   </RouterNavLink>
                 )}
 
@@ -138,12 +138,8 @@ export function Header() {
                   }}
                   className="flex items-center gap-3 rounded-md px-3 h-11 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors"
                 >
-                  <Mail className="h-4.5 w-4.5" /> {t('nav.subscribe')}
+                  <Mail className="h-4 w-4" /> {t('nav.subscribe')}
                 </button>
-
-                <div className="md:hidden pt-2 mt-2 border-t border-border/60">
-                  <HelpLovedOneDialog />
-                </div>
               </nav>
 
               {user && (
