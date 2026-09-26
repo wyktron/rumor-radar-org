@@ -58,8 +58,8 @@ export default function HeatmapPage() {
       pending: rumors.filter((r) => r.status === 'pending').length,
       debunked: rumors.filter((r) => r.status === 'debunked').length,
       verified: rumors.filter((r) => r.status === 'verified-true').length,
-      viral: rumors.filter((r) => r.intensity >= 0.75 && r.status === 'pending').length,
-      high: rumors.filter((r) => r.intensity >= 0.5 && r.intensity < 0.75 && r.status === 'pending').length,
+      viral: rumors.filter((r) => r.intensity >= 0.75 && (r.status === 'approved' || r.status === 'pending')).length,
+      high: rumors.filter((r) => r.intensity >= 0.5 && r.intensity < 0.75 && (r.status === 'approved' || r.status === 'pending')).length,
     };
   }, [rumors]);
 
