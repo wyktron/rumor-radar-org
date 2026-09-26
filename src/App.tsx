@@ -10,9 +10,10 @@ import { AuthProvider } from "@/context/AuthContext";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { SubscribeDialog } from "@/components/SubscribeDialog";
-import { DonationDialog } from "@/components/DonationDialog";
 import { WelcomeDialogs } from "@/components/WelcomeDialogs";
-import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail, Heart } from "lucide-react";
+import { HackathonBanner } from "@/components/HackathonBanner";
+import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import Index from "./pages/Index.tsx";
 import TimelinePage from "./pages/TimelinePage";
@@ -40,7 +41,6 @@ const secondaryLinks: { to: string; key: string; icon: typeof Map; end?: boolean
 
 function SecondaryNav() {
   const [subscribeOpen, setSubscribeOpen] = useState(false);
-  const [donateOpen, setDonateOpen] = useState(false);
   const { t } = useTranslation();
   const navRef = useRef<HTMLElement>(null);
 
@@ -80,16 +80,17 @@ function SecondaryNav() {
                 className={({ isActive }) =>
                   cn(
                     'flex items-center justify-center gap-1.5 rounded-md whitespace-nowrap transition-colors',
-                    'p-2 sm:px-3 sm:py-1.5 text-xs font-medium',
+                    'h-11 min-w-[44px] px-3 sm:h-auto sm:min-w-0 sm:px-3 sm:py-1.5 text-xs font-medium',
                     isActive
                       ? 'text-primary bg-primary/10'
                       : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50',
                   )
                 }
               >
-                <l.icon className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+                <l.icon className="h-5 w-5 sm:h-3.5 sm:w-3.5" />
                 <span className="hidden sm:inline">{t(`nav.${l.key}`)}</span>
               </RouterNavLink>
+
             ))}
           </div>
           <div className="flex items-center justify-center gap-2 shrink-0 sm:justify-end">
@@ -98,27 +99,17 @@ function SecondaryNav() {
               size="sm"
               aria-label={t('nav.subscribe')}
               title={t('nav.subscribe')}
-              className="gap-1.5 text-xs h-8 px-2 sm:px-3"
+              className="gap-1.5 text-xs h-11 px-4 sm:h-8 sm:px-3"
               onClick={() => setSubscribeOpen(true)}
             >
-              <Mail className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+              <Mail className="h-5 w-5 sm:h-3.5 sm:w-3.5" />
               <span className="hidden sm:inline">{t('nav.subscribe')}</span>
-            </Button>
-            <Button
-              size="sm"
-              aria-label={t('nav.donate')}
-              title={t('nav.donate')}
-              className="gap-1.5 text-xs h-8 px-2 sm:px-3 bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={() => setDonateOpen(true)}
-            >
-              <Heart className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
-              <span className="hidden sm:inline">{t('nav.donate')}</span>
             </Button>
           </div>
         </div>
+
       </nav>
       <SubscribeDialog open={subscribeOpen} onOpenChange={setSubscribeOpen} />
-      <DonationDialog open={donateOpen} onOpenChange={setDonateOpen} />
     </>
   );
 }
@@ -130,6 +121,7 @@ function Layout() {
   if (isHeatmap) {
     return (
       <div className="h-screen flex flex-col overflow-hidden">
+        <HackathonBanner />
         <Header />
         <main className="flex-1 relative overflow-hidden">
           <Outlet />
@@ -141,6 +133,7 @@ function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <HackathonBanner />
       <Header />
       <main className="flex-1" style={{ paddingBottom: 'var(--bottom-nav-h, 56px)' }}>
         <Outlet />
@@ -149,6 +142,7 @@ function Layout() {
     </div>
   );
 }
+
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

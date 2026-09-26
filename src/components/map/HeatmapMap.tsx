@@ -45,7 +45,9 @@ export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = fal
       attributionControl: true,
       minZoom: 2,
     });
-    L.control.zoom({ position: 'topleft' }).addTo(map);
+    // Zoom sits top-right, directly beneath the "Submit a rumor" button.
+    L.control.zoom({ position: 'topright' }).addTo(map);
+
     // Esri Light Gray Canvas — free, no API key required.
     L.tileLayer(
       'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
