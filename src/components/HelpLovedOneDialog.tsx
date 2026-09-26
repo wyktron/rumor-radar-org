@@ -25,6 +25,7 @@ export function HelpLovedOneDialog({ trigger }: Props) {
   const [country, setCountry] = useState('');
   const [relationship, setRelationship] = useState('');
   const [notes, setNotes] = useState('');
+  const [consent, setConsent] = useState(false);
 
   const selectedCountry = useMemo(() => COUNTRIES.find((c) => c.name === country), [country]);
 
@@ -45,12 +46,17 @@ export function HelpLovedOneDialog({ trigger }: Props) {
     setCountry('');
     setRelationship('');
     setNotes('');
+    setConsent(false);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!contactValue.trim() || !country || !relationship.trim() || !notes.trim()) {
       toast.error('Please fill all required fields');
+      return;
+    }
+    if (!consent) {
+      toast.error('Please confirm you have permission to share this person\'s data');
       return;
     }
     setBusy(true);
