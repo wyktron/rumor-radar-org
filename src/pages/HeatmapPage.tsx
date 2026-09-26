@@ -145,18 +145,18 @@ export default function HeatmapPage() {
         </DialogContent>
       </Dialog>
 
-      {/* BOTTOM-LEFT: Trending scale legend — anchors above the bottom nav (which can change height when wrapping on mobile) */}
+      {/* BOTTOM-LEFT: Trending scale legend — anchors above the bottom nav */}
       <div
         className={cn(
-          'absolute left-4 z-[400] glass-panel rounded-lg p-3 w-44 sm:w-56 shadow-lg hidden sm:block',
+          'absolute left-3 sm:left-4 z-[400] glass-panel rounded-lg p-2.5 sm:p-3 w-36 sm:w-56 shadow-lg',
           panelsHidden && 'hidden',
         )}
-        style={{ bottom: 'calc(var(--bottom-nav-h, 56px) + 0.75rem)' }}
+        style={{ bottom: 'calc(var(--bottom-nav-h, 56px) + 4rem)' }}
       >
-        <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">
+        <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">
           {t('heatmap.trendingScale')}
         </div>
-        <div className="space-y-1 text-xs">
+        <div className="space-y-1 text-[11px] sm:text-xs">
           <LegendRow color="hsl(var(--signal-low))" label={t('heatmap.low')} />
           <LegendRow color="hsl(var(--signal-moderate))" label={t('heatmap.moderate')} />
           <LegendRow color="hsl(var(--signal-high))" label={t('heatmap.highRange')} />
@@ -165,31 +165,57 @@ export default function HeatmapPage() {
           <LegendRow color="hsl(var(--signal-debunked))" label={t('heatmap.debunkedLegend')} />
           <LegendRow color="hsl(var(--signal-verified))" label={t('heatmap.verifiedLegend')} />
         </div>
-        <div className="text-[10px] text-muted-foreground mt-2 pt-2 border-t border-border/60">
+        <div className="hidden sm:block text-[10px] text-muted-foreground mt-2 pt-2 border-t border-border/60">
           {isModerator ? t('heatmap.dragHint') : t('heatmap.clickHint')}
         </div>
       </div>
 
-      {/* MOBILE: collapsed filter icon button (shown when panel closed) */}
+      {/* MOBILE: filter button — sits above the bottom nav, to the right */}
       {!panelsHidden && !mobileFiltersOpen && (
         <div
-          className="absolute right-4 z-[390] sm:hidden"
-          style={{ bottom: 'calc(var(--bottom-nav-h, 56px) + 0.75rem)' }}
+          className="absolute right-3 z-[390] sm:hidden"
+          style={{ bottom: 'calc(var(--bottom-nav-h, 56px) + 4rem)' }}
         >
           <Button
             size="icon"
             variant="outline"
-            className="h-11 w-11 rounded-full shadow-lg bg-background/85 backdrop-blur-xl relative"
+            className="h-14 w-14 rounded-full shadow-lg bg-background/85 backdrop-blur-xl relative"
             onClick={() => setMobileFiltersOpen(true)}
             aria-label={t('heatmap.filterRumors')}
           >
-            <Filter className="h-4 w-4" />
+            <Filter className="h-6 w-6" />
             {filtersActive && (
-              <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-background" />
+              <span className="absolute top-1 right-1 h-3 w-3 rounded-full bg-primary ring-2 ring-background" />
             )}
           </Button>
         </div>
       )}
+
+      {/* BOTTOM-CENTER: Toggle floating panels — sits just above the bottom nav */}
+      {!pickMode && (
+        <div
+          className="absolute left-1/2 -translate-x-1/2 z-[450]"
+          style={{ bottom: 'calc(var(--bottom-nav-h, 56px) + 0.75rem)' }}
+        >
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 shadow-lg bg-background/85 backdrop-blur-xl text-xs h-11 px-4 sm:h-8 sm:px-3"
+            onClick={() => setPanelsHidden((v) => !v)}
+          >
+            {panelsHidden ? (
+              <>
+                <Eye className="h-4 w-4" /> {t('heatmap.showPanels')}
+              </>
+            ) : (
+              <>
+                <EyeOff className="h-4 w-4" /> {t('heatmap.hidePanels')}
+              </>
+            )}
+          </Button>
+        </div>
+      )}
+
 
       {/* BOTTOM: Filters anchor above the nav. Hidden on mobile until expanded; always visible on desktop. */}
       {!panelsHidden && (
