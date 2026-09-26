@@ -213,7 +213,7 @@
 @media (max-width: 639px) {
   .filters-panel {
     bottom: calc(var(--bottom-nav-h, 56px) + 8rem + var(--trending-scale-h, 0px) + 0.5rem);
-    max-height: min(50dvh, calc(100dvh - var(--bottom-nav-h, 56px) - 15rem - var(--trending-scale-h, 0px)));
+    max-height: min(50dvh, calc(100dvh - var(--bottom-nav-h, 56px) - 19rem - var(--trending-scale-h, 0px)));
   }
 }
 
