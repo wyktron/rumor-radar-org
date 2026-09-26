@@ -1,7 +1,4 @@
-import { useTranslation } from 'react-i18next';
-import { NavLink as RouterNavLink } from 'react-router-dom';
-import { Phone, User as UserIcon, LogOut, Menu, Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/context/AuthContext';
