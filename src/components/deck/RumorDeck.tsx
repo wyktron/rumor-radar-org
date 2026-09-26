@@ -148,25 +148,25 @@ export function RumorDeck({ open, onClose }: Props) {
             className="deck-slide relative flex h-full w-full flex-col justify-center px-5 pb-16 pt-16"
             style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}
           >
-            <div className="mx-auto w-full max-w-xl rounded-3xl border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur-xl">
+            <div className="mx-auto w-full max-w-xl rounded-lg border border-border bg-card p-6 text-card-foreground shadow-2xl">
               <div className="mb-3 flex flex-wrap items-center gap-2">
                 <StatusBadge status={r.status} />
-                <span className="rounded-full border border-white/25 px-2.5 py-0.5 text-[11px] uppercase tracking-wider text-white/85">
+                <span className="rounded-full border border-border bg-secondary px-2.5 py-0.5 text-[11px] uppercase tracking-wider text-secondary-foreground">
                   {r.topic}
                 </span>
                 {r.intensity >= 0.75 && (
-                  <span className="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-0.5 text-[11px] text-white">
+                  <span className="flex items-center gap-1 rounded-full border border-viral/30 bg-viral/10 px-2.5 py-0.5 text-[11px] font-medium text-viral">
                     <Flame className="h-3 w-3" /> Viral
                   </span>
                 )}
               </div>
 
-              <h2 className="text-2xl font-semibold leading-snug text-white">{r.title}</h2>
-              <p className="mt-3 line-clamp-6 text-sm leading-relaxed text-white/80">
+              <h2 className="text-2xl font-semibold leading-snug text-card-foreground">{r.title}</h2>
+              <p className="mt-3 line-clamp-6 text-sm leading-relaxed text-muted-foreground">
                 {r.description}
               </p>
 
-              <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/70">
+              <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-3 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <MapPin className="h-3.5 w-3.5" /> {r.originCountry}
                 </span>
@@ -180,7 +180,7 @@ export function RumorDeck({ open, onClose }: Props) {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="gap-1.5 border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white"
+                  className="gap-1.5"
                   onClick={() => share(r)}
                 >
                   <Share2 className="h-4 w-4" /> Share

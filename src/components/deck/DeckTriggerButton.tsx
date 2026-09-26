@@ -10,7 +10,7 @@ export function DeckTriggerButton({ docked = false }: { docked?: boolean }) {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Open rumor deck"
-        className={`deck-trigger ${docked ? 'deck-trigger--map' : 'deck-trigger--page'} group flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary/50 bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-90 sm:h-14 sm:w-14`}
+        className={`${docked ? 'relative' : 'deck-trigger deck-trigger--page'} group flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-primary/50 bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-90 sm:h-14 sm:w-14`}
       >
         <svg
           viewBox="0 0 24 24"
