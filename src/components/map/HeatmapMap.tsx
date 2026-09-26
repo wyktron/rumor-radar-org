@@ -12,6 +12,8 @@ interface Props {
   /** When true, clicking the map calls `onPick` with [lat, lng] instead of selecting markers. */
   pickMode?: boolean;
   onPick?: (coords: [number, number]) => void;
+  /** Fly the map to these coordinates when the value changes. */
+  focus?: { coords: [number, number]; key: string } | null;
 }
 
 function buildIcon(color: string, viral: boolean, rumorId: string) {
@@ -72,7 +74,7 @@ function scatteredCoords(r: Rumor): [number, number] {
   return [baseLat + t * Math.sin(angle), baseLng + t * Math.cos(angle) * lngScale];
 }
 
-export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = false, onPick }: Props) {
+export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = false, onPick, focus = null }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
@@ -114,6 +116,13 @@ export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = fal
       layerRef.current = null;
     };
   }, []);
+
+  // fly to a requested rumor (e.g. opened from the feed)
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !focus) return;
+    map.flyTo(focus.coords, Math.max(map.getZoom(), 6), { duration: 1.2 });
+  }, [focus?.key]);
 
   // update markers when rumors change
   useEffect(() => {
