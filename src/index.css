@@ -405,28 +405,9 @@
 }
 .ticker-blink { animation: ticker-blink 1.4s ease-in-out infinite; }
 
-/* Filter CTA — sonar ping that radiates a few times on load to pull the eye
-   to the filter control, then settles so it doesn't compete with the map. */
-.filter-cta-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  background: hsl(var(--attention) / 0.45);
+/* Map control hover label (filter + rumor deck) */
+.map-ctl-label {
   pointer-events: none;
-  opacity: 0;
-  animation: cta-ping 2.4s cubic-bezier(0, 0, 0.2, 1) 5 both;
-}
-.filter-cta-ring--slow {
-  animation-delay: 0.9s;
-  animation-iteration-count: 4;
-}
-@keyframes cta-ping {
-  0% { transform: scale(1); opacity: 0.6; }
-  70% { transform: scale(2.1); opacity: 0; }
-  100% { transform: scale(2.1); opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .filter-cta-ring { animation: none; opacity: 0; }
 }
 
 /* --- Rumor feed deck (snap-scroll) --- */
