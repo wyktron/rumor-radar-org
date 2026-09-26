@@ -125,7 +125,7 @@ export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = fal
     rumors.forEach((r) => {
       const color = intensityColor(r.intensity, r.status);
       const viral = r.intensity >= 0.6 && r.status === 'pending';
-      const marker = L.marker(r.coordinates, {
+      const marker = L.marker(draggable ? r.coordinates : scatteredCoords(r), {
         icon: buildIcon(color, viral, r.id),
         draggable,
       });
