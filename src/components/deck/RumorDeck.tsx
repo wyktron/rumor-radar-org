@@ -106,7 +106,10 @@ export function RumorDeck({ open, onClose }: Props) {
     onClose();
     navigate(`/?rumor=${r.id}`);
     window.dispatchEvent(
-      new CustomEvent('rumorradar:flyto', { detail: { lat: r.lat, lng: r.lng, id: r.id } }),
+      new CustomEvent('rumorradar:flyto', {
+        detail: { lat: r.coordinates[0], lng: r.coordinates[1], id: r.id },
+      }),
+
     );
   };
 
