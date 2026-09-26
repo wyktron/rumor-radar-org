@@ -130,20 +130,20 @@ export function Header() {
                   </RouterNavLink>
                 )}
 
-                <button
-                  type="button"
+              </nav>
+
+              <div className="mt-auto pt-4 border-t border-border/60 flex flex-col gap-1">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-3 h-11 text-sm"
                   onClick={() => {
                     setMenuOpen(false);
                     setSubscribeOpen(true);
                   }}
-                  className="flex items-center gap-3 rounded-md px-3 h-11 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors"
                 >
                   <Mail className="h-4 w-4" /> {t('nav.subscribe')}
-                </button>
-              </nav>
-
-              {user && (
-                <div className="mt-auto pt-4 border-t border-border/60">
+                </Button>
+                {user && (
                   <Button
                     variant="ghost"
                     className="w-full justify-start gap-3 h-11 text-sm"
@@ -154,8 +154,8 @@ export function Header() {
                   >
                     <LogOut className="h-4 w-4" /> {t('header.logOut')}
                   </Button>
-                </div>
-              )}
+                )}
+              </div>
             </SheetContent>
           </Sheet>
         </div>
