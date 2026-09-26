@@ -12,11 +12,12 @@ import { Button } from "@/components/ui/button";
 import { SubscribeDialog } from "@/components/SubscribeDialog";
 import { WelcomeDialogs } from "@/components/WelcomeDialogs";
 import { HackathonBanner } from "@/components/HackathonBanner";
-import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail, Flame } from "lucide-react";
+import { DeckTriggerButton } from "@/components/deck/DeckTriggerButton";
+import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail } from "lucide-react";
+
 
 import { cn } from "@/lib/utils";
 import Index from "./pages/Index.tsx";
-import FeedPage from "./pages/FeedPage";
 import TimelinePage from "./pages/TimelinePage";
 import CSONetworkPage from "./pages/CSONetworkPage";
 import CSORegisterPage from "./pages/CSORegisterPage";
@@ -33,7 +34,6 @@ const queryClient = new QueryClient();
 
 const secondaryLinks: { to: string; key: string; icon: typeof Map; end?: boolean }[] = [
   { to: '/', key: 'heatmap', icon: Map, end: true },
-  { to: '/feed', key: 'feed', icon: Flame },
   { to: '/timeline', key: 'timeline', icon: Clock },
   { to: '/csos', key: 'csos', icon: Users },
   { to: '/impact', key: 'impact', icon: BarChart3 },
@@ -96,7 +96,9 @@ function SecondaryNav() {
             ))}
           </div>
           <div className="flex items-center justify-center gap-2 shrink-0 sm:justify-end">
+            <DeckTriggerButton />
             <Button
+
               variant="outline"
               size="sm"
               aria-label={t('nav.subscribe')}
@@ -118,7 +120,7 @@ function SecondaryNav() {
 
 function Layout() {
   const location = useLocation();
-  const isHeatmap = location.pathname === '/' || location.pathname === '/feed';
+  const isHeatmap = location.pathname === '/';
 
   if (isHeatmap) {
     return (
@@ -158,7 +160,6 @@ const App = () => (
             <Routes>
               <Route element={<Layout />}>
                 <Route path="/" element={<Index />} />
-                <Route path="/feed" element={<FeedPage />} />
                 <Route path="/timeline" element={<TimelinePage />} />
                 <Route path="/csos" element={<CSONetworkPage />} />
                 <Route path="/csos/register" element={<CSORegisterPage />} />
