@@ -182,7 +182,9 @@
    above the filter control; on other pages it sits in the bottom-right corner. */
 .deck-trigger {
   position: fixed;
-  z-index: 1100;
+  /* Above map panels (z-450) but below the header/menu overlay (z-1000) so the
+     hamburger menu covers it when open — same as the filter button. */
+  z-index: 500;
   right: 0.75rem;
 }
 .deck-trigger--map {
