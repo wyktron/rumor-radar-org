@@ -1,22 +1,14 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, Outlet, NavLink as RouterNavLink, useLocation } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
+import { BrowserRouter, Route, Routes, Outlet, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { Header } from "@/components/Header";
-import { Button } from "@/components/ui/button";
-import { SubscribeDialog } from "@/components/SubscribeDialog";
 import { WelcomeDialogs } from "@/components/WelcomeDialogs";
 import { HackathonBanner } from "@/components/HackathonBanner";
 import { DeckTriggerButton } from "@/components/deck/DeckTriggerButton";
-import { Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail } from "lucide-react";
-
-
-import { cn } from "@/lib/utils";
 import Index from "./pages/Index.tsx";
 import TimelinePage from "./pages/TimelinePage";
 import CSONetworkPage from "./pages/CSONetworkPage";
