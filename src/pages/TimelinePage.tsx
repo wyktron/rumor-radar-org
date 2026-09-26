@@ -39,7 +39,7 @@ export default function TimelinePage() {
     try {
       await navigator.clipboard.writeText(feedUrl);
       setCopied(true);
-      toast({ title: 'RSS link copied', description: feedUrl });
+      toast({ title: 'Copied successfully', description: feedUrl });
       setTimeout(() => setCopied(false), 1800);
     } catch {
       toast({ title: 'Could not copy link', variant: 'destructive' });

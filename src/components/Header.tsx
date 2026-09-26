@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/context/AuthContext';
 import { HOTLINE } from '@/constants/countries';
-import { HelpLovedOneDialog } from '@/components/HelpLovedOneDialog';
 import { CallExplainerDialog } from '@/components/CallExplainerDialog';
 import { SubscribeDialog } from '@/components/SubscribeDialog';
 import { cn } from '@/lib/utils';
@@ -65,9 +64,6 @@ export function Header() {
             </div>
           </div>
 
-          <div className="h-10 w-px bg-border/60" />
-
-          <HelpLovedOneDialog />
         </div>
 
         {/* Right: My profile + menu */}
