@@ -58,7 +58,17 @@ const en = {
     privacy: 'Calls are private. We never share your number, and the AI is trained to be empathetic — not preachy.',
     cancel: 'Cancel',
     callBtn: 'Call {{number}}',
+    webCallBtn: 'Start web call with AI operator',
+    webCallConnecting: 'Connecting…',
+    webCallEnd: 'End web call',
+    webCallLive: 'Live with the AI operator',
+    webCallSpeaking: 'The operator is speaking…',
+    webCallListening: 'Listening — go ahead and ask about a rumor.',
+    webCallMicError: 'We need microphone access to start the web call.',
+    webCallError: 'The web call could not start. Please try again.',
+    webCallHint: 'No phone needed — talk to the same AI operator right here in your browser.',
   },
+
   subscribe: {
     title: 'Subscribe to Updates',
     info: 'Get notified only about verified facts, debunks, and confirmations — not rumors.',
