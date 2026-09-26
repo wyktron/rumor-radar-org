@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { StatusBadge, IntensityBar } from '@/components/RumorBits';
 import { RumorDetailDialog } from '@/components/RumorDetailDialog';
+import { DeckTriggerButton } from '@/components/deck/DeckTriggerButton';
 import { Filter, ShieldCheck, Send, Info, X, MapPin, HelpCircle, Crosshair, Eye, EyeOff } from 'lucide-react';
 import { relativeTime } from '@/lib/rumor-utils';
 import { cn } from '@/lib/utils';
@@ -226,9 +227,10 @@ export default function HeatmapPage() {
         </div>
       </div>
 
-      {/* Filter toggle — stays visible while the panel is open (dimmed grey) */}
+      {/* Deck and filter controls share one stack so their spacing never changes. */}
       {!panelsHidden && (
-        <div className="map-panel-row absolute right-3 sm:right-4 z-[390]">
+        <div className="map-panel-row absolute right-3 z-[390] flex flex-col items-center gap-2 sm:right-4">
+          <DeckTriggerButton docked />
           <div className="relative flex items-center justify-center">
             <button
               type="button"

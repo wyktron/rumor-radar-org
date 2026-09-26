@@ -28,7 +28,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-[1000] border-b border-border/60 bg-background/85 backdrop-blur-xl">
-      <div className="flex h-16 items-center justify-between gap-4 px-4 md:px-6">
+      <div className="flex h-16 flex-nowrap items-center justify-between gap-2 px-3 md:gap-4 md:px-6">
         {/* Left: Brand */}
         <RouterNavLink to="/" className="flex items-center gap-2.5 group shrink-0">
           <div className="flex flex-col leading-none">
@@ -39,7 +39,29 @@ export function Header() {
           </div>
         </RouterNavLink>
 
-        {/* Center: Hotline + Help a loved one */}
+        {/* Mobile hotline stays in this row; it can never create a second row. */}
+        <div className="flex min-w-0 flex-1 flex-nowrap items-center justify-center gap-1.5 overflow-hidden whitespace-nowrap md:hidden">
+          <button
+            type="button"
+            onClick={() => setCallOpen(true)}
+            aria-label="Call the hotline"
+            className="shrink-0 cursor-pointer"
+          >
+            <Phone className="h-4 w-4 text-muted-foreground" />
+          </button>
+          <span className="hidden shrink-0 font-bold text-xs min-[380px]:inline">
+            {HOTLINE.display}
+          </span>
+          <Button
+            size="sm"
+            className="h-7 shrink-0 px-2 text-[10px] font-mono uppercase"
+            onClick={() => setCallOpen(true)}
+          >
+            {t('header.call')}
+          </Button>
+        </div>
+
+        {/* Desktop hotline */}
         <div className="hidden md:flex items-center gap-3 flex-1 justify-center max-w-2xl">
           <div className="flex items-center gap-2.5">
             <Phone className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -157,27 +179,6 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile hotline strip — one centered row, never wraps; number hides on very narrow phones */}
-      <div className="md:hidden flex items-center justify-center gap-1.5 overflow-hidden whitespace-nowrap border-t border-border/40 px-2 py-2 text-xs">
-        <button
-          type="button"
-          onClick={() => setCallOpen(true)}
-          aria-label="Call the hotline"
-          className="shrink-0 cursor-pointer"
-        >
-          <Phone className="h-3.5 w-3.5 text-muted-foreground" />
-        </button>
-        <span className="hidden shrink-0 font-bold min-[380px]:inline">
-          {HOTLINE.display}
-        </span>
-        <Button
-          size="sm"
-          className="h-6 shrink-0 px-2 text-[10px] font-mono uppercase"
-          onClick={() => setCallOpen(true)}
-        >
-          {t('header.call')}
-        </Button>
-      </div>
       <CallExplainerDialog open={callOpen} onOpenChange={setCallOpen} />
       <SubscribeDialog open={subscribeOpen} onOpenChange={setSubscribeOpen} />
     </header>

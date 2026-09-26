@@ -37,7 +37,6 @@ function Layout() {
         <main className="flex-1 relative overflow-hidden">
           <Outlet />
         </main>
-        <DeckTriggerButton docked />
       </div>
     );
   }
