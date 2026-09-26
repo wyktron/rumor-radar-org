@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { useConversation } from '@elevenlabs/react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Phone, Sparkles, Heart, ShieldCheck, PhoneCall, Mic, PhoneOff, Loader2 } from 'lucide-react';
+import { Phone, Sparkles, Heart, ShieldCheck, PhoneCall, Mic, PhoneOff, Loader2, Lock } from 'lucide-react';
 import { HOTLINE } from '@/constants/countries';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/context/AuthContext';
 
 const ELEVENLABS_AGENT_ID = 'Mmxv1SKByrTiQvVFpJY7';
 
@@ -16,6 +17,7 @@ interface Props {
 
 export function CallExplainerDialog({ open, onOpenChange }: Props) {
   const { t } = useTranslation();
+  const { isAdmin } = useAuth();
   const [isConnecting, setIsConnecting] = useState(false);
 
   const conversation = useConversation({
@@ -27,6 +29,7 @@ export function CallExplainerDialog({ open, onOpenChange }: Props) {
   const isLive = conversation.status === 'connected';
 
   const startWebCall = useCallback(async () => {
+    if (!isAdmin) return;
     setIsConnecting(true);
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -42,7 +45,7 @@ export function CallExplainerDialog({ open, onOpenChange }: Props) {
     } finally {
       setIsConnecting(false);
     }
-  }, [conversation, t]);
+  }, [conversation, t, isAdmin]);
 
   const endWebCall = useCallback(async () => {
     try {
@@ -106,13 +109,21 @@ export function CallExplainerDialog({ open, onOpenChange }: Props) {
                 <PhoneOff className="h-4 w-4" /> {t('call.webCallEnd')}
               </Button>
             </div>
-          ) : (
+          ) : isAdmin ? (
             <div className="space-y-2">
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+                <ShieldCheck className="h-3 w-3" /> {t('call.webCallAdminBadge')}
+              </div>
               <p className="text-xs text-muted-foreground">{t('call.webCallHint')}</p>
               <Button className="w-full gap-2" onClick={startWebCall} disabled={isConnecting}>
                 {isConnecting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mic className="h-4 w-4" />}
                 {isConnecting ? t('call.webCallConnecting') : t('call.webCallBtn')}
               </Button>
+            </div>
+          ) : (
+            <div className="flex items-start gap-2">
+              <Lock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+              <p className="text-xs text-muted-foreground">{t('call.webCallAdminOnly')}</p>
             </div>
           )}
         </div>

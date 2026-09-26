@@ -67,6 +67,8 @@ const en = {
     webCallMicError: 'We need microphone access to start the web call.',
     webCallError: 'The web call could not start. Please try again.',
     webCallHint: 'No phone needed — talk to the same AI operator right here in your browser.',
+    webCallAdminOnly: 'The live AI operator is on standby for the demo. Sign in as admin to start a web call.',
+    webCallAdminBadge: 'Admin demo access',
   },
 
   subscribe: {
