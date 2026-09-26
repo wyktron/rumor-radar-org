@@ -383,3 +383,18 @@
 @media (prefers-reduced-motion: reduce) {
   .filter-cta-ring { animation: none; opacity: 0; }
 }
+
+/* --- Rumor feed deck (snap-scroll) --- */
+.deck-scroller {
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.deck-scroller::-webkit-scrollbar { display: none; }
+.deck-slide {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
