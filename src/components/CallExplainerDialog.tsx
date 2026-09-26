@@ -29,6 +29,7 @@ export function CallExplainerDialog({ open, onOpenChange }: Props) {
   const isLive = conversation.status === 'connected';
 
   const startWebCall = useCallback(async () => {
+    if (!isAdmin) return;
     setIsConnecting(true);
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
