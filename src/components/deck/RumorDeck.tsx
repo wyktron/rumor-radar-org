@@ -145,7 +145,7 @@ export function RumorDeck({ open, onClose }: Props) {
         {deck.map((r, i) => (
           <section
             key={`${r.id}-${i}`}
-            className="deck-slide relative flex h-full w-full flex-col justify-end px-5 pb-24 pt-16"
+            className="deck-slide relative flex h-full w-full flex-col justify-center px-5 pb-16 pt-16"
             style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}
           >
             <div className="mx-auto w-full max-w-xl rounded-3xl border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur-xl">
