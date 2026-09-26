@@ -102,7 +102,7 @@ export default function ImpactPage() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <BigStat icon={<TrendingUp className="text-primary" />} label="Signals tracked" value={rumors.length} />
-        <BigStat icon={<ShieldCheck className="text-success" />} label="Debunked" value={debunkedTotal} />
+        <BigStat icon={<ShieldCheck className="text-signal-debunked" />} label="Debunked" value={debunkedTotal} />
         <BigStat icon={<Users className="text-primary" />} label="CSO partners" value={csos.length} />
         <BigStat icon={<Globe className="text-warning" />} label="Debunk rate" value={`${debunkRate}%`} />
       </div>
@@ -118,7 +118,7 @@ export default function ImpactPage() {
               </div>
               <div className="h-2.5 rounded-full bg-secondary overflow-hidden relative">
                 <div className="h-full bg-primary/30" style={{ width: `${(t.total / maxTopic) * 100}%` }} />
-                <div className="absolute inset-y-0 left-0 bg-success" style={{ width: `${(t.debunked / maxTopic) * 100}%`, boxShadow: '0 0 8px hsl(var(--success))' }} />
+                <div className="absolute inset-y-0 left-0 bg-signal-debunked" style={{ width: `${(t.debunked / maxTopic) * 100}%`, boxShadow: '0 0 8px hsl(var(--signal-debunked))' }} />
               </div>
             </div>
           ))}

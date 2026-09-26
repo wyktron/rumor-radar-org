@@ -7,7 +7,7 @@ export function StatusBadge({ status }: { status: Rumor['status'] }) {
   const map: Record<Rumor['status'], string> = {
     pending: 'bg-warning/15 text-warning border-warning/30',
     approved: 'bg-primary/15 text-primary border-primary/30',
-    debunked: 'bg-success/15 text-success border-success/30',
+    debunked: 'bg-signal-debunked/15 text-signal-debunked border-signal-debunked/30',
     'verified-true': 'bg-signal-verified/15 text-signal-verified border-signal-verified/30',
     rejected: 'bg-destructive/15 text-destructive border-destructive/30',
   };
