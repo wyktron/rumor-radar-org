@@ -25,6 +25,39 @@ export function Header() {
   const [callOpen, setCallOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [subscribeOpen, setSubscribeOpen] = useState(false);
+  const [compactHotline, setCompactHotline] = useState(false);
+  const stripRef = useRef<HTMLDivElement>(null);
+  const numberRef = useRef<HTMLSpanElement>(null);
+  const iconRef = useRef<HTMLButtonElement>(null);
+  const callBtnRef = useRef<HTMLButtonElement>(null);
+  const numberWidth = useRef(0);
+
+  // On small phones: if the number can't fit on one row, drop the digits and
+  // keep only the phone icon — never wrap to a second line.
+  useEffect(() => {
+    const evaluate = () => {
+      const strip = stripRef.current;
+      const number = numberRef.current;
+      const icon = iconRef.current;
+      const btn = callBtnRef.current;
+      if (!strip || !icon || !btn) return;
+      const chrome = icon.offsetWidth + btn.offsetWidth + 16 /* two gap-2 */ + 2;
+      if (number && !compactHotline) {
+        numberWidth.current = number.scrollWidth;
+        if (number.scrollWidth > number.clientWidth + 1) setCompactHotline(true);
+      } else if (compactHotline && strip.clientWidth - chrome >= numberWidth.current) {
+        setCompactHotline(false);
+      }
+    };
+    evaluate();
+    const ro = new ResizeObserver(evaluate);
+    if (stripRef.current) ro.observe(stripRef.current);
+    window.addEventListener('resize', evaluate);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', evaluate);
+    };
+  }, [compactHotline]);
 
   return (
     <header className="sticky top-0 z-[1000] border-b border-border/60 bg-background/85 backdrop-blur-xl">
