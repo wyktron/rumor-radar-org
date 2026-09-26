@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Radar, Globe, ShieldCheck, Users, Activity, Lock, FileText } from 'lucide-react';
+import { Radar, Globe, ShieldCheck, Users, Activity, Lock, FileText, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ContactForm } from '@/components/ContactForm';
@@ -35,7 +35,32 @@ export default function AboutPage() {
         <Feature icon={<Radar />} title={t('about.f6Title')} desc={t('about.f6Desc')} />
       </div>
 
+      <Card className="glass-panel p-6 space-y-4 border-primary/30">
+        <div className="flex items-center gap-2">
+          <Trophy className="h-5 w-5 text-primary" />
+          <h2 className="text-lg font-bold">Built for Deeptech GigaHack 2026 — Open Challenge</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          This build is the Rumor Radar prototype entered into the Open Challenge track at{' '}
+          <a href="http://gigahack.md/" target="_blank" rel="noreferrer" className="text-primary hover:underline">Deeptech GigaHack</a>,
+          Moldova&apos;s largest deeptech hackathon. The Open Challenge asks teams to ship a working MVP that solves a real problem
+          with measurable impact, an explainable workflow, and clear potential to scale.
+        </p>
+        <div className="grid sm:grid-cols-2 gap-3 text-sm">
+          <Crit title="Problem & impact" body="Cross-border rumours travel faster than corrections. Rumor Radar maps them live and routes each one to a fact-checking organisation in the country where it is spreading." />
+          <Crit title="Working MVP" body="Live heatmap, public submission flow, moderation dashboard, verified-organisation network, AI-assisted intake and an inbound rumour hotline — all running end to end." />
+          <Crit title="Explainable workflow" body="Every rumour carries its origin, topic, spread intensity, current verdict and the named organisation that debunked or confirmed it, with sources attached." />
+          <Crit title="Integration & scale" body="Open data model with country codes, a public read API and organisation accounts, so national fact-checkers and EU bodies can plug in without bespoke integration." />
+        </div>
+        <p className="text-xs text-muted-foreground border-t border-border/60 pt-3">
+          Demo data note: the organisation directory lists real, publicly active fact-checking organisations. Rumour records are
+          illustrative examples of documented disinformation narrative types, generated for the hackathon demo — they are not
+          individual verified incident reports.
+        </p>
+      </Card>
+
       <Card className="glass-panel p-6 space-y-3">
+
         <h2 className="text-lg font-bold">{t('about.partnerTitle')}</h2>
         <p className="text-sm text-muted-foreground">
           {t('about.partnerDesc')}
