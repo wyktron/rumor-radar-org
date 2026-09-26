@@ -1,6 +1,5 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
 
 import en from './locales/en';
 import fr from './locales/fr';
@@ -20,8 +19,8 @@ export const SUPPORTED_LANGS = [
 
 export type LangCode = typeof SUPPORTED_LANGS[number]['code'];
 
+// MVP: English only. Other locales stay bundled for later re-activation.
 i18n
-  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources: {
@@ -32,15 +31,12 @@ i18n
       ro: { translation: ro },
       ar: { translation: ar },
     },
+    lng: 'en',
     fallbackLng: 'en',
-    supportedLngs: SUPPORTED_LANGS.map((l) => l.code),
+    supportedLngs: ['en'],
     interpolation: { escapeValue: false },
-    detection: {
-      order: ['localStorage', 'navigator'],
-      lookupLocalStorage: 'rumor-radar.lang',
-      caches: ['localStorage'],
-    },
   });
+
 
 // Keep <html lang> and dir in sync
 const applyHtmlAttrs = (lng: string) => {
