@@ -38,7 +38,7 @@ export const COUNTRIES: Country[] = [
   { name: 'Ethiopia', code: 'ET', coordinates: [9.03, 38.74], phonePrefix: '+251' },
 ];
 
-export const TOPICS = ['Health', 'Politics', 'Migration', 'Economy', 'Conflict', 'Environment', 'Technology'] as const;
+export const TOPICS = ['Health', 'Politics', 'Migration', 'Economy', 'Conflict', 'Environment', 'Technology', 'Cultural', 'Scamming', 'Other'] as const;
 
 /** Hotline displayed in header. Romanian toll-free number. */
 export const HOTLINE = {
