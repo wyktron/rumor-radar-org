@@ -59,9 +59,11 @@ function Layout() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <ConversationProvider>
       <Toaster />
       <Sonner />
       <AuthProvider>
+
         <AppProvider>
           <BrowserRouter>
             <WelcomeDialogs />
