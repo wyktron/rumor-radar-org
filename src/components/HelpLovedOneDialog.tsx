@@ -256,7 +256,7 @@ export function HelpLovedOneDialog({ trigger }: Props) {
 
           <div className="flex justify-end gap-2 pt-1">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button type="submit" disabled={busy} className="gap-1.5">
+            <Button type="submit" disabled={busy || !consent} className="gap-1.5">
               {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Heart className="h-3.5 w-3.5" />}
               Submit outreach
             </Button>
