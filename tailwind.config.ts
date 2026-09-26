@@ -110,13 +110,37 @@ export default {
           "0%, 100%": { boxShadow: "0 0 16px hsl(var(--primary) / 0.4)" },
           "50%": { boxShadow: "0 0 28px hsl(var(--primary) / 0.7)" },
         },
+        "aura-breathe": {
+          "0%, 100%": { transform: "scale(1)", opacity: "0.55" },
+          "50%": { transform: "scale(1.35)", opacity: "0.95" },
+        },
+        "hue-cycle": {
+          "0%": { filter: "hue-rotate(0deg)" },
+          "100%": { filter: "hue-rotate(360deg)" },
+        },
+        "attention-shake": {
+          "0%, 88%, 100%": { transform: "translateX(0) rotate(0deg)" },
+          "91%": { transform: "translateX(-2px) rotate(-6deg)" },
+          "94%": { transform: "translateX(2px) rotate(6deg)" },
+          "97%": { transform: "translateX(-1px) rotate(-3deg)" },
+        },
+        "swipe-hint": {
+          "0%": { transform: "translateY(6px)", opacity: "0.2" },
+          "50%": { transform: "translateY(-6px)", opacity: "1" },
+          "100%": { transform: "translateY(6px)", opacity: "0.2" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.4s ease-out",
         "glow-pulse": "glow-pulse 2.4s ease-in-out infinite",
+        "aura-breathe": "aura-breathe 3s ease-in-out infinite",
+        "hue-cycle": "hue-cycle 6s linear infinite",
+        "attention-shake": "attention-shake 5s ease-in-out infinite",
+        "swipe-hint": "swipe-hint 1.6s ease-in-out infinite",
       },
+
     },
   },
   plugins: [require("tailwindcss-animate")],
