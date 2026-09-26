@@ -170,7 +170,6 @@ export function Header() {
             {t('header.call')}
           </Button>
         </div>
-        <HelpLovedOneDialog />
       </div>
       <CallExplainerDialog open={callOpen} onOpenChange={setCallOpen} />
       <SubscribeDialog open={subscribeOpen} onOpenChange={setSubscribeOpen} />
