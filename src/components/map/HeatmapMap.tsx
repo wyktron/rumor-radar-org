@@ -27,6 +27,66 @@ function buildIcon(color: string, viral: boolean, rumorId: string) {
   });
 }
 
+/**
+ * Approximate "spread radius" in degrees of latitude for each country, so markers
+ * fan out inside the country instead of stacking on one centroid.
+ */
+const SMALL_COUNTRIES = new Set([
+  'Moldova', 'Belgium', 'Netherlands', 'Luxembourg', 'Slovenia', 'Albania', 'North Macedonia',
+  'Montenegro', 'Kosovo', 'Estonia', 'Latvia', 'Lithuania', 'Switzerland', 'Denmark', 'Israel',
+  'Lebanon', 'Cyprus', 'Malta', 'Bosnia and Herzegovina', 'Croatia', 'Serbia', 'Slovakia',
+  'Armenia', 'Georgia', 'Azerbaijan', 'Singapore', 'Qatar', 'Kuwait',
+]);
+const LARGE_COUNTRIES = new Set([
+  'Russia', 'United States', 'Canada', 'China', 'Brazil', 'Australia', 'India', 'Argentina',
+  'Kazakhstan', 'Algeria', 'Democratic Republic of the Congo', 'Sudan', 'Libya', 'Mexico',
+  'Indonesia', 'Saudi Arabia',
+]);
+
+function spreadRadius(country: string): number {
+  if (SMALL_COUNTRIES.has(country)) return 0.55;
+  if (LARGE_COUNTRIES.has(country)) return 7;
+  return 2.2;
+}
+
+const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+
+/**
+ * Deterministically scatters markers around their country anchor using a
+ * sunflower (golden-angle) spiral, so the same rumor always lands in the
+ * same spot but nearby rumors never overlap.
+ */
+function scatterCoordinates(rumors: Rumor[]): Map<string, [number, number]> {
+  const groups = new Map<string, Rumor[]>();
+  rumors.forEach((r) => {
+    const key = `${r.originCountry}|${r.coordinates[0].toFixed(2)},${r.coordinates[1].toFixed(2)}`;
+    const list = groups.get(key);
+    if (list) list.push(r);
+    else groups.set(key, [r]);
+  });
+
+  const out = new Map<string, [number, number]>();
+  groups.forEach((list) => {
+    if (list.length === 1) {
+      out.set(list[0].id, list[0].coordinates);
+      return;
+    }
+    // Stable order so positions don't shuffle between renders/filters.
+    const ordered = [...list].sort((a, b) => a.id.localeCompare(b.id));
+    const [baseLat, baseLng] = ordered[0].coordinates;
+    const radius = spreadRadius(ordered[0].originCountry);
+    const lngScale = 1 / Math.max(0.25, Math.cos((baseLat * Math.PI) / 180));
+    ordered.forEach((r, i) => {
+      const t = Math.sqrt((i + 0.5) / ordered.length) * radius;
+      const angle = i * GOLDEN_ANGLE;
+      const lat = baseLat + t * Math.sin(angle);
+      const lng = baseLng + t * Math.cos(angle) * lngScale;
+      out.set(r.id, [lat, lng]);
+    });
+  });
+  return out;
+}
+
 export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = false, onPick }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
