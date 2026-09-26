@@ -134,7 +134,7 @@ export function SubscribeDialog({ open, onOpenChange }: Props) {
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <Checkbox checked={debunks} onCheckedChange={(v) => setDebunks(v === true)} />
               <span>
-                <span className="font-medium text-success">{t('subscribe.debunks')}</span>
+                <span className="font-medium text-signal-debunked">{t('subscribe.debunks')}</span>
                 <span className="text-muted-foreground"> - {t('subscribe.debunksDesc')}</span>
               </span>
             </label>

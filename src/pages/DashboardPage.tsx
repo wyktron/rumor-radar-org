@@ -98,7 +98,7 @@ function ModeratorDashboard() {
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <StatCard icon={<Activity />} label="Total rumors" value={stats.total} />
-            <StatCard icon={<ShieldCheck className="text-success" />} label="Debunked" value={stats.debunked} />
+            <StatCard icon={<ShieldCheck className="text-signal-debunked" />} label="Debunked" value={stats.debunked} />
             <StatCard icon={<ShieldCheck className="text-signal-verified" />} label="Verified true" value={stats.verified} />
             <StatCard icon={<ShieldAlert className="text-warning" />} label="Pending" value={stats.pending} />
             <StatCard icon={<Users className="text-primary" />} label="CSO partners" value={stats.csos} />

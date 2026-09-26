@@ -99,7 +99,7 @@ export function RumorDetailDialog({ rumor, onClose }: { rumor: Rumor | null; onC
               {isResolved ? (
                 <span className={cn(
                   'inline-flex h-6 w-6 items-center justify-center rounded-full',
-                  isDebunked ? 'bg-success/15 text-success' : 'bg-signal-verified/15 text-signal-verified',
+                  isDebunked ? 'bg-signal-debunked/15 text-signal-debunked' : 'bg-signal-verified/15 text-signal-verified',
                 )}>
                   <CheckCircle2 className="h-4 w-4" />
                 </span>
@@ -129,11 +129,11 @@ export function RumorDetailDialog({ rumor, onClose }: { rumor: Rumor | null; onC
           {isResolved && (rumor.debunkedBy || rumor.verifiedBy) && (
             <div className={cn(
               'rounded-lg border p-3 flex items-center gap-3',
-              isDebunked ? 'border-success/30 bg-success/5' : 'border-signal-verified/30 bg-signal-verified/5',
+              isDebunked ? 'border-signal-debunked/30 bg-signal-debunked/5' : 'border-signal-verified/30 bg-signal-verified/5',
             )}>
               <div className={cn(
                 'h-10 w-10 rounded-full flex items-center justify-center shrink-0',
-                isDebunked ? 'bg-success/15 text-success' : 'bg-signal-verified/15 text-signal-verified',
+                isDebunked ? 'bg-signal-debunked/15 text-signal-debunked' : 'bg-signal-verified/15 text-signal-verified',
               )}>
                 <ShieldCheck className="h-5 w-5" />
               </div>
@@ -170,11 +170,11 @@ export function RumorDetailDialog({ rumor, onClose }: { rumor: Rumor | null; onC
           {(rumor.debunkContent || rumor.verificationContent) && (
             <div className={cn(
               'rounded-md border p-3 space-y-2',
-              isDebunked ? 'border-success/30 bg-success/5' : 'border-signal-verified/30 bg-signal-verified/5',
+              isDebunked ? 'border-signal-debunked/30 bg-signal-debunked/5' : 'border-signal-verified/30 bg-signal-verified/5',
             )}>
               <div className={cn(
                 'text-[11px] font-mono uppercase tracking-wider',
-                isDebunked ? 'text-success' : 'text-signal-verified',
+                isDebunked ? 'text-signal-debunked' : 'text-signal-verified',
               )}>
                 The Facts
               </div>
