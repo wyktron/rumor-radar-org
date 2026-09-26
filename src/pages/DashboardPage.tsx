@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useApp } from '@/context/AppContext';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { StatusBadge, IntensityBar } from '@/components/RumorBits';
-import { Check, X, ShieldCheck, ShieldAlert, Activity, Users, Sliders, Languages, Loader2, KeyRound, Radar } from 'lucide-react';
+import { Check, X, ShieldCheck, ShieldAlert, Activity, Users, Sliders, Languages, Loader2, KeyRound, Radar, Heart, Copy, ExternalLink } from 'lucide-react';
 import { relativeTime } from '@/lib/rumor-utils';
 import { toast } from 'sonner';
 import { RolesAdmin } from '@/components/admin/RolesAdmin';
@@ -104,6 +104,7 @@ function ModeratorDashboard() {
             <StatCard icon={<Users className="text-primary" />} label="CSO partners" value={stats.csos} />
           </div>
           <ScrapeRumorsPanel />
+          <HelpLovedOnePanel />
         </TabsContent>
 
         <TabsContent value="pending-rumors" className="space-y-2">
@@ -602,4 +603,89 @@ function PendingRumorsPanel({
 
 function Empty({ children }: { children: React.ReactNode }) {
   return <Card className="glass-panel p-8 text-center text-sm text-muted-foreground">{children}</Card>;
+}
+
+// ---------------------------------------------------------------------------
+// Help a loved one — staff-only access point + referral link generator.
+// The public page is unlisted: callers receive a personal referral link.
+// ---------------------------------------------------------------------------
+function HelpLovedOnePanel() {
+  const [requests, setRequests] = useState<any[]>([]);
+  const [code, setCode] = useState('');
+
+  useEffect(() => {
+    supabase
+      .from('loved_one_submissions')
+      .select('*')
+      .order('submitted_at', { ascending: false })
+      .limit(25)
+      .then(({ data }) => setRequests(data ?? []));
+  }, []);
+
+  const link = `${window.location.origin}/help-a-loved-one${code ? `?ref=${encodeURIComponent(code)}` : ''}`;
+
+  function generate() {
+    const rand = Math.random().toString(36).slice(2, 8).toUpperCase();
+    setCode(`CALL-${rand}`);
+  }
+
+  return (
+    <Card className="p-4 space-y-4">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <h3 className="flex items-center gap-2 text-sm font-semibold">
+          <Heart className="h-4 w-4 text-primary" /> Help a loved one
+        </h3>
+        <Button asChild variant="outline" size="sm" className="gap-1.5">
+          <Link to="/help-a-loved-one">
+            <ExternalLink className="h-3.5 w-3.5" /> Open the form
+          </Link>
+        </Button>
+      </div>
+
+      <p className="text-xs text-muted-foreground">
+        The page is unlisted. Send a referral link only to people who have already used the hotline —
+        every requester must pass identity verification before the request is accepted.
+      </p>
+
+      <div className="flex gap-2 flex-wrap">
+        <Button size="sm" variant="secondary" onClick={generate}>Generate referral link</Button>
+        <Input readOnly value={link} className="flex-1 min-w-[220px] font-mono text-xs" />
+        <Button
+          size="sm"
+          variant="outline"
+          className="gap-1.5"
+          onClick={() => {
+            navigator.clipboard.writeText(link);
+            toast.success('Copied successfully');
+          }}
+        >
+          <Copy className="h-3.5 w-3.5" /> Copy
+        </Button>
+      </div>
+
+      <div className="space-y-2">
+        <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+          Recent requests ({requests.length})
+        </p>
+        {requests.length === 0 && <p className="text-xs text-muted-foreground">No outreach requests yet.</p>}
+        {requests.map((r) => (
+          <div key={r.id} className="rounded-md border border-border p-2.5 text-xs space-y-1">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <span className="font-semibold">
+                {r.relationship} · {r.country} · {r.contact_method}
+              </span>
+              <span className="text-muted-foreground">{relativeTime(r.submitted_at)}</span>
+            </div>
+            <p className="text-muted-foreground">{r.notes}</p>
+            <div className="flex gap-2 flex-wrap text-[11px] text-muted-foreground">
+              <span>Requester: {r.requester_full_name ?? '—'}</span>
+              <span>ID: {r.id_verification_status ?? 'unverified'}</span>
+              {r.referral_code && <span>Ref: {r.referral_code}</span>}
+              <span>Status: {r.status}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
 }

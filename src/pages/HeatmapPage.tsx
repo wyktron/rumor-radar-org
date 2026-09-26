@@ -226,18 +226,21 @@ export default function HeatmapPage() {
         </div>
       </div>
 
-      {/* Filter toggle — high-visibility attention affordance above the bottom nav */}
-      {!panelsHidden && !filtersOpen && (
+      {/* Filter toggle — stays visible while the panel is open (dimmed grey) */}
+      {!panelsHidden && (
         <div className="map-panel-row absolute right-3 sm:right-4 z-[390]">
           <div className="relative flex items-center justify-center">
-            {/* One-time sonar ping: radiates a few times on load, then settles */}
-            <span className="filter-cta-ring" aria-hidden="true" />
-            <span className="filter-cta-ring filter-cta-ring--slow" aria-hidden="true" />
             <button
               type="button"
-              onClick={() => setFiltersOpen(true)}
+              onClick={() => setFiltersOpen((v) => !v)}
               aria-label={t('heatmap.filterRumors')}
-              className="group relative z-10 flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary/50 bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-90 sm:h-14 sm:w-14"
+              aria-expanded={filtersOpen}
+              className={cn(
+                'group relative z-10 flex h-16 w-16 items-center justify-center rounded-full border-2 shadow-lg transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-90 sm:h-14 sm:w-14',
+                filtersOpen
+                  ? 'border-border bg-muted text-muted-foreground'
+                  : 'border-primary/50 bg-primary text-primary-foreground',
+              )}
             >
               <Filter className="h-8 w-8 drop-shadow-sm sm:h-7 sm:w-7" strokeWidth={2.5} />
               {activeCount > 0 && (
@@ -246,13 +249,14 @@ export default function HeatmapPage() {
                 </span>
               )}
               {/* Hover label (desktop) */}
-              <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-md border border-primary/30 bg-card/90 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-primary opacity-0 backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 sm:block">
+              <span className="map-ctl-label absolute right-full mr-3 hidden whitespace-nowrap rounded-md border border-primary/30 bg-card/90 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-primary opacity-0 backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 sm:block">
                 {t('heatmap.filterRumors')}
               </span>
             </button>
           </div>
         </div>
       )}
+
 
       {/* BOTTOM-CENTER: Toggle floating panels — sits just above the bottom nav */}
       {!pickMode && (

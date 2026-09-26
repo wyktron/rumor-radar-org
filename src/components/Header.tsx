@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/context/AuthContext';
 import { HOTLINE } from '@/constants/countries';
-import { HelpLovedOneDialog } from '@/components/HelpLovedOneDialog';
 import { CallExplainerDialog } from '@/components/CallExplainerDialog';
 import { SubscribeDialog } from '@/components/SubscribeDialog';
 import { cn } from '@/lib/utils';
@@ -65,9 +64,6 @@ export function Header() {
             </div>
           </div>
 
-          <div className="h-10 w-px bg-border/60" />
-
-          <HelpLovedOneDialog />
         </div>
 
         {/* Right: My profile + menu */}
@@ -130,20 +126,20 @@ export function Header() {
                   </RouterNavLink>
                 )}
 
-                <button
-                  type="button"
+              </nav>
+
+              <div className="mt-auto pt-4 border-t border-border/60 flex flex-col gap-1">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-3 h-11 text-sm"
                   onClick={() => {
                     setMenuOpen(false);
                     setSubscribeOpen(true);
                   }}
-                  className="flex items-center gap-3 rounded-md px-3 h-11 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors"
                 >
                   <Mail className="h-4 w-4" /> {t('nav.subscribe')}
-                </button>
-              </nav>
-
-              {user && (
-                <div className="mt-auto pt-4 border-t border-border/60">
+                </Button>
+                {user && (
                   <Button
                     variant="ghost"
                     className="w-full justify-start gap-3 h-11 text-sm"
@@ -154,8 +150,8 @@ export function Header() {
                   >
                     <LogOut className="h-4 w-4" /> {t('header.logOut')}
                   </Button>
-                </div>
-              )}
+                )}
+              </div>
             </SheetContent>
           </Sheet>
         </div>
@@ -174,7 +170,6 @@ export function Header() {
             {t('header.call')}
           </Button>
         </div>
-        <HelpLovedOneDialog />
       </div>
       <CallExplainerDialog open={callOpen} onOpenChange={setCallOpen} />
       <SubscribeDialog open={subscribeOpen} onOpenChange={setSubscribeOpen} />

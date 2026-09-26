@@ -14,6 +14,7 @@ import TimelinePage from "./pages/TimelinePage";
 import CSONetworkPage from "./pages/CSONetworkPage";
 import CSORegisterPage from "./pages/CSORegisterPage";
 import SubmitRumorPage from "./pages/SubmitRumorPage";
+import HelpLovedOnePage from "./pages/HelpLovedOnePage";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import ImpactPage from "./pages/ImpactPage";
@@ -70,6 +71,7 @@ const App = () => (
                 <Route path="/csos" element={<CSONetworkPage />} />
                 <Route path="/csos/register" element={<CSORegisterPage />} />
                 <Route path="/submit" element={<SubmitRumorPage />} />
+                <Route path="/help-a-loved-one" element={<HelpLovedOnePage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/impact" element={<ImpactPage />} />

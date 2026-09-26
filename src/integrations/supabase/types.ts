@@ -640,6 +640,8 @@ export type Database = {
       loved_one_submissions: {
         Row: {
           best_time_to_call: string | null
+          consent_permission: boolean
+          consent_privacy: boolean
           contact_method: Database["public"]["Enums"]["contact_method"]
           contact_value: string
           contacted_at: string | null
@@ -647,9 +649,19 @@ export type Database = {
           country_code: string | null
           created_at: string
           id: string
+          id_document_country: string | null
+          id_document_last4: string | null
+          id_document_type: string | null
+          id_verification_method: string | null
+          id_verification_status: string
+          id_verified_at: string | null
           ip_address: string | null
           notes: string
+          referral_code: string | null
           relationship: string
+          requester_email: string | null
+          requester_full_name: string | null
+          requester_phone: string | null
           staff_notes: string | null
           status: Database["public"]["Enums"]["loved_one_status"]
           submitted_at: string
@@ -658,6 +670,8 @@ export type Database = {
         }
         Insert: {
           best_time_to_call?: string | null
+          consent_permission?: boolean
+          consent_privacy?: boolean
           contact_method: Database["public"]["Enums"]["contact_method"]
           contact_value: string
           contacted_at?: string | null
@@ -665,9 +679,19 @@ export type Database = {
           country_code?: string | null
           created_at?: string
           id?: string
+          id_document_country?: string | null
+          id_document_last4?: string | null
+          id_document_type?: string | null
+          id_verification_method?: string | null
+          id_verification_status?: string
+          id_verified_at?: string | null
           ip_address?: string | null
           notes: string
+          referral_code?: string | null
           relationship: string
+          requester_email?: string | null
+          requester_full_name?: string | null
+          requester_phone?: string | null
           staff_notes?: string | null
           status?: Database["public"]["Enums"]["loved_one_status"]
           submitted_at?: string
@@ -676,6 +700,8 @@ export type Database = {
         }
         Update: {
           best_time_to_call?: string | null
+          consent_permission?: boolean
+          consent_privacy?: boolean
           contact_method?: Database["public"]["Enums"]["contact_method"]
           contact_value?: string
           contacted_at?: string | null
@@ -683,9 +709,19 @@ export type Database = {
           country_code?: string | null
           created_at?: string
           id?: string
+          id_document_country?: string | null
+          id_document_last4?: string | null
+          id_document_type?: string | null
+          id_verification_method?: string | null
+          id_verification_status?: string
+          id_verified_at?: string | null
           ip_address?: string | null
           notes?: string
+          referral_code?: string | null
           relationship?: string
+          requester_email?: string | null
+          requester_full_name?: string | null
+          requester_phone?: string | null
           staff_notes?: string | null
           status?: Database["public"]["Enums"]["loved_one_status"]
           submitted_at?: string
