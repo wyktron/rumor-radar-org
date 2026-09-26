@@ -179,7 +179,7 @@
 }
 
 /* Floating rumor-deck trigger. On the map it docks in the right rail directly
-   above the filter control; on other pages it sits in the bottom-right corner. */
+   above the filter control (same size, 8px gap); elsewhere bottom-right. */
 .deck-trigger {
   position: fixed;
   /* Above map panels (z-450) but below the header/menu overlay (z-1000) so the
@@ -187,8 +187,9 @@
   z-index: 500;
   right: 0.75rem;
 }
+/* mobile: filter row at nav + 8rem, filter is 4rem tall, 0.5rem gap */
 .deck-trigger--map {
-  bottom: calc(var(--bottom-nav-h, 56px) + 12.5rem);
+  bottom: calc(var(--bottom-nav-h, 56px) + 8rem + 4.5rem);
 }
 .deck-trigger--page {
   bottom: 1.25rem;
@@ -197,8 +198,9 @@
   .deck-trigger {
     right: 1rem;
   }
+  /* desktop: filter row at nav + 4rem, filter is 3.5rem tall, 0.5rem gap */
   .deck-trigger--map {
-    bottom: calc(var(--bottom-nav-h, 56px) + 8rem);
+    bottom: calc(var(--bottom-nav-h, 56px) + 4rem + 4rem);
   }
   .deck-trigger--page {
     bottom: 1.5rem;
@@ -217,16 +219,19 @@
 }
 
 /* Filters panel on the map: collapsed by default on all sizes.
-   Desktop anchors above the bottom nav; on mobile it stacks above the
-   trending-scale legend (height published as --trending-scale-h). */
+   Desktop anchors above the bottom nav; on mobile it opens above both the
+   trending-scale legend and the deck trigger stacked over the filter button. */
 .filters-panel {
   bottom: calc(var(--bottom-nav-h, 56px) + 4rem);
   max-height: min(52dvh, calc(100dvh - var(--bottom-nav-h, 56px) - 9rem));
 }
 @media (max-width: 639px) {
   .filters-panel {
-    bottom: calc(var(--bottom-nav-h, 56px) + 8rem + var(--trending-scale-h, 0px) + 0.5rem);
-    max-height: min(50dvh, calc(100dvh - var(--bottom-nav-h, 56px) - 19rem - var(--trending-scale-h, 0px)));
+    bottom: calc(
+      var(--bottom-nav-h, 56px) + 8rem +
+      max(var(--trending-scale-h, 0px), 8.5rem) + 0.5rem
+    );
+    max-height: min(46dvh, calc(100dvh - var(--bottom-nav-h, 56px) - 22rem));
   }
 }
 
