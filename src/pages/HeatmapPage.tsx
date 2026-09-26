@@ -241,16 +241,16 @@ export default function HeatmapPage() {
               type="button"
               onClick={() => setFiltersOpen(true)}
               aria-label={t('heatmap.filterRumors')}
-              className="group relative z-10 flex h-14 w-14 items-center justify-center rounded-full border-2 border-attention/50 bg-attention text-attention-foreground shadow-attention transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-attention focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-90 sm:h-11 sm:w-11"
+              className="group relative z-10 flex h-14 w-14 items-center justify-center rounded-full border-2 border-primary/50 bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-90 sm:h-11 sm:w-11"
             >
               <Filter className="h-6 w-6 drop-shadow-sm sm:h-5 sm:w-5" strokeWidth={2.5} />
               {activeCount > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-attention-foreground px-1 text-[10px] font-bold leading-none text-attention ring-2 ring-background">
+                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary-foreground px-1 text-[10px] font-bold leading-none text-primary ring-2 ring-background">
                   {activeCount}
                 </span>
               )}
               {/* Hover label (desktop) */}
-              <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-md border border-attention/30 bg-card/90 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-attention opacity-0 backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 sm:block">
+              <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-md border border-primary/30 bg-card/90 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-primary opacity-0 backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 sm:block">
                 {t('heatmap.filterRumors')}
               </span>
             </button>
