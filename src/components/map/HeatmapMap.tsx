@@ -49,42 +49,27 @@ function spreadRadius(country: string): number {
   return 2.2;
 }
 
-const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+function hash01(s: string, salt: number): number {
+  let h = 2166136261 ^ salt;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return ((h >>> 0) % 100000) / 100000;
+}
 
 /**
- * Deterministically scatters markers around their country anchor using a
- * sunflower (golden-angle) spiral, so the same rumor always lands in the
- * same spot but nearby rumors never overlap.
+ * Deterministically scatters a marker around its country anchor, so rumors from
+ * the same country spread out instead of stacking on one point. Position depends
+ * only on the rumor id, so it stays put across filters and reloads.
  */
-function scatterCoordinates(rumors: Rumor[]): Map<string, [number, number]> {
-  const groups = new Map<string, Rumor[]>();
-  rumors.forEach((r) => {
-    const key = `${r.originCountry}|${r.coordinates[0].toFixed(2)},${r.coordinates[1].toFixed(2)}`;
-    const list = groups.get(key);
-    if (list) list.push(r);
-    else groups.set(key, [r]);
-  });
-
-  const out = new Map<string, [number, number]>();
-  groups.forEach((list) => {
-    if (list.length === 1) {
-      out.set(list[0].id, list[0].coordinates);
-      return;
-    }
-    // Stable order so positions don't shuffle between renders/filters.
-    const ordered = [...list].sort((a, b) => a.id.localeCompare(b.id));
-    const [baseLat, baseLng] = ordered[0].coordinates;
-    const radius = spreadRadius(ordered[0].originCountry);
-    const lngScale = 1 / Math.max(0.25, Math.cos((baseLat * Math.PI) / 180));
-    ordered.forEach((r, i) => {
-      const t = Math.sqrt((i + 0.5) / ordered.length) * radius;
-      const angle = i * GOLDEN_ANGLE;
-      const lat = baseLat + t * Math.sin(angle);
-      const lng = baseLng + t * Math.cos(angle) * lngScale;
-      out.set(r.id, [lat, lng]);
-    });
-  });
-  return out;
+function scatteredCoords(r: Rumor): [number, number] {
+  const [baseLat, baseLng] = r.coordinates;
+  const radius = spreadRadius(r.originCountry);
+  const t = Math.sqrt(hash01(r.id, 7)) * radius;
+  const angle = hash01(r.id, 131) * Math.PI * 2;
+  const lngScale = 1 / Math.max(0.25, Math.cos((baseLat * Math.PI) / 180));
+  return [baseLat + t * Math.sin(angle), baseLng + t * Math.cos(angle) * lngScale];
 }
 
 export function HeatmapMap({ rumors, draggable = false, onSelect, pickMode = false, onPick }: Props) {
