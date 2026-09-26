@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HeatmapMap } from '@/components/map/HeatmapMap';
 import { useApp } from '@/context/AppContext';
 import { useAuth } from '@/context/AuthContext';
@@ -21,6 +21,7 @@ export default function HeatmapPage() {
   const { isStaff } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const legendRef = useRef<HTMLDivElement>(null);
 
   // Publish the trending-scale legend's height as a CSS var so the filters
@@ -49,6 +50,19 @@ export default function HeatmapPage() {
   const [pickMode, setPickMode] = useState(false);
   const [panelsHidden, setPanelsHidden] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [focus, setFocus] = useState<{ coords: [number, number]; key: string } | null>(null);
+
+  // Deep link from the feed: /?rumor=<id> flies to the rumor and opens it.
+  const focusId = searchParams.get('rumor');
+  useEffect(() => {
+    if (!focusId) return;
+    const target = rumors.find((r) => r.id === focusId);
+    if (!target) return;
+    setFocus({ coords: target.coordinates, key: target.id });
+    setOpen(target);
+    searchParams.delete('rumor');
+    setSearchParams(searchParams, { replace: true });
+  }, [focusId, rumors]);
 
   const startSubmitFlow = () => setSubmitInfoOpen(true);
   const enterPickMode = () => {
@@ -107,6 +121,7 @@ export default function HeatmapPage() {
           onSelect={pickMode ? undefined : setOpen}
           pickMode={pickMode}
           onPick={handlePick}
+          focus={focus}
         />
       </div>
 
