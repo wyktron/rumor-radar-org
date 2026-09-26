@@ -84,7 +84,7 @@ export default function TimelinePage() {
           <SelectTrigger className="w-[160px] h-9"><SelectValue placeholder="Country" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All countries</SelectItem>
-            {COUNTRIES.map((c) => <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>)}
+            {Array.from(new Set(rumors.map((r) => r.originCountry).filter(Boolean))).sort().map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={topic} onValueChange={setTopic}>

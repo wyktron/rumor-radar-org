@@ -71,6 +71,11 @@ export default function HeatmapPage() {
     setStatus('all');
   };
   const filtersActive = country !== 'all' || topic !== 'all' || status !== 'all';
+  const countryOptions = useMemo(
+    () => Array.from(new Set(rumors.map((r) => r.originCountry).filter(Boolean))).sort(),
+    [rumors],
+  );
+
 
   return (
     <div className="absolute inset-0">
@@ -281,7 +286,7 @@ export default function HeatmapPage() {
               <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('heatmap.allCountries')}</SelectItem>
-                {COUNTRIES.map((c) => <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>)}
+                {countryOptions.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
               </SelectContent>
             </Select>
           </FilterField>
