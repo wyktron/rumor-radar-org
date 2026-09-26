@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useApp } from '@/context/AppContext';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { StatusBadge, IntensityBar } from '@/components/RumorBits';
-import { Check, X, ShieldCheck, ShieldAlert, Activity, Users, Sliders, Languages, Loader2, KeyRound, Radar } from 'lucide-react';
+import { Check, X, ShieldCheck, ShieldAlert, Activity, Users, Sliders, Languages, Loader2, KeyRound, Radar, Heart, Copy, ExternalLink } from 'lucide-react';
 import { relativeTime } from '@/lib/rumor-utils';
 import { toast } from 'sonner';
 import { RolesAdmin } from '@/components/admin/RolesAdmin';
@@ -104,6 +104,7 @@ function ModeratorDashboard() {
             <StatCard icon={<Users className="text-primary" />} label="CSO partners" value={stats.csos} />
           </div>
           <ScrapeRumorsPanel />
+          <HelpLovedOnePanel />
         </TabsContent>
 
         <TabsContent value="pending-rumors" className="space-y-2">
