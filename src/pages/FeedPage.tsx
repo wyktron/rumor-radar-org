@@ -90,7 +90,11 @@ export default function FeedPage() {
         )}
 
         {deck.map((r, i) => (
-          <article key={`${r.id}-${i}`} className="deck-slide relative h-full px-5 pb-10 pt-6">
+          <article
+            key={`${r.id}-${i}`}
+            className="deck-slide relative h-full px-5 pt-6"
+            style={{ paddingBottom: 'calc(var(--bottom-nav-h, 56px) + 1.25rem)' }}
+          >
             <div className="mx-auto w-full max-w-xl rounded-3xl border border-white/15 bg-black/35 p-6 backdrop-blur-xl">
               <div className="mb-3 flex flex-wrap items-center gap-2">
                 <StatusBadge status={r.status} />
@@ -135,7 +139,7 @@ export default function FeedPage() {
             </div>
 
             {i === 0 && (
-              <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center text-white/70">
+              <div className="pointer-events-none absolute inset-x-0 bottom-[calc(var(--bottom-nav-h,56px)+0.25rem)] flex justify-center text-white/70">
                 <ChevronDown className="h-5 w-5 animate-bounce" />
               </div>
             )}
