@@ -178,22 +178,33 @@
   }
 }
 
-/* Floating rumor-deck trigger — centered directly above the hide-panels control */
+/* Floating rumor-deck trigger. On the map it docks in the right rail directly
+   above the filter control; on other pages it sits in the bottom-right corner. */
 .deck-trigger {
   position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
   z-index: 1100;
-  bottom: calc(var(--bottom-nav-h, 56px) + 4rem);
+  right: 0.75rem;
+}
+.deck-trigger--map {
+  bottom: calc(var(--bottom-nav-h, 56px) + 12.5rem);
+}
+.deck-trigger--page {
+  bottom: 1.25rem;
 }
 @media (min-width: 640px) {
   .deck-trigger {
-    bottom: calc(var(--bottom-nav-h, 56px) + 3.25rem);
+    right: 1rem;
+  }
+  .deck-trigger--map {
+    bottom: calc(var(--bottom-nav-h, 56px) + 8rem);
+  }
+  .deck-trigger--page {
+    bottom: 1.5rem;
   }
 }
 
-/* Trending-scale legend + filter toggle share one row. On mobile they lift
-   clear of the deck trigger so nothing overlaps. */
+/* Trending-scale legend + filter toggle share one row; on mobile that row sits
+   low but clear of the deck trigger docked above it. */
 .map-panel-row {
   bottom: calc(var(--bottom-nav-h, 56px) + 4rem);
 }
