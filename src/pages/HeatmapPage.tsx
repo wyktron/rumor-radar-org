@@ -85,50 +85,13 @@ export default function HeatmapPage() {
         />
       </div>
 
-      {/* TOP-CENTER: Toggle floating panels */}
-      {!pickMode && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[450]">
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5 shadow-lg bg-background/85 backdrop-blur-xl text-xs"
-            onClick={() => setPanelsHidden((v) => !v)}
-          >
-            {panelsHidden ? (
-              <>
-                <Eye className="h-3.5 w-3.5" /> {t('heatmap.showPanels')}
-              </>
-            ) : (
-              <>
-                <EyeOff className="h-3.5 w-3.5" /> {t('heatmap.hidePanels')}
-              </>
-            )}
-          </Button>
-        </div>
-      )}
-
-      {/* TOP-LEFT: LIVE stats panel */}
-      <div className={cn('absolute top-4 left-4 z-[410] glass-panel rounded-lg p-2 sm:p-3 w-36 sm:w-52 shadow-lg', panelsHidden && 'hidden')}>
-        <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-success">
-          <span className="inline-block h-2 w-2 rounded-full ticker-blink bg-success shadow-glow" />
-          {t('heatmap.live')}
-        </div>
-        <div className="mt-1 text-3xl font-bold font-mono leading-none">{stats.total}</div>
-        <div className="text-xs text-muted-foreground mt-0.5">{t('heatmap.activeRumors')}</div>
-        <div className="mt-3 space-y-1 text-xs font-mono">
-          <Stat label={t('heatmap.debunked')} value={stats.debunked} color="text-success" />
-          <Stat label={t('heatmap.verifiedTrue')} value={stats.verified} color="text-signal-verified" />
-          <Stat label={t('heatmap.viral')} value={stats.viral} color="text-viral" />
-          <Stat label={t('heatmap.high')} value={stats.high} color="text-warning" />
-        </div>
-      </div>
-
-      {/* TOP-RIGHT: Submit a Rumor */}
-      <div className={cn('absolute top-16 right-4 z-[410] sm:top-4', panelsHidden && 'hidden')}>
-        <Button className="gap-1.5 shadow-lg" onClick={startSubmitFlow}>
-          <Send className="h-3.5 w-3.5" /> {t('heatmap.submit')}
+      {/* TOP-RIGHT: Submit a Rumor — aligned with the live tracker panel */}
+      <div className={cn('absolute top-4 right-4 z-[410]', panelsHidden && 'hidden')}>
+        <Button className="gap-1.5 shadow-lg h-11 sm:h-9" onClick={startSubmitFlow}>
+          <Send className="h-4 w-4" /> {t('heatmap.submit')}
         </Button>
       </div>
+
 
       {/* PICK MODE banner — appears across the top once the user accepts the explainer */}
       {pickMode && (
