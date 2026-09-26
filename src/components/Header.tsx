@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { NavLink as RouterNavLink } from 'react-router-dom';
 import { Phone, User as UserIcon, LogOut, Menu, Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/context/AuthContext';
@@ -25,6 +25,39 @@ export function Header() {
   const [callOpen, setCallOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [subscribeOpen, setSubscribeOpen] = useState(false);
+  const [compactHotline, setCompactHotline] = useState(false);
+  const stripRef = useRef<HTMLDivElement>(null);
+  const numberRef = useRef<HTMLSpanElement>(null);
+  const iconRef = useRef<HTMLButtonElement>(null);
+  const callBtnRef = useRef<HTMLButtonElement>(null);
+  const numberWidth = useRef(0);
+
+  // On small phones: if the number can't fit on one row, drop the digits and
+  // keep only the phone icon — never wrap to a second line.
+  useEffect(() => {
+    const evaluate = () => {
+      const strip = stripRef.current;
+      const number = numberRef.current;
+      const icon = iconRef.current;
+      const btn = callBtnRef.current;
+      if (!strip || !icon || !btn) return;
+      const chrome = icon.offsetWidth + btn.offsetWidth + 16 /* two gap-2 */ + 2;
+      if (number && !compactHotline) {
+        numberWidth.current = number.scrollWidth;
+        if (number.scrollWidth > number.clientWidth + 1) setCompactHotline(true);
+      } else if (compactHotline && strip.clientWidth - chrome >= numberWidth.current) {
+        setCompactHotline(false);
+      }
+    };
+    evaluate();
+    const ro = new ResizeObserver(evaluate);
+    if (stripRef.current) ro.observe(stripRef.current);
+    window.addEventListener('resize', evaluate);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', evaluate);
+    };
+  }, [compactHotline]);
 
   return (
     <header className="sticky top-0 z-[1000] border-b border-border/60 bg-background/85 backdrop-blur-xl">
@@ -158,13 +191,27 @@ export function Header() {
       </div>
 
       {/* Mobile hotline strip */}
-      <div className="md:hidden flex items-center justify-between gap-2 px-4 py-2 border-t border-border/40 text-xs">
-        <div className="flex items-center gap-2 min-w-0">
-          <Phone className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-          <span className="font-bold truncate">{HOTLINE.display}</span>
+      <div className="md:hidden flex items-center justify-center gap-2 px-4 py-2 border-t border-border/40 text-xs">
+        <div ref={stripRef} className="flex min-w-0 max-w-full items-center gap-2 flex-nowrap">
+          <button
+            type="button"
+            ref={iconRef}
+            onClick={() => setCallOpen(true)}
+            aria-label="Call the hotline"
+            className="shrink-0 cursor-pointer"
+          >
+            <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+          </button>
+          <span
+            ref={numberRef}
+            className={cn('min-w-0 whitespace-nowrap truncate font-bold', compactHotline && 'hidden')}
+          >
+            {HOTLINE.display}
+          </span>
           <Button
+            ref={callBtnRef}
             size="sm"
-            className="h-6 px-2 text-[10px] font-mono uppercase"
+            className="h-6 shrink-0 px-2 text-[10px] font-mono uppercase"
             onClick={() => setCallOpen(true)}
           >
             {t('header.call')}
