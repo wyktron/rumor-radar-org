@@ -90,6 +90,7 @@ export default function HeatmapPage() {
     setStatus('all');
   };
   const filtersActive = country !== 'all' || topic !== 'all' || status !== 'all';
+  const activeCount = [country, topic, status].filter((v) => v !== 'all').length;
   const countryOptions = useMemo(
     () => Array.from(new Set(rumors.map((r) => r.originCountry).filter(Boolean))).sort(),
     [rumors],
