@@ -45,9 +45,12 @@ export default function CSONetworkPage() {
                   <Globe className="h-3 w-3" /> {c.website.replace(/^https?:\/\//, '')}
                 </a>
               )}
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Mail className="h-3 w-3" /> {c.contactEmail}
-              </div>
+              {c.contactEmail && (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Mail className="h-3 w-3" /> {c.contactEmail}
+                </div>
+              )}
+
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Calendar className="h-3 w-3" /> Joined {new Date(c.dateJoined).toLocaleDateString(undefined, { year: 'numeric', month: 'short' })}
               </div>
