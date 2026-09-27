@@ -7,8 +7,10 @@ import { FluidBackground, type Palette } from '@/components/feed/FluidBackground
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/RumorBits';
 import { relativeTime } from '@/lib/rumor-utils';
-import { MapPin, Share2, ChevronUp, Flame, X, Hand } from 'lucide-react';
+import { MapPin, Share2, ChevronUp, Flame, X, Hand, ShieldCheck } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+
 
 const hex = (h: string): [number, number, number] => [
   parseInt(h.slice(1, 3), 16) / 255,
