@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HeatmapMap } from '@/components/map/HeatmapMap';
@@ -23,24 +23,6 @@ export default function HeatmapPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const legendRef = useRef<HTMLDivElement>(null);
-
-  // Publish the trending-scale legend's height as a CSS var so the filters
-  // panel can stack above it on mobile (they share the bottom-left corner).
-  useEffect(() => {
-    const el = legendRef.current;
-    if (!el) return;
-    const update = () => {
-      document.documentElement.style.setProperty(
-        '--trending-scale-h',
-        `${Math.ceil(el.getBoundingClientRect().height)}px`,
-      );
-    };
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
 
   const [country, setCountry] = useState<string>('all');
   const [topic, setTopic] = useState<string>('all');
@@ -50,7 +32,11 @@ export default function HeatmapPage() {
   const [submitInfoOpen, setSubmitInfoOpen] = useState(false);
   const [pickMode, setPickMode] = useState(false);
   const [panelsHidden, setPanelsHidden] = useState(false);
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  // Filters start open on desktop, collapsed on mobile where space is tight.
+  const [filtersOpen, setFiltersOpen] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches,
+  );
+
   const [focus, setFocus] = useState<{ coords: [number, number]; key: string } | null>(null);
 
   // Deep link from the feed: /?rumor=<id> flies to the rumor and opens it.
@@ -87,15 +73,19 @@ export default function HeatmapPage() {
   );
 
   const stats = useMemo(() => {
+    const live = rumors.filter((r) => r.status === 'approved' || r.status === 'pending');
     return {
       total: rumors.length,
       pending: rumors.filter((r) => r.status === 'pending').length,
       debunked: rumors.filter((r) => r.status === 'debunked').length,
       verified: rumors.filter((r) => r.status === 'verified-true').length,
-      viral: rumors.filter((r) => r.intensity >= 0.75 && (r.status === 'approved' || r.status === 'pending')).length,
-      high: rumors.filter((r) => r.intensity >= 0.5 && r.intensity < 0.75 && (r.status === 'approved' || r.status === 'pending')).length,
+      viral: live.filter((r) => r.intensity >= 0.75).length,
+      high: live.filter((r) => r.intensity >= 0.5 && r.intensity < 0.75).length,
+      moderate: live.filter((r) => r.intensity >= 0.25 && r.intensity < 0.5).length,
+      low: live.filter((r) => r.intensity < 0.25).length,
     };
   }, [rumors]);
+
 
   const isModerator = isStaff;
 
@@ -126,21 +116,37 @@ export default function HeatmapPage() {
         />
       </div>
 
-      {/* TOP-LEFT: LIVE stats panel */}
-      <div className={cn('absolute top-4 left-4 z-[410] glass-panel rounded-lg p-2 sm:p-3 w-36 sm:w-52 shadow-lg', panelsHidden && 'hidden')}>
+      {/* TOP-LEFT: LIVE tracker — now also carries the trending scale */}
+      <div className={cn('absolute top-4 left-4 z-[410] glass-panel rounded-lg p-2.5 sm:p-3 w-44 sm:w-60 shadow-lg', panelsHidden && 'hidden')}>
         <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-success">
           <span className="inline-block h-2 w-2 rounded-full ticker-blink bg-success shadow-glow" />
           {t('heatmap.live')}
         </div>
         <div className="mt-1 text-3xl font-bold font-mono leading-none">{stats.total}</div>
         <div className="text-xs text-muted-foreground mt-0.5">{t('heatmap.activeRumors')}</div>
-        <div className="mt-3 space-y-1 text-xs font-mono">
-          <Stat label={t('heatmap.debunked')} value={stats.debunked} color="text-foreground" />
-          <Stat label={t('heatmap.verifiedTrue')} value={stats.verified} color="text-foreground" />
-          <Stat label={t('heatmap.viral')} value={stats.viral} color="text-foreground" />
-          <Stat label={t('heatmap.high')} value={stats.high} color="text-foreground" />
+
+        <div className="mt-2.5 pt-2 border-t border-border/60">
+          <div className="text-[9px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-1.5">
+            {t('heatmap.trendingScale')}
+          </div>
+          <div className="space-y-1 text-[11px] sm:text-xs font-mono">
+            <Stat label={t('heatmap.low')} value={stats.low} color="hsl(var(--signal-low))" />
+            <Stat label={t('heatmap.moderate')} value={stats.moderate} color="hsl(var(--signal-moderate))" />
+            <Stat label={t('heatmap.highRange')} value={stats.high} color="hsl(var(--signal-high))" />
+            <Stat label={t('heatmap.viralRange')} value={stats.viral} color="hsl(var(--signal-viral))" />
+          </div>
+        </div>
+
+        <div className="mt-2 pt-2 border-t border-border/60 space-y-1 text-[11px] sm:text-xs font-mono">
+          <Stat label={t('heatmap.debunkedLegend')} value={stats.debunked} color="hsl(var(--signal-debunked))" />
+          <Stat label={t('heatmap.verifiedLegend')} value={stats.verified} color="hsl(var(--signal-verified))" />
+        </div>
+
+        <div className="hidden sm:block text-[10px] text-muted-foreground mt-2 pt-2 border-t border-border/60">
+          {isModerator ? t('heatmap.dragHint') : t('heatmap.clickHint')}
         </div>
       </div>
+
 
       {/* TOP-RIGHT: Submit a Rumor — aligned with the live tracker panel */}
       <div className={cn('absolute top-4 right-4 z-[410]', panelsHidden && 'hidden')}>
@@ -202,30 +208,8 @@ export default function HeatmapPage() {
         </DialogContent>
       </Dialog>
 
-      {/* BOTTOM-LEFT: Trending scale legend — anchors above the bottom nav */}
-      <div
-        ref={legendRef}
-        className={cn(
-          'map-panel-row absolute left-3 sm:left-4 z-[400] glass-panel rounded-lg p-2.5 sm:p-3 w-36 sm:w-56 shadow-lg',
-          panelsHidden && 'hidden',
-        )}
-      >
-        <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">
-          {t('heatmap.trendingScale')}
-        </div>
-        <div className="space-y-1 text-[11px] sm:text-xs">
-          <LegendRow color="hsl(var(--signal-low))" label={t('heatmap.low')} />
-          <LegendRow color="hsl(var(--signal-moderate))" label={t('heatmap.moderate')} />
-          <LegendRow color="hsl(var(--signal-high))" label={t('heatmap.highRange')} />
-          <LegendRow color="hsl(var(--signal-viral))" label={t('heatmap.viralRange')} />
-          <div className="h-px bg-border/60 my-1.5" />
-          <LegendRow color="hsl(var(--signal-debunked))" label={t('heatmap.debunkedLegend')} />
-          <LegendRow color="hsl(var(--signal-verified))" label={t('heatmap.verifiedLegend')} />
-        </div>
-        <div className="hidden sm:block text-[10px] text-muted-foreground mt-2 pt-2 border-t border-border/60">
-          {isModerator ? t('heatmap.dragHint') : t('heatmap.clickHint')}
-        </div>
-      </div>
+      {/* Trending scale now lives inside the live tracker panel (top-left). */}
+
 
       {/* Deck and filter controls share one stack so their spacing never changes. */}
       {!panelsHidden && (
@@ -384,23 +368,12 @@ export default function HeatmapPage() {
 function Stat({ label, value, color }: { label: string; value: number; color: string }) {
   return (
     <div className="flex items-center gap-1.5">
-      <span className={cn('font-bold', color)}>{value}</span>
+      <span className="font-bold tabular-nums" style={{ color }}>{value}</span>
       <span className="text-muted-foreground">{label}</span>
     </div>
   );
 }
 
-function LegendRow({ color, label }: { color: string; label: string }) {
-  return (
-    <div className="flex items-center gap-2">
-      <span
-        className="inline-block h-2.5 w-2.5 rounded-full"
-        style={{ backgroundColor: color, boxShadow: `0 0 8px ${color}` }}
-      />
-      <span>{label}</span>
-    </div>
-  );
-}
 
 function FilterField({ label, children }: { label: string; children: React.ReactNode }) {
   return (

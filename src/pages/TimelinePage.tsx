@@ -34,7 +34,9 @@ export default function TimelinePage() {
   }, [rumors, q, country, topic, status]);
 
   const [copied, setCopied] = useState(false);
-  const feedUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/feed/timeline.rss`;
+  // Feed only carries reviewed outcomes (debunked / verified true).
+  const feedUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/feed/timeline.rss?status=debunked,verified-true`;
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(feedUrl);
@@ -59,7 +61,7 @@ export default function TimelinePage() {
         </div>
         <div className="flex-1 min-w-[200px]">
           <div className="text-sm font-semibold leading-tight">Subscribe to the RSS feed</div>
-          <div className="text-xs text-muted-foreground">Get new rumors delivered to your reader as soon as they're flagged.</div>
+          <div className="text-xs text-muted-foreground">Get debunked and verified-true findings in your reader as soon as they are published.</div>
         </div>
         <code className="hidden md:inline-block text-[11px] font-mono text-muted-foreground bg-secondary/60 border border-border/60 rounded px-2 py-1 truncate max-w-[260px]">
           {feedUrl}

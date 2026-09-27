@@ -307,12 +307,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const announce = (rumor: Rumor, prevStatus: RumorStatus | undefined) => {
       if (prevStatus === rumor.status) return;
-      if (!PUBLIC_STATUSES.includes(rumor.status)) return;
+      // Only reviewed outcomes are announced — never unconfirmed claims.
+      if (rumor.status !== 'debunked' && rumor.status !== 'verified-true') return;
       const titleByStatus: Record<string, string> = {
-        approved: '🚨 New rumor on the radar',
         debunked: '✅ Rumor debunked',
         'verified-true': '⚠️ Rumor verified as true',
       };
+
       toast(titleByStatus[rumor.status] ?? 'Rumor updated', {
         description: `${rumor.title} — ${rumor.originCountry}`,
         duration: 8000,

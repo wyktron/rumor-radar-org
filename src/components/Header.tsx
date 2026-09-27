@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { NavLink as RouterNavLink } from 'react-router-dom';
-import { Phone, User as UserIcon, LogOut, Menu, Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail } from 'lucide-react';
+import { Phone, User as UserIcon, LogOut, Menu, Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail, Bell } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -9,6 +9,8 @@ import { HOTLINE } from '@/constants/countries';
 import { CallExplainerDialog } from '@/components/CallExplainerDialog';
 import { SubscribeDialog } from '@/components/SubscribeDialog';
 import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
+
 
 const menuLinks: { to: string; key: string; icon: typeof Map; end?: boolean }[] = [
   { to: '/', key: 'heatmap', icon: Map, end: true },
@@ -25,6 +27,28 @@ export function Header() {
   const [callOpen, setCallOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [subscribeOpen, setSubscribeOpen] = useState(false);
+
+  const enableNotifications = async () => {
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      toast({ title: t('welcome.notSupported'), description: t('welcome.notSupportedDesc'), variant: 'destructive' });
+      return;
+    }
+    if (Notification.permission === 'granted') {
+      toast({ title: t('welcome.enabled'), description: t('welcome.enabledDesc') });
+      return;
+    }
+    try {
+      const result = await Notification.requestPermission();
+      if (result === 'granted') {
+        toast({ title: t('welcome.enabled'), description: t('welcome.enabledDesc') });
+      } else if (result === 'denied') {
+        toast({ title: t('welcome.blocked'), description: t('welcome.blockedDesc'), variant: 'destructive' });
+      }
+    } catch {
+      // ignore
+    }
+  };
+
 
   return (
     <header className="sticky top-0 z-[1000] border-b border-border/60 bg-background/85 backdrop-blur-xl">
@@ -156,11 +180,22 @@ export function Header() {
                   className="w-full justify-start gap-3 h-11 text-sm"
                   onClick={() => {
                     setMenuOpen(false);
+                    enableNotifications();
+                  }}
+                >
+                  <Bell className="h-4 w-4" /> Browser notifications
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-3 h-11 text-sm"
+                  onClick={() => {
+                    setMenuOpen(false);
                     setSubscribeOpen(true);
                   }}
                 >
                   <Mail className="h-4 w-4" /> {t('nav.subscribe')}
                 </Button>
+
                 {user && (
                   <Button
                     variant="ghost"

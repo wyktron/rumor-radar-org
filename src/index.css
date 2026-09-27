@@ -335,11 +335,13 @@
 }
 
 @keyframes radar-sweep-x {
-  /* Travel from fully off-screen left to fully off-screen right.
-     `left` is the bar's left edge; bar width is fixed via `--sweep-w`. */
-  0%   { left: calc(-1 * var(--sweep-w)); }
-  100% { left: 100%; }
+  /* Travel from fully off-screen left to fully off-screen right at the same
+     speed as before (7s pass), then rest off-screen for 5s before repeating. */
+  0%      { left: calc(-1 * var(--sweep-w)); }
+  58.333% { left: 100%; }
+  100%    { left: 100%; }
 }
+
 
 /* Decorative radar sweep over the map — horizontal left→right pass */
 .radar-overlay {
@@ -375,7 +377,7 @@
     hsl(152 100% 65% / 0.55) 96%,
     hsl(152 100% 75% / 0.85) 100%
   );
-  animation: radar-sweep-x 7s linear infinite;
+  animation: radar-sweep-x 12s linear infinite;
   filter: blur(1px);
   will-change: left;
 }

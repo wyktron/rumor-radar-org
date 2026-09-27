@@ -11,9 +11,6 @@ export default function AboutPage() {
   return (
     <div className="container py-10 max-w-4xl space-y-10">
       <div className="text-center space-y-4">
-        <div className="inline-flex h-14 w-14 items-center justify-center rounded-md bg-gradient-signal shadow-glow">
-          <Radar className="h-7 w-7 text-primary-foreground radar-sweep" />
-        </div>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
           {t('about.headline1')} <span className="bg-gradient-signal bg-clip-text text-transparent">{t('about.headline2')}</span>
         </h1>
@@ -24,15 +21,6 @@ export default function AboutPage() {
           <Link to="/"><Button>{t('about.openHeatmap')}</Button></Link>
           <Link to="/submit"><Button variant="outline">{t('about.submitRumor')}</Button></Link>
         </div>
-      </div>
-
-      <div className="grid md:grid-cols-3 gap-4">
-        <Feature icon={<Activity />} title={t('about.f1Title')} desc={t('about.f1Desc')} />
-        <Feature icon={<ShieldCheck />} title={t('about.f2Title')} desc={t('about.f2Desc')} />
-        <Feature icon={<Globe />} title={t('about.f3Title')} desc={t('about.f3Desc')} />
-        <Feature icon={<Users />} title={t('about.f4Title')} desc={t('about.f4Desc')} />
-        <Feature icon={<Lock />} title={t('about.f5Title')} desc={t('about.f5Desc')} />
-        <Feature icon={<Radar />} title={t('about.f6Title')} desc={t('about.f6Desc')} />
       </div>
 
       <Card className="glass-panel p-6 space-y-4">
@@ -52,6 +40,16 @@ export default function AboutPage() {
           <Crit title={t('about.who4Title')} body={t('about.who4Desc')} />
         </div>
       </Card>
+
+      <div className="grid md:grid-cols-3 gap-4">
+        <Feature icon={<Activity />} title={t('about.f1Title')} desc={t('about.f1Desc')} />
+        <Feature icon={<ShieldCheck />} title={t('about.f2Title')} desc={t('about.f2Desc')} />
+        <Feature icon={<Globe />} title={t('about.f3Title')} desc={t('about.f3Desc')} />
+        <Feature icon={<Users />} title={t('about.f4Title')} desc={t('about.f4Desc')} />
+        <Feature icon={<Lock />} title={t('about.f5Title')} desc={t('about.f5Desc')} />
+        <Feature icon={<Radar />} title={t('about.f6Title')} desc={t('about.f6Desc')} />
+      </div>
+
 
       <Card className="glass-panel p-6 space-y-3">
         <div className="flex items-start gap-3">
