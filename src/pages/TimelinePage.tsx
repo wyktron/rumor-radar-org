@@ -34,7 +34,9 @@ export default function TimelinePage() {
   }, [rumors, q, country, topic, status]);
 
   const [copied, setCopied] = useState(false);
-  const feedUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/feed/timeline.rss`;
+  // Feed only carries reviewed outcomes (debunked / verified true).
+  const feedUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/feed/timeline.rss?status=debunked,verified-true`;
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(feedUrl);
