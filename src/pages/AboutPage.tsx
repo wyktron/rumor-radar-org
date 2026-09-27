@@ -35,6 +35,36 @@ export default function AboutPage() {
         <Feature icon={<Radar />} title={t('about.f6Title')} desc={t('about.f6Desc')} />
       </div>
 
+      <Card className="glass-panel p-6 space-y-4">
+        <div className="flex items-start gap-3">
+          <div className="h-9 w-9 rounded-md border border-primary/30 bg-primary/10 text-primary flex items-center justify-center shrink-0">
+            <Users className="h-4 w-4" />
+          </div>
+          <div className="space-y-1">
+            <h2 className="text-lg font-bold">{t('about.whoTitle')}</h2>
+            <p className="text-sm text-muted-foreground">{t('about.whoDesc')}</p>
+          </div>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-sm">
+          <Crit title={t('about.who1Title')} body={t('about.who1Desc')} />
+          <Crit title={t('about.who2Title')} body={t('about.who2Desc')} />
+          <Crit title={t('about.who3Title')} body={t('about.who3Desc')} />
+          <Crit title={t('about.who4Title')} body={t('about.who4Desc')} />
+        </div>
+      </Card>
+
+      <Card className="glass-panel p-6 space-y-3">
+        <div className="flex items-start gap-3">
+          <div className="h-9 w-9 rounded-md border border-primary/30 bg-primary/10 text-primary flex items-center justify-center shrink-0">
+            <ShieldCheck className="h-4 w-4" />
+          </div>
+          <div className="space-y-1">
+            <h2 className="text-lg font-bold">{t('about.govTitle')}</h2>
+            <p className="text-sm text-muted-foreground">{t('about.govDesc')}</p>
+          </div>
+        </div>
+      </Card>
+
       <Card className="glass-panel p-6 space-y-4 border-primary/30">
         <div className="flex items-center gap-2">
           <Trophy className="h-5 w-5 text-primary" />
