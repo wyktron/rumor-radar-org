@@ -26,6 +26,28 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [subscribeOpen, setSubscribeOpen] = useState(false);
 
+  const enableNotifications = async () => {
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      toast({ title: t('welcome.notSupported'), description: t('welcome.notSupportedDesc'), variant: 'destructive' });
+      return;
+    }
+    if (Notification.permission === 'granted') {
+      toast({ title: t('welcome.enabled'), description: t('welcome.enabledDesc') });
+      return;
+    }
+    try {
+      const result = await Notification.requestPermission();
+      if (result === 'granted') {
+        toast({ title: t('welcome.enabled'), description: t('welcome.enabledDesc') });
+      } else if (result === 'denied') {
+        toast({ title: t('welcome.blocked'), description: t('welcome.blockedDesc'), variant: 'destructive' });
+      }
+    } catch {
+      // ignore
+    }
+  };
+
+
   return (
     <header className="sticky top-0 z-[1000] border-b border-border/60 bg-background/85 backdrop-blur-xl">
       <div className="flex h-16 flex-nowrap items-center justify-between gap-2 px-3 md:gap-4 md:px-6">
