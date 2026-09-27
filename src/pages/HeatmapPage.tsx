@@ -202,30 +202,8 @@ export default function HeatmapPage() {
         </DialogContent>
       </Dialog>
 
-      {/* BOTTOM-LEFT: Trending scale legend — anchors above the bottom nav */}
-      <div
-        ref={legendRef}
-        className={cn(
-          'map-panel-row absolute left-3 sm:left-4 z-[400] glass-panel rounded-lg p-2.5 sm:p-3 w-36 sm:w-56 shadow-lg',
-          panelsHidden && 'hidden',
-        )}
-      >
-        <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-2">
-          {t('heatmap.trendingScale')}
-        </div>
-        <div className="space-y-1 text-[11px] sm:text-xs">
-          <LegendRow color="hsl(var(--signal-low))" label={t('heatmap.low')} />
-          <LegendRow color="hsl(var(--signal-moderate))" label={t('heatmap.moderate')} />
-          <LegendRow color="hsl(var(--signal-high))" label={t('heatmap.highRange')} />
-          <LegendRow color="hsl(var(--signal-viral))" label={t('heatmap.viralRange')} />
-          <div className="h-px bg-border/60 my-1.5" />
-          <LegendRow color="hsl(var(--signal-debunked))" label={t('heatmap.debunkedLegend')} />
-          <LegendRow color="hsl(var(--signal-verified))" label={t('heatmap.verifiedLegend')} />
-        </div>
-        <div className="hidden sm:block text-[10px] text-muted-foreground mt-2 pt-2 border-t border-border/60">
-          {isModerator ? t('heatmap.dragHint') : t('heatmap.clickHint')}
-        </div>
-      </div>
+      {/* Trending scale now lives inside the live tracker panel (top-left). */}
+
 
       {/* Deck and filter controls share one stack so their spacing never changes. */}
       {!panelsHidden && (
