@@ -246,7 +246,7 @@ const RUMOR_COLS =
 const PUBLIC_STATUSES: RumorStatus[] = ['approved', 'debunked', 'verified-true'];
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const { isStaff } = useAuth();
+  const { isStaff, isCSOMember } = useAuth();
   const [rumors, setRumors] = useState<Rumor[]>([]);
   const [csos, setCsos] = useState<CSO[]>([]);
   const [submissions, setSubmissions] = useState<RumorSubmission[]>([]);
@@ -285,9 +285,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const lastStatus = new Map<string, RumorStatus>();
 
     // Staff users also see 'pending' rumors so the moderation dashboard works.
+    // CSO members see pending rumors so they can pick one to investigate.
     const visibleStatuses: RumorStatus[] = isStaff
       ? [...PUBLIC_STATUSES, 'pending', 'rejected']
-      : PUBLIC_STATUSES;
+      : isCSOMember
+        ? [...PUBLIC_STATUSES, 'pending']
+        : PUBLIC_STATUSES;
 
     (async () => {
       const { data, error } = await supabase
@@ -354,7 +357,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       cancelled = true;
       supabase.removeChannel(channel);
     };
-  }, [isStaff]);
+  }, [isStaff, isCSOMember]);
 
   // --- Public CSO directory + realtime ---
   useEffect(() => {

@@ -11,6 +11,7 @@ interface AuthState {
   loading: boolean;
   isStaff: boolean;
   isAdmin: boolean;
+  isCSOMember: boolean;
   signIn: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
   signUp: (email: string, password: string, displayName?: string) => Promise<{ ok: boolean; error?: string }>;
   signOut: () => Promise<void>;
@@ -70,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
     isStaff: roles.includes('admin') || roles.includes('moderator'),
     isAdmin: roles.includes('admin'),
+    isCSOMember: roles.includes('cso_member'),
     async signIn(email, password) {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) return { ok: false, error: error.message };
