@@ -23,24 +23,6 @@ export default function HeatmapPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const legendRef = useRef<HTMLDivElement>(null);
-
-  // Publish the trending-scale legend's height as a CSS var so the filters
-  // panel can stack above it on mobile (they share the bottom-left corner).
-  useEffect(() => {
-    const el = legendRef.current;
-    if (!el) return;
-    const update = () => {
-      document.documentElement.style.setProperty(
-        '--trending-scale-h',
-        `${Math.ceil(el.getBoundingClientRect().height)}px`,
-      );
-    };
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
 
   const [country, setCountry] = useState<string>('all');
   const [topic, setTopic] = useState<string>('all');
@@ -382,23 +364,12 @@ export default function HeatmapPage() {
 function Stat({ label, value, color }: { label: string; value: number; color: string }) {
   return (
     <div className="flex items-center gap-1.5">
-      <span className={cn('font-bold', color)}>{value}</span>
+      <span className="font-bold tabular-nums" style={{ color }}>{value}</span>
       <span className="text-muted-foreground">{label}</span>
     </div>
   );
 }
 
-function LegendRow({ color, label }: { color: string; label: string }) {
-  return (
-    <div className="flex items-center gap-2">
-      <span
-        className="inline-block h-2.5 w-2.5 rounded-full"
-        style={{ backgroundColor: color, boxShadow: `0 0 8px ${color}` }}
-      />
-      <span>{label}</span>
-    </div>
-  );
-}
 
 function FilterField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
