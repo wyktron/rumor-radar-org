@@ -246,7 +246,7 @@ const RUMOR_COLS =
 const PUBLIC_STATUSES: RumorStatus[] = ['approved', 'debunked', 'verified-true'];
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const { isStaff } = useAuth();
+  const { isStaff, isCSOMember } = useAuth();
   const [rumors, setRumors] = useState<Rumor[]>([]);
   const [csos, setCsos] = useState<CSO[]>([]);
   const [submissions, setSubmissions] = useState<RumorSubmission[]>([]);
