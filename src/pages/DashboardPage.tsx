@@ -323,9 +323,12 @@ function CSODashboard() {
               <div className="space-y-1.5">
                 <Label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Target rumor</Label>
                 <Select value={rumorId} onValueChange={setRumorId}>
-                  <SelectTrigger><SelectValue placeholder="Select a pending rumor" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Select a rumor to review" /></SelectTrigger>
                   <SelectContent>
-                    {rumors.filter((r) => r.status === 'pending').map((r) => (
+                    {reviewableRumors.length === 0 && (
+                      <div className="px-3 py-2 text-xs text-muted-foreground">No rumors awaiting review right now.</div>
+                    )}
+                    {reviewableRumors.map((r) => (
                       <SelectItem key={r.id} value={r.id}>{r.title}</SelectItem>
                     ))}
                   </SelectContent>
