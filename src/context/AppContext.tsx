@@ -285,9 +285,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const lastStatus = new Map<string, RumorStatus>();
 
     // Staff users also see 'pending' rumors so the moderation dashboard works.
+    // CSO members see pending rumors so they can pick one to investigate.
     const visibleStatuses: RumorStatus[] = isStaff
       ? [...PUBLIC_STATUSES, 'pending', 'rejected']
-      : PUBLIC_STATUSES;
+      : isCSOMember
+        ? [...PUBLIC_STATUSES, 'pending']
+        : PUBLIC_STATUSES;
 
     (async () => {
       const { data, error } = await supabase
