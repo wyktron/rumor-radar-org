@@ -15,6 +15,13 @@
       "when": 1790442570049,
       "tag": "0001_loved_one_id_verification",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790506995747,
+      "tag": "0002_cso_members_read_pending_rumors",
+      "breakpoints": true
     }
   ]
 }
