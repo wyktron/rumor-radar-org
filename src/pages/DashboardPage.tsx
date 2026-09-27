@@ -273,6 +273,8 @@ function CSODashboard() {
   }, [user]);
 
   const myDebunks = debunkSubmissions.filter((d) => d.csoId === csoId);
+  // Rumors a CSO can still investigate: unreviewed (pending) and published-but-unconfirmed.
+  const reviewableRumors = rumors.filter((r) => r.status === 'pending' || r.status === 'approved');
   const [rumorId, setRumorId] = useState('');
   const [type, setType] = useState<'debunk' | 'verify-true'>('debunk');
   const [content, setContent] = useState('');
