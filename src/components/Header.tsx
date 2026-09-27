@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { NavLink as RouterNavLink } from 'react-router-dom';
-import { Phone, User as UserIcon, LogOut, Menu, Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail } from 'lucide-react';
+import { Phone, User as UserIcon, LogOut, Menu, Map, Clock, Users, BarChart3, LayoutDashboard, Info, Mail, Bell } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -156,11 +156,22 @@ export function Header() {
                   className="w-full justify-start gap-3 h-11 text-sm"
                   onClick={() => {
                     setMenuOpen(false);
+                    enableNotifications();
+                  }}
+                >
+                  <Bell className="h-4 w-4" /> Browser notifications
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-3 h-11 text-sm"
+                  onClick={() => {
+                    setMenuOpen(false);
                     setSubscribeOpen(true);
                   }}
                 >
                   <Mail className="h-4 w-4" /> {t('nav.subscribe')}
                 </Button>
+
                 {user && (
                   <Button
                     variant="ghost"
