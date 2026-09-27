@@ -87,15 +87,19 @@ export default function HeatmapPage() {
   );
 
   const stats = useMemo(() => {
+    const live = rumors.filter((r) => r.status === 'approved' || r.status === 'pending');
     return {
       total: rumors.length,
       pending: rumors.filter((r) => r.status === 'pending').length,
       debunked: rumors.filter((r) => r.status === 'debunked').length,
       verified: rumors.filter((r) => r.status === 'verified-true').length,
-      viral: rumors.filter((r) => r.intensity >= 0.75 && (r.status === 'approved' || r.status === 'pending')).length,
-      high: rumors.filter((r) => r.intensity >= 0.5 && r.intensity < 0.75 && (r.status === 'approved' || r.status === 'pending')).length,
+      viral: live.filter((r) => r.intensity >= 0.75).length,
+      high: live.filter((r) => r.intensity >= 0.5 && r.intensity < 0.75).length,
+      moderate: live.filter((r) => r.intensity >= 0.25 && r.intensity < 0.5).length,
+      low: live.filter((r) => r.intensity < 0.25).length,
     };
   }, [rumors]);
+
 
   const isModerator = isStaff;
 
@@ -126,21 +130,37 @@ export default function HeatmapPage() {
         />
       </div>
 
-      {/* TOP-LEFT: LIVE stats panel */}
-      <div className={cn('absolute top-4 left-4 z-[410] glass-panel rounded-lg p-2 sm:p-3 w-36 sm:w-52 shadow-lg', panelsHidden && 'hidden')}>
+      {/* TOP-LEFT: LIVE tracker — now also carries the trending scale */}
+      <div className={cn('absolute top-4 left-4 z-[410] glass-panel rounded-lg p-2.5 sm:p-3 w-44 sm:w-60 shadow-lg', panelsHidden && 'hidden')}>
         <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-success">
           <span className="inline-block h-2 w-2 rounded-full ticker-blink bg-success shadow-glow" />
           {t('heatmap.live')}
         </div>
         <div className="mt-1 text-3xl font-bold font-mono leading-none">{stats.total}</div>
         <div className="text-xs text-muted-foreground mt-0.5">{t('heatmap.activeRumors')}</div>
-        <div className="mt-3 space-y-1 text-xs font-mono">
-          <Stat label={t('heatmap.debunked')} value={stats.debunked} color="text-foreground" />
-          <Stat label={t('heatmap.verifiedTrue')} value={stats.verified} color="text-foreground" />
-          <Stat label={t('heatmap.viral')} value={stats.viral} color="text-foreground" />
-          <Stat label={t('heatmap.high')} value={stats.high} color="text-foreground" />
+
+        <div className="mt-2.5 pt-2 border-t border-border/60">
+          <div className="text-[9px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-1.5">
+            {t('heatmap.trendingScale')}
+          </div>
+          <div className="space-y-1 text-[11px] sm:text-xs font-mono">
+            <Stat label={t('heatmap.low')} value={stats.low} color="hsl(var(--signal-low))" />
+            <Stat label={t('heatmap.moderate')} value={stats.moderate} color="hsl(var(--signal-moderate))" />
+            <Stat label={t('heatmap.highRange')} value={stats.high} color="hsl(var(--signal-high))" />
+            <Stat label={t('heatmap.viralRange')} value={stats.viral} color="hsl(var(--signal-viral))" />
+          </div>
+        </div>
+
+        <div className="mt-2 pt-2 border-t border-border/60 space-y-1 text-[11px] sm:text-xs font-mono">
+          <Stat label={t('heatmap.debunkedLegend')} value={stats.debunked} color="hsl(var(--signal-debunked))" />
+          <Stat label={t('heatmap.verifiedLegend')} value={stats.verified} color="hsl(var(--signal-verified))" />
+        </div>
+
+        <div className="hidden sm:block text-[10px] text-muted-foreground mt-2 pt-2 border-t border-border/60">
+          {isModerator ? t('heatmap.dragHint') : t('heatmap.clickHint')}
         </div>
       </div>
+
 
       {/* TOP-RIGHT: Submit a Rumor — aligned with the live tracker panel */}
       <div className={cn('absolute top-4 right-4 z-[410]', panelsHidden && 'hidden')}>
