@@ -9,6 +9,8 @@ import { HOTLINE } from '@/constants/countries';
 import { CallExplainerDialog } from '@/components/CallExplainerDialog';
 import { SubscribeDialog } from '@/components/SubscribeDialog';
 import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
+
 
 const menuLinks: { to: string; key: string; icon: typeof Map; end?: boolean }[] = [
   { to: '/', key: 'heatmap', icon: Map, end: true },
