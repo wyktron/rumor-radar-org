@@ -8,7 +8,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { Header } from "@/components/Header";
-import { WelcomeDialogs } from "@/components/WelcomeDialogs";
 import { HackathonBanner } from "@/components/HackathonBanner";
 import { DeckTriggerButton } from "@/components/deck/DeckTriggerButton";
 import Index from "./pages/Index.tsx";
@@ -65,7 +64,7 @@ const App = () => (
         <AuthProvider>
           <AppProvider>
             <BrowserRouter>
-              <WelcomeDialogs />
+              {/* Browser-notification prompt now lives in the menu, not a pop-up. */}
               <Routes>
                 <Route element={<Layout />}>
                   <Route path="/" element={<Index />} />
