@@ -377,7 +377,7 @@
     hsl(152 100% 65% / 0.55) 96%,
     hsl(152 100% 75% / 0.85) 100%
   );
-  animation: radar-sweep-x 7s linear infinite;
+  animation: radar-sweep-x 12s linear infinite;
   filter: blur(1px);
   will-change: left;
 }
