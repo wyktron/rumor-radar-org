@@ -7,8 +7,10 @@ import { FluidBackground, type Palette } from '@/components/feed/FluidBackground
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/RumorBits';
 import { relativeTime } from '@/lib/rumor-utils';
-import { MapPin, Share2, ChevronUp, Flame, X, Hand } from 'lucide-react';
+import { MapPin, Share2, ChevronUp, Flame, X, Hand, ShieldCheck } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+
 
 const hex = (h: string): [number, number, number] => [
   parseInt(h.slice(1, 3), 16) / 255,
@@ -150,7 +152,7 @@ export function RumorDeck({ open, onClose }: Props) {
             className="deck-slide relative flex h-full w-full flex-col justify-center px-5 pb-16 pt-16"
             style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}
           >
-            <div className="mx-auto w-full max-w-xl rounded-lg border border-border bg-card p-6 text-card-foreground shadow-2xl">
+            <div className="mx-auto flex max-h-[78vh] w-full max-w-xl flex-col overflow-y-auto rounded-lg border border-border bg-card p-6 text-card-foreground shadow-2xl">
               <div className="mb-3 flex flex-wrap items-center gap-2">
                 <StatusBadge status={r.status} />
                 <span className="rounded-full border border-border bg-secondary px-2.5 py-0.5 text-[11px] uppercase tracking-wider text-secondary-foreground">
@@ -164,9 +166,89 @@ export function RumorDeck({ open, onClose }: Props) {
               </div>
 
               <h2 className="text-2xl font-semibold leading-snug text-card-foreground">{r.title}</h2>
-              <p className="mt-3 line-clamp-6 text-sm leading-relaxed text-muted-foreground">
-                {r.description}
-              </p>
+
+              {(r.debunkedBy || r.verifiedBy) && (
+                <div
+                  className={cn(
+                    'mt-3 flex items-center gap-2.5 rounded-md border p-2.5',
+                    r.status === 'debunked'
+                      ? 'border-signal-debunked/30 bg-signal-debunked/5'
+                      : 'border-signal-verified/30 bg-signal-verified/5',
+                  )}
+                >
+                  <span
+                    className={cn(
+                      'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
+                      r.status === 'debunked'
+                        ? 'bg-signal-debunked/15 text-signal-debunked'
+                        : 'bg-signal-verified/15 text-signal-verified',
+                    )}
+                  >
+                    <ShieldCheck className="h-4 w-4" />
+                  </span>
+                  <div className="min-w-0">
+                    <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+                      {r.status === 'debunked' ? 'Debunked by' : 'Verified by'}
+                    </div>
+                    <div className="truncate text-sm font-semibold leading-tight">
+                      {r.status === 'debunked' ? r.debunkedBy : r.verifiedBy}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-3">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+                  The claim
+                </div>
+                <p
+                  className={cn(
+                    'mt-1 line-clamp-5 text-sm leading-relaxed text-muted-foreground',
+                    r.status === 'debunked' && 'line-through',
+                  )}
+                >
+                  {r.description}
+                </p>
+              </div>
+
+              {(r.debunkContent || r.verificationContent) && (
+                <div
+                  className={cn(
+                    'mt-3 rounded-md border p-3',
+                    r.status === 'debunked'
+                      ? 'border-signal-debunked/30 bg-signal-debunked/5'
+                      : 'border-signal-verified/30 bg-signal-verified/5',
+                  )}
+                >
+                  <div
+                    className={cn(
+                      'text-[10px] font-mono uppercase tracking-wider',
+                      r.status === 'debunked' ? 'text-signal-debunked' : 'text-signal-verified',
+                    )}
+                  >
+                    The findings
+                  </div>
+                  <p className="mt-1 text-sm leading-relaxed">
+                    {r.debunkContent || r.verificationContent}
+                  </p>
+                  {!!(r.status === 'debunked' ? r.debunkSources : r.verificationSources)?.length && (
+                    <ul className="mt-2 space-y-0.5 text-xs">
+                      {(r.status === 'debunked' ? r.debunkSources : r.verificationSources)?.map((s) => (
+                        <li key={s} className="truncate">
+                          <a
+                            className="text-primary hover:underline"
+                            href={s}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            ↗ {s}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
 
               <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-3 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
@@ -174,6 +256,7 @@ export function RumorDeck({ open, onClose }: Props) {
                 </span>
                 <span>{relativeTime(r.submittedAt)}</span>
               </div>
+
 
               <div className="mt-5 flex gap-2">
                 <Button size="sm" variant="secondary" className="gap-1.5" onClick={() => locate(r)}>
