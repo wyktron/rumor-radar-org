@@ -20,6 +20,7 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import ImpactPage from "./pages/ImpactPage";
 import AboutPage from "./pages/AboutPage";
+import DemoPage from "./pages/DemoPage";
 import LegalPage from "./pages/LegalPage";
 import CSOReviewPage from "./pages/CSOReviewPage";
 import NotFound from "./pages/NotFound.tsx";
@@ -77,6 +78,7 @@ const App = () => (
                   <Route path="/dashboard" element={<DashboardPage />} />
                   <Route path="/impact" element={<ImpactPage />} />
                   <Route path="/about" element={<AboutPage />} />
+                  <Route path="/demo" element={<DemoPage />} />
                   <Route path="/terms" element={<LegalPage type="terms" />} />
                   <Route path="/privacy" element={<LegalPage type="privacy" />} />
                   <Route path="/staff/cso-review" element={<CSOReviewPage />} />
