@@ -1,6 +1,4 @@
-# Rumor Watch
-
-# Rumor Radar - Lovable Project Prompt
+# Rumor Radar
 
 ## Overview
 
