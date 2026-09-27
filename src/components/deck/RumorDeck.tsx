@@ -48,10 +48,12 @@ export function RumorDeck({ open, onClose }: Props) {
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Only reviewed outcomes go into the feed — never unconfirmed claims.
   const pool = useMemo(
-    () => rumors.filter((r) => r.title && r.status !== 'rejected' && r.status !== 'pending'),
+    () => rumors.filter((r) => r.title && (r.status === 'debunked' || r.status === 'verified-true')),
     [rumors],
   );
+
 
   const [deck, setDeck] = useState<Rumor[]>([]);
   const [activeIdx, setActiveIdx] = useState(0);
