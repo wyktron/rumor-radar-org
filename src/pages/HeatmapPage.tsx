@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HeatmapMap } from '@/components/map/HeatmapMap';
@@ -32,7 +32,11 @@ export default function HeatmapPage() {
   const [submitInfoOpen, setSubmitInfoOpen] = useState(false);
   const [pickMode, setPickMode] = useState(false);
   const [panelsHidden, setPanelsHidden] = useState(false);
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  // Filters start open on desktop, collapsed on mobile where space is tight.
+  const [filtersOpen, setFiltersOpen] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches,
+  );
+
   const [focus, setFocus] = useState<{ coords: [number, number]; key: string } | null>(null);
 
   // Deep link from the feed: /?rumor=<id> flies to the rumor and opens it.
