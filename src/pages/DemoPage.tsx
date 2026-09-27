@@ -15,7 +15,7 @@ const VIDEOS: DemoVideo[] = [
   {
     id: 'JEMFMg8DH6Q',
     label: 'Part 1',
-    title: 'Rumor Radar — demo walkthrough',
+    title: 'Rumor Radar Presentation',
     blurb:
       'The live heatmap, how a claim gets submitted, how an approved fact-checking organisation reviews it, and how the result reaches the hotline and the short-form feed.',
   },
