@@ -357,7 +357,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       cancelled = true;
       supabase.removeChannel(channel);
     };
-  }, [isStaff]);
+  }, [isStaff, isCSOMember]);
 
   // --- Public CSO directory + realtime ---
   useEffect(() => {
