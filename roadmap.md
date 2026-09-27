@@ -5,6 +5,10 @@
 - [x] Show Unconfirmed instead of Approved on rumor statuses
 - [x] Soften the rumor deck background animation
 - [x] Remove unsupported verified-true verdicts and their attribution (including the Ukraine item, pending claim-specific evidence)
+- [ ] Scroll feed: show who debunked/confirmed + explanation + sources
+- [ ] Check why CSO accounts can't access the pending rumors dropdown
+
+
 
 - [ ] Demo credentials: admin / moderator / CSO member
 - [ ] Remove logo mark on main page (EU regulation caution)
