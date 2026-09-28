@@ -9,6 +9,7 @@ import { AppProvider } from "@/context/AppContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { Header } from "@/components/Header";
 import { HackathonBanner } from "@/components/HackathonBanner";
+import { WelcomeVideoDialog } from "@/components/WelcomeVideoDialog";
 import { DeckTriggerButton } from "@/components/deck/DeckTriggerButton";
 import Index from "./pages/Index.tsx";
 import TimelinePage from "./pages/TimelinePage";
@@ -66,6 +67,7 @@ const App = () => (
           <AppProvider>
             <BrowserRouter>
               {/* Browser-notification prompt now lives in the menu, not a pop-up. */}
+              <WelcomeVideoDialog />
               <Routes>
                 <Route element={<Layout />}>
                   <Route path="/" element={<Index />} />
