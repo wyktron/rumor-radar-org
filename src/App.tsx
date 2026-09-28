@@ -67,6 +67,7 @@ const App = () => (
           <AppProvider>
             <BrowserRouter>
               {/* Browser-notification prompt now lives in the menu, not a pop-up. */}
+              <WelcomeVideoDialog />
               <Routes>
                 <Route element={<Layout />}>
                   <Route path="/" element={<Index />} />
